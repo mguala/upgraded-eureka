@@ -16,7 +16,7 @@ let isLoading = true;
 const SCRYFALL_API = "https://api.scryfall.com";
 
 // USD to CLP conversion rate
-const USD_TO_CLP = 500;
+const USD_TO_CLP = 980;
 
 // Load CSV file using PapaParse
 async function loadCSV(filename) {
