@@ -11,13 +11,13 @@
   font-style: normal;
 }
 @font-face {
-  font-family: "Matrix Bold";
-  src: url("../fonts/Matrix Bold.ttf") format("truetype");
+  font-family: "MatrixBold";
+  src: url("../fonts/MatrixBold.ttf") format("truetype");
   font-weight: bold;
   font-style: normal;
 }
 @font-face {
-  font-family: "Beleren 2016";
+  font-family: "Beleren2016";
   src: url("../fonts/Beleren2016-Bold.ttf") format("truetype");
   font-weight: bold;
   font-style: normal;
@@ -32,12 +32,12 @@
 }
 
 body {
-  font-family: "Matrix Bold", sans-serif;
+  font-family: "Beleren2016", sans-serif;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #0a0a14;
-  color: #e0e0e0;
+  background-color: #b8b8b8;
+  color: #8400ff;
 }
 
 main {
@@ -48,9 +48,9 @@ main {
    Navigation Bar Styles
    ======================================== */
 .navbar {
-  background-color: #2c3e50;
+  background-color: #004ef700;
   padding: 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 37, 51, 0.1);
   position: sticky;
   top: 0;
   z-index: 900;
@@ -67,7 +67,7 @@ main {
 }
 
 .navbar-brand {
-  color: white;
+  color: rgb(0, 71, 71);
   font-size: 20px;
   font-weight: bold;
   text-decoration: none;
@@ -76,7 +76,7 @@ main {
   transition: color 0.3s ease;
 }
 .navbar-brand:hover {
-  color: #3498db;
+  color: #34dbbf;
 }
 
 .navbar-links {
@@ -85,7 +85,7 @@ main {
 }
 
 .nav-link {
-  color: white;
+  color: rgb(36, 36, 36);
   font-size: 16px;
   font-weight: bold;
   text-decoration: none;
@@ -94,7 +94,7 @@ main {
   align-items: center;
 }
 .nav-link:hover {
-  color: #3498db;
+  color: #4534db;
 }
 
 .nav-cart-summary {
@@ -104,8 +104,8 @@ main {
 }
 
 .nav-cart-btn {
-  background-color: #e74c3c;
-  color: white;
+  background-color: #ffffff;
+  color: #005a53;
   border: none;
   padding: 10px 15px;
   border-radius: 4px;
@@ -119,12 +119,12 @@ main {
   position: relative;
 }
 .nav-cart-btn:hover {
-  background-color: #c0392b;
+  background-color: #005a53;
 }
 
 .cart-badge {
-  background-color: #f39c12;
-  color: white;
+  background-color: #005a53;
+  color: rgb(255, 255, 255);
   border-radius: 50%;
   padding: 2px 6px;
   font-size: 12px;
@@ -137,8 +137,8 @@ main {
   position: absolute;
   bottom: -70px;
   right: 0;
-  background-color: white;
-  border: 2px solid #2c3e50;
+  background-color: rgb(255, 255, 255);
+  border: 2px solid #000000;
   border-radius: 4px;
   padding: 10px 15px;
   min-width: 200px;
@@ -151,7 +151,7 @@ main {
 }
 .nav-cart-tooltip p {
   margin: 5px 0;
-  color: #2c3e50;
+  color: #005a53;
   font-size: 13px;
 }
 
@@ -161,7 +161,7 @@ main {
 }
 
 .cart-items-label {
-  border-top: 1px solid #bdc3c7;
+  border-top: 1px solid #005a53;
   padding-top: 5px;
 }
 
@@ -171,7 +171,7 @@ main {
 .header-table {
   width: 100%;
   padding: 10px;
-  background-color: #f5f5f5;
+  background-color: #005a5393;
 }
 .header-table h1 {
   text-align: center;
@@ -184,7 +184,7 @@ main {
   text-align: center;
   font-style: italic;
   margin: 0;
-  font-family: "Matrix Bold", sans-serif;
+  font-family: "Beleren2016", sans-serif;
 }
 
 /* ========================================
@@ -197,8 +197,8 @@ main {
 }
 
 .btn-open-filters {
-  background-color: #3498db;
-  color: white;
+  background-color: #005a535d;
+  color: #525252;
   padding: 10px 20px;
   margin-bottom: 20px;
   border: none;
@@ -209,7 +209,7 @@ main {
   transition: background-color 0.3s ease;
 }
 .btn-open-filters:hover {
-  background-color: #0b7dda;
+  background-color: #022724;
 }
 
 .main-layout {
@@ -223,7 +223,7 @@ main {
   width: 20%;
   padding: 10px;
   vertical-align: top;
-  background-color: #e8e8e8;
+  background-color: #005a5348;
   display: table-cell;
 }
 .sidebar h3 {
@@ -237,7 +237,7 @@ main {
   margin-bottom: 5px;
 }
 .sidebar ul li a {
-  color: #0066cc;
+  color: #005a53;
   text-decoration: none;
 }
 .sidebar ul li a:hover {
@@ -246,7 +246,6 @@ main {
 .sidebar hr {
   margin: 15px 0;
   border: none;
-  border-top: 1px solid #999;
 }
 
 #cart-summary {
@@ -352,14 +351,13 @@ main {
 
 .card-table {
   width: 100%;
-  border: 1px solid black;
+  border: none;
   padding: 10px;
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0);
   border-collapse: collapse;
 }
 
 .card-header {
-  background-color: #e0e0e0;
   font-weight: bold;
   padding: 10px;
 }
@@ -391,7 +389,7 @@ main {
 
 .card-set {
   font-size: 12px;
-  color: #666;
+  color: transparent;
   font-weight: bold;
 }
 
@@ -403,7 +401,7 @@ main {
 
 .card-meta {
   font-size: 12px;
-  color: #666;
+  color: transparent;
 }
 
 .card-price {

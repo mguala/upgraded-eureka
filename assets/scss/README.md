@@ -92,32 +92,6 @@ The SCSS is organized into logical components for easy maintenance and scalabili
     - Responsive layout adjustments
     - Media query styling
 
-## How to Use
-
-### Compiling SCSS to CSS
-
-You can compile these SCSS files to CSS using:
-
-**Option 1: Using npm-scripts with sass**
-```bash
-npm install -g sass
-sass assets/scss/main.scss assets/css/main.css
-```
-
-**Option 2: Live watch during development**
-```bash
-sass --watch assets/scss:assets/css
-```
-
-**Option 3: Using VS Code Extensions**
-Install "Live Sass Compiler" extension and use the Watch button.
-
-### After Compilation
-The compiled `main.css` file should be used in your HTML file:
-```html
-<link rel="stylesheet" href="assets/css/main.css" />
-```
-
 ## Variable Reference
 
 ### Colors
