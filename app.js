@@ -125,38 +125,66 @@ function convertScryfallCard(scryfallCard, csvData) {
 
 // Load all cards from CSV and Scryfall
 async function loadAllCards() {
-  showLoadingMessage();
+   showLoadingMessage();
 
-  // Load CSV data
-  const csvData = await loadCSV("cards.csv");
+   // Load CSV data
+   const csvData = await loadCSV("cards.csv");
 
-  if (csvData.length === 0) {
-    showErrorMessage("No se pudo cargar el archivo CSV");
-    return;
-  }
+   if (csvData.length === 0) {
+     showErrorMessage("No se pudo cargar el archivo CSV");
+     return;
+   }
 
-  console.log(`Cargando ${csvData.length} cartas desde Scryfall...`);
+   console.log(`Cargando ${csvData.length} cartas desde Scryfall...`);
 
-  // Fetch each card from Scryfall
-  const promises = csvData.map(async (row, index) => {
-    // Add delay to respect Scryfall rate limits (10 requests per second)
-    await new Promise((resolve) => setTimeout(resolve, index * 100));
+   // Fetch each card from Scryfall
+   const promises = csvData.map(async (row, index) => {
+     // Add delay to respect Scryfall rate limits (10 requests per second)
+     await new Promise((resolve) => setTimeout(resolve, index * 100));
 
-    const scryfallCard = await fetchCardFromScryfall(row.Name);
-    if (scryfallCard) {
-      return convertScryfallCard(scryfallCard, row);
-    }
-    return null;
-  });
+     const scryfallCard = await fetchCardFromScryfall(row.Name);
+     if (scryfallCard) {
+       return convertScryfallCard(scryfallCard, row);
+     }
+     return null;
+   });
 
-  const cards = await Promise.all(promises);
-  cardDatabase = cards.filter((card) => card !== null);
+   const cards = await Promise.all(promises);
+   const rawCards = cards.filter((card) => card !== null);
 
-  console.log(`${cardDatabase.length} cartas cargadas exitosamente`);
+   // Consolidate foil/normal versions of the same card
+   cardDatabase = consolidateCards(rawCards);
 
-  isLoading = false;
-  displayCards(cardDatabase);
-  updateCartDisplay();
+   console.log(`${cardDatabase.length} cartas únicas cargadas exitosamente`);
+
+   isLoading = false;
+   displayCards(cardDatabase);
+   updateCartDisplay();
+}
+
+// Consolidate foil and normal versions into single card entries
+function consolidateCards(cards) {
+   const consolidated = {};
+   
+   cards.forEach((card) => {
+     const key = card.name;
+     
+     if (!consolidated[key]) {
+       consolidated[key] = {
+         ...card,
+         foilStock: 0,
+         normalStock: 0,
+       };
+     }
+     
+     if (card.isForil) {
+       consolidated[key].foilStock += card.stock;
+     } else {
+       consolidated[key].normalStock += card.stock;
+     }
+   });
+   
+   return Object.values(consolidated);
 }
 
 // Show loading message
@@ -207,10 +235,11 @@ function displayCards(cards) {
 
 // Create HTML for a single card
 function createCardHTML(card) {
-  const colorEmoji = getColorEmoji(card.color);
-  const typeIcon = getTypeIcon(card.type);
-  const stockStatus = card.stock > 0 ? `En Stock (${card.stock})` : "Agotado";
-  const stockColor = card.stock > 0 ? "green" : "red";
+   const colorEmoji = getColorEmoji(card.color);
+   const typeIcon = getTypeIcon(card.type);
+   const totalStock = card.foilStock + card.normalStock;
+   const stockStatus = totalStock > 0 ? `En Stock (${totalStock})` : "Agotado";
+   const stockColor = totalStock > 0 ? "green" : "red";
 
   return `
         <table width="100%" border="1" cellpadding="10" bgcolor="white">
@@ -247,15 +276,19 @@ function createCardHTML(card) {
                     <p><i>${card.text}</i></p>
                     <hr>
                     <p><b>Precio: $${Math.round(card.price)} CLP</b></p>
-                    <p><font color="${stockColor}">${stockStatus}</font></p>
-                    <button onclick="viewCardDetail('${
-                      card.id
-                    }')">Ver Detalles</button>
-                    ${
-                      card.stock > 0
-                        ? `<button onclick="addToCart('${card.id}')">Agregar al Carrito</button>`
-                        : "<button disabled>Agotado</button>"
-                    }
+                     <p>
+                       ${card.normalStock > 0 ? `<font color="blue">Normal: ${card.normalStock}</font> ` : ""}
+                       ${card.foilStock > 0 ? `<font color="gold">✨ Foil: ${card.foilStock}</font>` : ""}
+                     </p>
+                     <p><font color="${stockColor}">${stockStatus}</font></p>
+                     <button onclick="viewCardDetail('${
+                       card.id
+                     }')">Ver Detalles</button>
+                     ${
+                       totalStock > 0
+                         ? `<button onclick="showFoilSelection('${card.id}')">Agregar al Carrito</button>`
+                         : "<button disabled>Agotado</button>"
+                     }
                 </td>
             </tr>
         </table>
@@ -349,37 +382,70 @@ function searchCards() {
   displayCards(results);
 }
 
+// Show foil selection dialog
+function showFoilSelection(cardId) {
+   const card = cardDatabase.find((c) => c.id === cardId);
+   
+   if (!card) return;
+   
+   const totalStock = card.foilStock + card.normalStock;
+   
+   if (totalStock === 0) {
+     alert("¡Lo sentimos, esta carta está agotada!");
+     return;
+   }
+   
+   let options = "";
+   if (card.normalStock > 0) {
+     options += `<option value="normal">Normal (${card.normalStock} disponibles)</option>`;
+   }
+   if (card.foilStock > 0) {
+     options += `<option value="foil">✨ Foil (${card.foilStock} disponibles)</option>`;
+   }
+   
+   const selection = prompt(
+     `¿Qué versión de ${card.name} deseas?\n\n${card.normalStock > 0 ? `Normal: ${card.normalStock}\n` : ""}${card.foilStock > 0 ? `✨ Foil: ${card.foilStock}` : ""}`,
+     card.foilStock > 0 ? "foil" : "normal"
+   );
+   
+   if (selection === "foil" || selection === "normal") {
+     addToCart(cardId, selection === "foil");
+   }
+}
+
 // Add card to cart
-function addToCart(cardId) {
-  const card = cardDatabase.find((c) => c.id === cardId);
+function addToCart(cardId, isForil = false) {
+   const card = cardDatabase.find((c) => c.id === cardId);
+   const availableStock = isForil ? card.foilStock : card.normalStock;
 
-  if (!card || card.stock === 0) {
-    alert("¡Lo sentimos, esta carta está agotada!");
-    return;
-  }
+   if (!card || availableStock === 0) {
+     alert("¡Lo sentimos, esta versión de la carta está agotada!");
+     return;
+   }
 
-  // Check if card is already in cart
-  const existingItem = shoppingCart.find((item) => item.id === cardId);
+   // Check if card is already in cart (with same foil status)
+   const existingItem = shoppingCart.find((item) => item.id === cardId && item.isForil === isForil);
 
-  if (existingItem) {
-    if (existingItem.quantity < card.stock) {
-      existingItem.quantity++;
-      alert(`¡Se agregó otro ${card.name} al carrito!`);
-    } else {
-      alert(`¡Lo sentimos, solo hay ${card.stock} en stock!`);
-      return;
-    }
-  } else {
-    shoppingCart.push({
-      id: card.id,
-      name: card.name,
-      price: card.price,
-      quantity: 1,
-    });
-    alert(`¡${card.name} agregado al carrito!`);
-  }
+   if (existingItem) {
+     if (existingItem.quantity < availableStock) {
+       existingItem.quantity++;
+       alert(`¡Se agregó otro ${card.name} ${isForil ? "(✨ Foil)" : "(Normal)"} al carrito!`);
+     } else {
+       alert(`¡Lo sentimos, solo hay ${availableStock} en stock!`);
+       return;
+     }
+   } else {
+     shoppingCart.push({
+       id: card.id,
+       name: card.name,
+       price: card.price,
+       quantity: 1,
+       isForil: isForil,
+     });
+     alert(`¡${card.name} ${isForil ? "(✨ Foil)" : "(Normal)"} agregado al carrito!`);
+   }
 
-  updateCartDisplay();
+   updateCartDisplay();
 }
 
 // Update cart display
@@ -407,25 +473,19 @@ function viewCart() {
     html +=
       '<tr bgcolor="#e0e0e0"><th>Carta</th><th>Precio</th><th>Cantidad</th><th>Subtotal</th><th>Acción</th></tr>';
 
-    shoppingCart.forEach((item) => {
+    shoppingCart.forEach((item, index) => {
       const subtotal = item.price * item.quantity;
       html += `
                 <tr>
-                    <td>${item.name}</td>
+                    <td>${item.name} ${item.isForil ? "<font color='gold'>✨ Foil</font>" : ""}</td>
                     <td>$${Math.round(item.price)} CLP</td>
                     <td>
-                        <button onclick="decreaseQuantity('${
-                          item.id
-                        }')">-</button>
+                        <button onclick="decreaseQuantity(${index})">-</button>
                         ${item.quantity}
-                        <button onclick="increaseQuantity('${
-                          item.id
-                        }')">+</button>
+                        <button onclick="increaseQuantity(${index})">+</button>
                     </td>
                     <td>$${Math.round(subtotal)} CLP</td>
-                    <td><button onclick="removeFromCart('${
-                      item.id
-                    }')">Eliminar</button></td>
+                    <td><button onclick="removeFromCart(${index})">Eliminar</button></td>
                 </tr>
             `;
     });
@@ -450,40 +510,41 @@ function closeCart() {
 }
 
 // Increase quantity
-function increaseQuantity(cardId) {
-  const card = cardDatabase.find((c) => c.id === cardId);
-  const cartItem = shoppingCart.find((item) => item.id === cardId);
+function increaseQuantity(index) {
+   const cartItem = shoppingCart[index];
+   const card = cardDatabase.find((c) => c.id === cartItem.id);
+   const availableStock = cartItem.isForil ? card.foilStock : card.normalStock;
 
-  if (cartItem && cartItem.quantity < card.stock) {
-    cartItem.quantity++;
-    updateCartDisplay();
-    viewCart(); // Refresh cart view
-  } else {
-    alert(`¡Lo sentimos, solo hay ${card.stock} en stock!`);
-  }
+   if (cartItem && cartItem.quantity < availableStock) {
+     cartItem.quantity++;
+     updateCartDisplay();
+     viewCart(); // Refresh cart view
+   } else {
+     alert(`¡Lo sentimos, solo hay ${availableStock} en stock!`);
+   }
 }
 
 // Decrease quantity
-function decreaseQuantity(cardId) {
-  const cartItem = shoppingCart.find((item) => item.id === cardId);
+function decreaseQuantity(index) {
+   const cartItem = shoppingCart[index];
 
-  if (cartItem) {
-    if (cartItem.quantity > 1) {
-      cartItem.quantity--;
-    } else {
-      removeFromCart(cardId);
-      return;
-    }
-    updateCartDisplay();
-    viewCart(); // Refresh cart view
-  }
+   if (cartItem) {
+     if (cartItem.quantity > 1) {
+       cartItem.quantity--;
+     } else {
+       removeFromCart(index);
+       return;
+     }
+     updateCartDisplay();
+     viewCart(); // Refresh cart view
+   }
 }
 
 // Remove from cart
-function removeFromCart(cardId) {
-  shoppingCart = shoppingCart.filter((item) => item.id !== cardId);
-  updateCartDisplay();
-  viewCart(); // Refresh cart view
+function removeFromCart(index) {
+   shoppingCart.splice(index, 1);
+   updateCartDisplay();
+   viewCart(); // Refresh cart view
 }
 
 // Clear cart
@@ -599,15 +660,16 @@ function viewCardDetail(cardId) {
             </tr>
             <tr>
                 <td><b>Stock:</b></td>
-                <td><font color="${card.stock > 0 ? "green" : "red"}">${
-    card.stock > 0 ? `${card.stock} disponibles` : "Agotado"
-  }</font></td>
+                <td>
+                  ${card.normalStock > 0 ? `<font color="blue">Normal: ${card.normalStock}</font> ` : ""}
+                  ${card.foilStock > 0 ? `<font color="gold">✨ Foil: ${card.foilStock}</font>` : ""}
+                </td>
             </tr>
             <tr>
                 <td colspan="2" align="center">
                     ${
-                      card.stock > 0
-                        ? `<button onclick="addToCart('${card.id}'); closeCardDetail();">Agregar al Carrito</button>`
+                      (card.foilStock + card.normalStock) > 0
+                        ? `<button onclick="showFoilSelection('${card.id}'); closeCardDetail();">Agregar al Carrito</button>`
                         : "<button disabled>Agotado</button>"
                     }
                 </td>
