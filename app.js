@@ -7,6 +7,7 @@ let shoppingCart = [];
 // Current filters
 let currentTypeFilter = "all";
 let currentColorFilter = "all";
+let currentFoilFilter = "all";
 
 // Loading state
 let isLoading = true;
@@ -118,6 +119,7 @@ function convertScryfallCard(scryfallCard, csvData) {
     set: scryfallCard.set_name,
     imageUrl: scryfallCard.image_uris ? scryfallCard.image_uris.normal : null,
     scryfallUri: scryfallCard.scryfall_uri,
+    isForil: csvData["Foil"] && csvData["Foil"].toLowerCase() === "foil",
   };
 }
 
@@ -214,7 +216,7 @@ function createCardHTML(card) {
         <table width="100%" border="1" cellpadding="10" bgcolor="white">
             <tr bgcolor="#f0f0f0">
                 <td>
-                    <b>${card.name}</b>
+                    <b>${card.name}</b> ${card.isForil ? '<span style="color: gold; font-weight: bold;">✨ FOIL</span>' : ''}
                     <br>
                     <small>${colorEmoji} ${
     card.color.charAt(0).toUpperCase() + card.color.slice(1)
@@ -294,23 +296,35 @@ function filterCards(type) {
 
 // Filter cards by color
 function filterByColor(color) {
-  currentColorFilter = color;
-  applyFilters();
+   currentColorFilter = color;
+   applyFilters();
+}
+
+// Filter cards by foil status
+function filterByFoil(foilStatus) {
+   currentFoilFilter = foilStatus;
+   applyFilters();
 }
 
 // Apply all active filters
 function applyFilters() {
-  let filtered = cardDatabase;
+   let filtered = cardDatabase;
 
-  if (currentTypeFilter !== "all") {
-    filtered = filtered.filter((card) => card.type === currentTypeFilter);
-  }
+   if (currentTypeFilter !== "all") {
+     filtered = filtered.filter((card) => card.type === currentTypeFilter);
+   }
 
-  if (currentColorFilter !== "all") {
-    filtered = filtered.filter((card) => card.color === currentColorFilter);
-  }
+   if (currentColorFilter !== "all") {
+     filtered = filtered.filter((card) => card.color === currentColorFilter);
+   }
 
-  displayCards(filtered);
+   if (currentFoilFilter === "foil") {
+     filtered = filtered.filter((card) => card.isForil);
+   } else if (currentFoilFilter === "normal") {
+     filtered = filtered.filter((card) => !card.isForil);
+   }
+
+   displayCards(filtered);
 }
 
 // Search cards
