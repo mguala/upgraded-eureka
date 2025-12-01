@@ -234,17 +234,17 @@ function showLoadingMessage() {
   const randomGif = loadingGifs[Math.floor(Math.random() * loadingGifs.length)];
   
   cardsGrid.innerHTML =
-    `<tr><td colspan="3" align="center">
+    `<div style="grid-column: 1 / -1; text-align: center; padding: 2rem;">
       <img src="${randomGif}" alt="Loading..." style="max-width: 300px; margin: 20px 0; border-radius: 8px;">
       <h2>⏳ Cargando cartas desde Scryfall...</h2>
       <p>Por favor espera mientras obtenemos los datos de las cartas.</p>
-    </td></tr>`;
+    </div>`;
 }
 
 // Show error message
 function showErrorMessage(message) {
   const cardsGrid = document.getElementById("cards-grid");
-  cardsGrid.innerHTML = `<tr><td colspan="3" align="center"><h2>❌ Error</h2><p>${message}</p></td></tr>`;
+  cardsGrid.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 2rem;"><h2>❌ Error</h2><p>${message}</p></div>`;
 }
 
 // Initialize the store
@@ -259,25 +259,16 @@ function displayCards(cards) {
 
   if (cards.length === 0) {
     cardsGrid.innerHTML =
-      '<tr><td colspan="3" align="center"><h3>No se encontraron cartas</h3></td></tr>';
+      '<div style="grid-column: 1 / -1; text-align: center; padding: 2rem;"><h3>No se encontraron cartas</h3></div>';
     return;
   }
 
-  // Display cards in rows of 3
-  for (let i = 0; i < cards.length; i += 3) {
-    const row = document.createElement("tr");
-
-    for (let j = 0; j < 3 && i + j < cards.length; j++) {
-      const card = cards[i + j];
-      const cell = document.createElement("td");
-      cell.setAttribute("width", "33%");
-      cell.setAttribute("valign", "top");
-      cell.innerHTML = createCardHTML(card);
-      row.appendChild(cell);
-    }
-
-    cardsGrid.appendChild(row);
-  }
+  // Display cards using CSS Grid
+  cards.forEach(card => {
+    const cardElement = document.createElement("div");
+    cardElement.innerHTML = createCardHTML(card);
+    cardsGrid.appendChild(cardElement);
+  });
 }
 
 // Create HTML for a single card
@@ -289,59 +280,31 @@ function createCardHTML(card) {
     const stockStatusClass = totalStock > 0 ? "card-stock-in" : "card-stock-out";
 
    return `
-         <table class="card-table">
-             <tr class="card-header">
-                 <td>
-                     <span class="card-name">${card.name}</span>
-                     <br>
-                     <span class="card-set">${card.set}</span>
-                     <br>
-                     <span class="card-meta">${colorEmoji} ${
-     card.color.charAt(0).toUpperCase() + card.color.slice(1)
-   } | ${typeIcon} ${
-     card.type.charAt(0).toUpperCase() + card.type.slice(1)
-   }</span>
-                 </td>
-             </tr>
-            ${
-              card.imageUrl
-                ? `<tr>
-                <td class="card-image">
-                    <img src="${card.imageUrl}" alt="${card.name}" width="200">
-                </td>
-            </tr>`
-                : ""
-            }
-            <tr>
-                <td class="card-details">
-                    <p><b>Coste de Maná:</b> ${card.manaCost}</p>
-                    ${
-                      card.power !== null
-                        ? `<p><b>Fuerza/Resistencia:</b> ${card.power}/${card.toughness}</p>`
-                        : ""
-                    }
-                    <p><b>Rareza:</b> ${card.rarity}</p>
-                    <p><b>Edición:</b> ${card.set}</p>
-                    <p><i>${card.text}</i></p>
-                    <hr>
-                    <p class="card-price"><b>Precio: $${Math.round(card.price)} CLP</b></p>
-                     <p>
-                       ${card.normalStock > 0 ? `<span class="card-stock-normal">Normal: ${card.normalStock}</span>` : ""}
-                       ${card.foilStock > 0 ? `<span class="card-stock-foil">✨ Foil: ${card.foilStock}</span>` : ""}
-                     </p>
-                     <p><span class="card-stock-status ${stockStatusClass}">${stockStatus}</span></p>
-                     <button class="btn-details" onclick="viewCardDetail('${
-                       card.id
-                     }')">Ver Detalles</button>
-                     ${
-                       totalStock > 0
-                         ? `<button class="btn-add-cart" onclick="showFoilSelection('${card.id}')">Agregar al Carrito</button>`
-                         : "<button disabled>Agotado</button>"
-                     }
-                </td>
-            </tr>
-        </table>
-    `;
+    <div class="card-table">
+        <div class="card-header">
+            <span class="card-name">${card.name}</span>
+            <span class="card-set">${card.set}</span>
+            <span class="card-meta">${colorEmoji} ${card.color.charAt(0).toUpperCase() + card.color.slice(1)} | ${typeIcon} ${card.type.charAt(0).toUpperCase() + card.type.slice(1)}</span>
+        </div>
+        ${card.imageUrl ? `<div class="card-image"><img src="${card.imageUrl}" alt="${card.name}" loading="lazy"></div>` : ""}
+        <div class="card-details">
+            <p><b>Coste de Maná:</b> ${card.manaCost}</p>
+            ${card.power !== null ? `<p><b>Fuerza/Resistencia:</b> ${card.power}/${card.toughness}</p>` : ""}
+            <p><b>Rareza:</b> ${card.rarity}</p>
+            <p><b>Edición:</b> ${card.set}</p>
+            <p><i>${card.text}</i></p>
+            <hr>
+            <p class="card-price">Precio: $${Math.round(card.price)} CLP</p>
+            <p>
+                ${card.normalStock > 0 ? `<span class="card-stock-normal">Normal: ${card.normalStock}</span>` : ""}
+                ${card.foilStock > 0 ? `<span class="card-stock-foil">✨ Foil: ${card.foilStock}</span>` : ""}
+            </p>
+            <p><span class="card-stock-status ${stockStatusClass}">${stockStatus}</span></p>
+            <button class="btn-details" onclick="viewCardDetail('${card.id}')">Ver Detalles</button>
+            ${totalStock > 0 ? `<button class="btn-add-cart" onclick="showFoilSelection('${card.id}')">Agregar al Carrito</button>` : "<button disabled>Agotado</button>"}
+        </div>
+    </div>
+   `;
 }
 
 // Get color emoji
