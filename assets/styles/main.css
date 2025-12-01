@@ -1019,8 +1019,160 @@ section h3 {
 }
 
 /* ========================================
-   RESPONSIVE DESIGN
-   ======================================== */
+    UTILITY CLASSES (Grid, Spacing, etc.)
+    ======================================== */
+
+/* Grid System */
+.row {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1rem;
+  width: 100%;
+}
+
+.col-12 { grid-column: span 12; }
+.col-sm-6 { grid-column: span 12; }
+.col-lg-4 { grid-column: span 12; }
+.col-xl-3 { grid-column: span 12; }
+
+/* Flexbox Utilities */
+.d-flex {
+  display: flex;
+}
+
+.d-grid {
+  display: grid;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.gap-4 {
+  gap: 2rem;
+}
+
+/* Text Utilities */
+.text-center {
+  text-align: center;
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+/* Margin/Padding Utilities */
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-3 { margin-bottom: 1rem; }
+.mb-4 { margin-bottom: 1.5rem; }
+.mb-5 { margin-bottom: 3rem; }
+
+.mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 1rem; }
+.mt-4 { margin-top: 1.5rem; }
+
+.py-5 { padding: 3rem 0; }
+
+/* Card Utilities */
+.card {
+  border: 1px solid rgba(0, 184, 255, 0.2);
+  border-radius: 8px;
+  background: var(--bg-card);
+}
+
+.h-100 {
+  height: 100%;
+}
+
+/* Button Utilities */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+  font-family: inherit;
+}
+
+.btn-sm {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.875rem;
+}
+
+.btn-outline-primary {
+  border: 2px solid var(--primary);
+  background: transparent;
+  color: var(--primary);
+}
+
+.btn-outline-primary:hover {
+  background: rgba(0, 184, 255, 0.1);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.btn-success {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+  color: var(--bg-dark);
+}
+
+.btn-success:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 255, 159, 0.3);
+}
+
+.btn-secondary {
+  background: rgba(0, 184, 255, 0.2);
+  color: var(--text-muted);
+  border: 1px solid rgba(0, 184, 255, 0.3);
+}
+
+.btn-secondary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Badge Utilities */
+.badge {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* Alert Utilities */
+.alert {
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid;
+}
+
+.alert-danger {
+  background: rgba(255, 107, 107, 0.1);
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+/* ========================================
+    RESPONSIVE DESIGN
+    ======================================== */
+
+@media (min-width: 576px) {
+  .col-sm-6 { grid-column: span 6; }
+}
+
+@media (min-width: 992px) {
+  .col-lg-4 { grid-column: span 4; }
+}
+
+@media (min-width: 1200px) {
+  .col-xl-3 { grid-column: span 3; }
+}
 
 @media (max-width: 768px) {
   .navbar-container {
