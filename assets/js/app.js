@@ -107,13 +107,13 @@ function convertScryfallCard(scryfallCard, csvData) {
   const rarity = scryfallCard.rarity || "common";
 
   // Get images for different versions if available
-  let normalImageUrl = scryfallCard.image_uris ? scryfallCard.image_uris.normal : null;
-  let foilImageUrl = scryfallCard.image_uris ? scryfallCard.image_uris.normal : null;
+  // Note: Scryfall doesn't provide separate foil/non-foil images for same printing
+  // Both use the same image URL
+  let imageUrl = scryfallCard.image_uris ? scryfallCard.image_uris.normal : null;
 
   // Try to get large image for better quality
   if (scryfallCard.image_uris && scryfallCard.image_uris.large) {
-    normalImageUrl = scryfallCard.image_uris.large;
-    foilImageUrl = scryfallCard.image_uris.large;
+    imageUrl = scryfallCard.image_uris.large;
   }
 
   return {
@@ -131,9 +131,9 @@ function convertScryfallCard(scryfallCard, csvData) {
     rarity: rarityMap[scryfallCard.rarity] || scryfallCard.rarity,
     rarityLevel: rarity,
     set: scryfallCard.set_name,
-    imageUrl: normalImageUrl,
-    normalImageUrl: normalImageUrl,
-    foilImageUrl: foilImageUrl,
+    imageUrl: imageUrl,
+    normalImageUrl: imageUrl,
+    foilImageUrl: imageUrl,
     scryfallUri: scryfallCard.scryfall_uri,
     isForil: csvData["Foil"] && csvData["Foil"].toLowerCase() === "foil",
   };
@@ -172,6 +172,9 @@ async function loadAllCards() {
 
    // Consolidate foil/normal versions of the same card and group by set
    cardDatabase = consolidateCardsBySet(rawCards);
+   
+   // Filter out cards with no stock
+   cardDatabase = cardDatabase.filter(card => (card.foilStock + card.normalStock) > 0);
 
    console.log(`${cardDatabase.length} cartas únicas cargadas exitosamente`);
 
