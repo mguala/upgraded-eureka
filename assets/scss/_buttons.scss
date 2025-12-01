@@ -1,0 +1,42 @@
+/* ========================================
+   Button Styles
+   ======================================== */
+
+button {
+  padding: $spacing-sm $spacing-md;
+  margin: $spacing-xs $spacing-xs $spacing-xs 0;
+  border: 1px solid #999;
+  border-radius: $border-radius-md;
+  cursor: pointer;
+  background-color: $color-gray-light;
+  font-weight: bold;
+  transition: background-color $transition-default;
+
+  &:hover:not(:disabled) {
+    background-color: $color-gray-darker;
+  }
+
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    color: $color-text-light;
+  }
+}
+
+.btn-details {
+  background-color: $color-accent;
+  color: $color-white;
+
+  &:hover {
+    background-color: #0b7dda;
+  }
+}
+
+.btn-add-cart {
+  background-color: $color-success;
+  color: $color-white;
+
+  &:hover {
+    background-color: #45a049;
+  }
+}

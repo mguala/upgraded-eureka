@@ -1,0 +1,70 @@
+/* ========================================
+   Cart Styles
+   ======================================== */
+
+.cart-items-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: $spacing-lg 0;
+
+  thead {
+    background-color: $color-gray-darker;
+    font-weight: bold;
+  }
+
+  th,
+  td {
+    border: 1px solid $color-gray-border;
+    padding: $spacing-md;
+    text-align: left;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+}
+
+.cart-badge-foil {
+  color: $color-foil;
+  font-weight: bold;
+}
+
+.cart-total-section {
+  text-align: right;
+  margin-top: $spacing-lg;
+
+  h3 {
+    font-size: 18px;
+    margin-bottom: $spacing-md;
+  }
+}
+
+.btn-checkout {
+  background-color: $color-success;
+  color: $color-white;
+  padding: $spacing-md $spacing-xl;
+  margin-right: $spacing-md;
+  transition: background-color $transition-default;
+
+  &:hover {
+    background-color: #45a049;
+  }
+}
+
+.btn-clear-cart {
+  background-color: $color-light-danger;
+  color: $color-white;
+  padding: $spacing-md $spacing-xl;
+  transition: background-color $transition-default;
+
+  &:hover {
+    background-color: $color-dark-danger;
+  }
+}
+
+.cart-empty {
+  font-style: italic;
+  color: $color-text-light;
+  padding: $spacing-xl;
+  text-align: center;
+}

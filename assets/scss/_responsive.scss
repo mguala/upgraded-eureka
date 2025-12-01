@@ -1,0 +1,67 @@
+/* ========================================
+   Responsive Styles
+   ======================================== */
+
+@media (max-width: $breakpoint-mobile) {
+  .main-layout {
+    display: block;
+  }
+
+  .sidebar {
+    width: 100%;
+    display: block;
+  }
+
+  .content {
+    width: 100%;
+    display: block;
+  }
+
+  .card-cell {
+    width: 100%;
+  }
+
+  .main-content {
+    padding: $spacing-md;
+  }
+
+  .btn-open-filters {
+    width: 100%;
+    margin-bottom: $spacing-lg;
+  }
+
+  #cart-modal .modal-content {
+    width: 95%;
+  }
+
+  #card-detail-modal .modal-content {
+    width: 95%;
+  }
+
+  #filters-modal .modal-content {
+    width: 95%;
+    max-width: none;
+  }
+
+  .navbar-container {
+    flex-direction: column;
+    height: auto;
+    padding: $spacing-md $spacing-xl;
+    gap: $spacing-md;
+  }
+
+  .navbar-links {
+    flex-direction: column;
+    gap: $spacing-md;
+    width: 100%;
+  }
+
+  .nav-link {
+    justify-content: center;
+    padding: $spacing-sm;
+  }
+
+  .contact-info {
+    grid-template-columns: 1fr;
+  }
+}
