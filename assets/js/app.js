@@ -50,10 +50,16 @@ async function loadCSV(filename) {
 // Fetch card data from Scryfall - exact match to get image and details
 async function fetchCardFromScryfall(cardName) {
   try {
-    // Use exact search
+    // Use exact search with timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+    
     const response = await fetch(
-      `${SCRYFALL_API}/cards/search?q=!"${encodeURIComponent(cardName)}"&order=set&unique=prints`
+      `${SCRYFALL_API}/cards/search?q=!"${encodeURIComponent(cardName)}"&order=set&unique=prints`,
+      { signal: controller.signal }
     );
+
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
       console.warn(`No se encontró la carta en Scryfall: ${cardName}`);
@@ -63,7 +69,7 @@ async function fetchCardFromScryfall(cardName) {
     const data = await response.json();
     return data.data && data.data.length > 0 ? data.data[0] : null;
   } catch (error) {
-    console.error(`Error obteniendo carta ${cardName}:`, error);
+    console.warn(`Error obteniendo carta ${cardName} (usando datos CSV):`, error.message);
     return null;
   }
 }
@@ -166,17 +172,32 @@ async function loadAllCards() {
 
   console.log(`Cargando ${csvData.length} cartas desde CSV + Scryfall...`);
 
-  // Process each CSV row
-  const promises = csvData.map(async (row, index) => {
-    // Add delay to respect Scryfall rate limits (10 requests per second)
-    await new Promise((resolve) => setTimeout(resolve, index * 100));
-
-    // Fetch card details from Scryfall
-    const scryfallCard = await fetchCardFromScryfall(row.Name);
-    return convertCardData(scryfallCard, row);
-  });
-
-  const cards = await Promise.all(promises);
+  // Process each CSV row with batching to avoid rate limits
+  const batchSize = 5;
+  const cards = [];
+  
+  for (let i = 0; i < csvData.length; i += batchSize) {
+    const batch = csvData.slice(i, i + batchSize);
+    const batchPromises = batch.map(async (row) => {
+      try {
+        // Fetch card details from Scryfall
+        const scryfallCard = await fetchCardFromScryfall(row.Name);
+        return convertCardData(scryfallCard, row);
+      } catch (error) {
+        console.error(`Error processing card ${row.Name}:`, error);
+        // Return card with just CSV data if Scryfall fails
+        return convertCardData(null, row);
+      }
+    });
+    
+    const batchResults = await Promise.all(batchPromises);
+    cards.push(...batchResults);
+    
+    // Add delay between batches
+    if (i + batchSize < csvData.length) {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    }
+  }
 
   // Group by card name to show both versions together
   const grouped = {};
@@ -257,8 +278,9 @@ function showLoadingMessage(searchTerm = "") {
   cardsGrid.innerHTML =
     `<div class="col-12 text-center py-5">
       <img src="${gif}" alt="Loading..." style="max-width: 300px; margin: 20px 0; border-radius: 8px;">
-      <h2>⏳ Cargando cartas desde tu inventario...</h2>
+      <h2>⏳ Cargando cartas desde Scryfall...</h2>
       <p>Por favor espera mientras obtenemos los datos de las cartas.</p>
+      <p style="font-size: 0.9rem; color: #999;">Si toma mucho tiempo, usa los datos del CSV disponibles.</p>
     </div>`;
 }
 

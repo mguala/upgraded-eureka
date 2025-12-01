@@ -600,8 +600,14 @@ section h3 {
 }
 
 /* ========================================
-   CART MODAL
-   ======================================== */
+    CART MODAL
+    ======================================== */
+
+#cart-modal .modal-content {
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
 
 .cart-items-table {
   width: 100%;
@@ -610,7 +616,7 @@ section h3 {
 }
 
 .cart-items-table thead {
-  border-bottom: 2px solid rgba(0, 184, 255, 0.2);
+  border-bottom: 1px solid rgba(0, 184, 255, 0.2);
 }
 
 .cart-items-table th {
@@ -618,22 +624,26 @@ section h3 {
   padding: 0.75rem;
   color: var(--accent);
   font-weight: 600;
+  font-size: 0.85rem;
+  background: rgba(0, 184, 255, 0.05);
 }
 
 .cart-items-table td {
   padding: 0.75rem;
   border-bottom: 1px solid rgba(0, 184, 255, 0.1);
+  font-size: 0.9rem;
 }
 
 .cart-items-table button {
   padding: 0.4rem 0.8rem;
-  background: rgba(0, 184, 255, 0.2);
-  border: 1px solid var(--primary);
+  background: rgba(0, 184, 255, 0.1);
+  border: 1px solid rgba(0, 184, 255, 0.3);
   color: var(--primary);
   border-radius: 4px;
   cursor: pointer;
   margin: 0 0.25rem;
   transition: var(--transition);
+  font-weight: 600;
 }
 
 .cart-items-table button:hover {
@@ -644,30 +654,32 @@ section h3 {
 .cart-badge-foil {
   background: rgba(0, 255, 159, 0.2);
   color: var(--accent);
-  padding: 0.2rem 0.6rem;
+  padding: 0.25rem 0.75rem;
   border-radius: 4px;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 600;
+  display: inline-block;
+  margin-left: 0.5rem;
 }
 
 .cart-empty {
   text-align: center;
   color: var(--text-muted);
   padding: 2rem;
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
 .cart-total-section {
-  margin-top: 2rem;
+  margin-top: 1.5rem;
   padding-top: 1rem;
   border-top: 1px solid rgba(0, 184, 255, 0.2);
 }
 
 .cart-total-section h3 {
-  font-family: var(--font-title);
   color: var(--accent);
-  font-size: 1.3rem;
-  margin-bottom: 1.5rem;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
 }
 
 .btn-checkout, .btn-clear-cart {
@@ -684,23 +696,112 @@ section h3 {
 }
 
 .btn-checkout {
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+  background: var(--accent);
   color: var(--bg-dark);
 }
 
 .btn-checkout:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 255, 159, 0.3);
+  background: var(--accent-dark);
 }
 
 .btn-clear-cart {
   background: transparent;
-  border: 2px solid var(--danger);
+  border: 1px solid var(--danger);
   color: var(--danger);
 }
 
 .btn-clear-cart:hover {
   background: rgba(255, 107, 107, 0.1);
+}
+
+/* ========================================
+    VERSION SELECTION MODAL
+    ======================================== */
+
+.version-modal-box {
+  max-width: 500px;
+}
+
+.version-modal-box h2 {
+  color: var(--text-primary);
+  font-size: 1.3rem;
+  margin-bottom: 1.5rem;
+  margin-top: 0;
+}
+
+.version-options {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.version-option {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background: rgba(0, 184, 255, 0.05);
+  border: 2px solid rgba(0, 184, 255, 0.2);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.version-option:hover {
+  background: rgba(0, 184, 255, 0.1);
+  border-color: var(--primary);
+}
+
+.version-option input[type="radio"] {
+  margin-right: 1rem;
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+}
+
+.version-option.selected {
+  background: rgba(0, 255, 159, 0.1);
+  border-color: var(--accent);
+}
+
+.version-info {
+  flex: 1;
+}
+
+.version-label {
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 0.95rem;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.version-details {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  display: block;
+}
+
+.version-price {
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-align: right;
+}
+
+.version-modal-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.version-modal-actions .btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
 }
 
 /* ========================================
