@@ -295,34 +295,18 @@ function displayCards(cards) {
 
 // Create HTML for a single card
 function createCardHTML(card) {
-    const colorEmoji = getColorEmoji(card.color);
-    const typeIcon = getTypeIcon(card.type);
     const totalStock = card.foilStock + card.normalStock;
-    const stockStatus = totalStock > 0 ? `En Stock (${totalStock})` : "Agotado";
-    const stockStatusClass = totalStock > 0 ? "card-stock-in" : "card-stock-out";
 
    return `
     <div class="card-table card h-100">
-        <div class="card-header">
-            <h5 class="card-name">${card.name}</h5>
-            <small class="card-set">${card.set}</small>
-            <small class="card-meta">${colorEmoji} ${card.color.charAt(0).toUpperCase() + card.color.slice(1)} | ${typeIcon}</small>
-        </div>
-        ${card.imageUrl ? `<div class="card-image text-center"><img src="${card.imageUrl}" alt="${card.name}" loading="lazy" style="max-height: 150px; width: auto;"></div>` : ""}
+        ${card.imageUrl ? `<div class="card-image text-center"><img src="${card.imageUrl}" alt="${card.name}" loading="lazy" style="max-height: 200px; width: auto;"></div>` : ""}
         <div class="card-body card-details">
-            <small><b>Maná:</b> ${card.manaCost}</small><br>
-            ${card.power !== null ? `<small><b>P/R:</b> ${card.power}/${card.toughness}</small><br>` : ""}
-            <small><b>Rareza:</b> ${card.rarity}</small><br>
-            <small><b>Edición:</b> ${card.set}</small><br>
-            <small class="text-muted"><i>${card.text.substring(0, 80)}${card.text.length > 80 ? '...' : ''}</i></small>
-            <hr>
-            <div style="display: grid; gap: 0.5rem; margin-bottom: 1rem;">
-                ${card.normalStock > 0 ? `<div><span class="card-stock-normal">Normal (${card.normalStock})</span> - $${Math.round(card.normalPrice)} CLP</div>` : ""}
-                ${card.foilStock > 0 ? `<div><span class="card-stock-foil">✨ Foil (${card.foilStock})</span> - $${Math.round(card.foilPrice)} CLP</div>` : ""}
+            <h5 class="card-name">${card.name}</h5>
+            <div style="display: grid; gap: 0.5rem;">
+                ${card.normalStock > 0 ? `<div><span class="card-stock-normal">Normal</span> $${Math.round(card.normalPrice)} CLP</div>` : ""}
+                ${card.foilStock > 0 ? `<div><span class="card-stock-foil">✨ Foil</span> $${Math.round(card.foilPrice)} CLP</div>` : ""}
             </div>
-            <span class="badge ${stockStatusClass} mt-2 mb-2">${stockStatus}</span>
             <div class="d-grid gap-2 mt-3">
-                <button class="btn btn-sm btn-outline-primary" onclick="viewCardDetail('${card.id}')">Ver Detalles</button>
                 ${totalStock > 0 ? `<button class="btn btn-sm btn-success" onclick="addVersionSelection('${card.id}')">Agregar</button>` : "<button class=\"btn btn-sm btn-secondary\" disabled>Agotado</button>"}
             </div>
         </div>
