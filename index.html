@@ -1,0 +1,221 @@
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Tienda de Cartas MTG - Explora y compra cartas de Magic: The Gathering"
+    />
+    <title>Tienda de Cartas MTG - Cartas de Magic: The Gathering</title>
+  </head>
+  <body>
+    <table width="100%" cellpadding="10" bgcolor="#f5f5f5">
+      <tr>
+        <td align="center">
+          <h1>🃏 Tienda de Cartas MTG</h1>
+          <p><i>Tu destino principal para cartas de Magic: The Gathering</i></p>
+        </td>
+      </tr>
+    </table>
+
+    <table width="100%" cellpadding="10">
+      <tr>
+        <td width="20%" valign="top" bgcolor="#e8e8e8">
+          <!-- Sidebar Navigation -->
+          <h3>Categorías</h3>
+          <ul>
+            <li>
+              <a href="#" onclick="filterCards('all'); return false;"
+                >Todas las Cartas</a
+              >
+            </li>
+            <li>
+              <a href="#" onclick="filterCards('creature'); return false;"
+                >Criaturas</a
+              >
+            </li>
+            <li>
+              <a href="#" onclick="filterCards('instant'); return false;"
+                >Instantáneos</a
+              >
+            </li>
+            <li>
+              <a href="#" onclick="filterCards('sorcery'); return false;"
+                >Hechizos</a
+              >
+            </li>
+            <li>
+              <a href="#" onclick="filterCards('enchantment'); return false;"
+                >Encantamientos</a
+              >
+            </li>
+            <li>
+              <a href="#" onclick="filterCards('artifact'); return false;"
+                >Artefactos</a
+              >
+            </li>
+            <li>
+              <a href="#" onclick="filterCards('planeswalker'); return false;"
+                >Planeswalkers</a
+              >
+            </li>
+          </ul>
+
+          <hr />
+
+          <h3>Filtro de Color</h3>
+          <ul>
+            <li>
+              <a href="#" onclick="filterByColor('all'); return false;"
+                >Todos los Colores</a
+              >
+            </li>
+            <li>
+              <a href="#" onclick="filterByColor('white'); return false;"
+                >⚪ Blanco</a
+              >
+            </li>
+            <li>
+              <a href="#" onclick="filterByColor('blue'); return false;"
+                >🔵 Azul</a
+              >
+            </li>
+            <li>
+              <a href="#" onclick="filterByColor('black'); return false;"
+                >⚫ Negro</a
+              >
+            </li>
+            <li>
+              <a href="#" onclick="filterByColor('red'); return false;"
+                >🔴 Rojo</a
+              >
+            </li>
+            <li>
+              <a href="#" onclick="filterByColor('green'); return false;"
+                >🟢 Verde</a
+              >
+            </li>
+          </ul>
+
+          <hr />
+
+          <h3>Carrito de Compras</h3>
+          <div id="cart-summary">
+            <p><b>Artículos:</b> <span id="cart-count">0</span></p>
+            <p><b>Total:</b> <span id="cart-total">0 CLP</span></p>
+            <button onclick="viewCart()">Ver Carrito</button>
+          </div>
+        </td>
+
+        <td width="80%" valign="top">
+          <!-- Search Bar -->
+          <table width="100%" cellpadding="10">
+            <tr>
+              <td>
+                <input
+                  type="text"
+                  id="search-input"
+                  placeholder="Buscar cartas..."
+                  size="50"
+                  onkeyup="searchCards()"
+                />
+                <button onclick="searchCards()">Buscar</button>
+              </td>
+            </tr>
+          </table>
+
+          <!-- Cards Display Area -->
+          <div id="cards-container">
+            <table width="100%" cellpadding="10" cellspacing="10">
+              <tbody id="cards-grid"></tbody>
+            </table>
+          </div>
+        </td>
+      </tr>
+    </table>
+
+    <!-- Cart Modal -->
+    <div
+      id="cart-modal"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+      "
+    >
+      <div
+        style="
+          position: relative;
+          margin: 50px auto;
+          width: 80%;
+          max-width: 600px;
+          background-color: white;
+          padding: 20px;
+          border: 2px solid black;
+        "
+      >
+        <h2>Carrito de Compras</h2>
+        <button
+          onclick="closeCart()"
+          style="position: absolute; top: 10px; right: 10px"
+        >
+          ✕ Cerrar
+        </button>
+        <div id="cart-items"></div>
+        <hr />
+        <table width="100%">
+          <tr>
+            <td align="right">
+              <h3>Total: <span id="modal-cart-total">0 CLP</span></h3>
+              <button onclick="checkout()">Finalizar Compra</button>
+              <button onclick="clearCart()">Vaciar Carrito</button>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Card Detail Modal -->
+    <div
+      id="card-detail-modal"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+      "
+    >
+      <div
+        style="
+          position: relative;
+          margin: 50px auto;
+          width: 80%;
+          max-width: 500px;
+          background-color: white;
+          padding: 20px;
+          border: 2px solid black;
+        "
+      >
+        <button
+          onclick="closeCardDetail()"
+          style="position: absolute; top: 10px; right: 10px"
+        >
+          ✕ Cerrar
+        </button>
+        <div id="card-detail-content"></div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
