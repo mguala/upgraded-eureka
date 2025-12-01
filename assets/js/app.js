@@ -153,6 +153,9 @@ async function loadAllCards() {
 
    console.log(`Cargando ${csvData.length} cartas desde Scryfall...`);
 
+   // Store CSV card names for filtering
+   const csvCardNames = new Set(csvData.map(row => row.Name.toLowerCase()));
+
    // Fetch each card from Scryfall
    const promises = csvData.map(async (row, index) => {
      // Add delay to respect Scryfall rate limits (10 requests per second)
@@ -173,8 +176,12 @@ async function loadAllCards() {
    // Consolidate foil/normal versions of the same card and group by set
    cardDatabase = consolidateCardsBySet(rawCards);
    
-   // Filter out cards with no stock
-   cardDatabase = cardDatabase.filter(card => (card.foilStock + card.normalStock) > 0);
+   // Filter: only cards with stock AND that are in CSV
+   cardDatabase = cardDatabase.filter(card => {
+     const inCsv = csvCardNames.has(card.name.toLowerCase());
+     const hasStock = (card.foilStock + card.normalStock) > 0;
+     return inCsv && hasStock;
+   });
 
    console.log(`${cardDatabase.length} cartas únicas cargadas exitosamente`);
 
@@ -234,7 +241,7 @@ function showLoadingMessage() {
   const randomGif = loadingGifs[Math.floor(Math.random() * loadingGifs.length)];
   
   cardsGrid.innerHTML =
-    `<div style="grid-column: 1 / -1; text-align: center; padding: 2rem;">
+    `<div class="col-12 text-center py-5">
       <img src="${randomGif}" alt="Loading..." style="max-width: 300px; margin: 20px 0; border-radius: 8px;">
       <h2>⏳ Cargando cartas desde Scryfall...</h2>
       <p>Por favor espera mientras obtenemos los datos de las cartas.</p>
@@ -244,7 +251,7 @@ function showLoadingMessage() {
 // Show error message
 function showErrorMessage(message) {
   const cardsGrid = document.getElementById("cards-grid");
-  cardsGrid.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 2rem;"><h2>❌ Error</h2><p>${message}</p></div>`;
+  cardsGrid.innerHTML = `<div class="col-12 text-center py-5 alert alert-danger"><h2>❌ Error</h2><p>${message}</p></div>`;
 }
 
 // Initialize the store
@@ -259,13 +266,14 @@ function displayCards(cards) {
 
   if (cards.length === 0) {
     cardsGrid.innerHTML =
-      '<div style="grid-column: 1 / -1; text-align: center; padding: 2rem;"><h3>No se encontraron cartas</h3></div>';
+      '<div class="col-12 text-center py-5"><h3>No se encontraron cartas</h3></div>';
     return;
   }
 
-  // Display cards using CSS Grid
+  // Display cards using Bootstrap
   cards.forEach(card => {
     const cardElement = document.createElement("div");
+    cardElement.className = "col-12 col-sm-6 col-lg-4 col-xl-3";
     cardElement.innerHTML = createCardHTML(card);
     cardsGrid.appendChild(cardElement);
   });
@@ -280,28 +288,31 @@ function createCardHTML(card) {
     const stockStatusClass = totalStock > 0 ? "card-stock-in" : "card-stock-out";
 
    return `
-    <div class="card-table">
+    <div class="card-table card h-100">
         <div class="card-header">
-            <span class="card-name">${card.name}</span>
-            <span class="card-set">${card.set}</span>
-            <span class="card-meta">${colorEmoji} ${card.color.charAt(0).toUpperCase() + card.color.slice(1)} | ${typeIcon} ${card.type.charAt(0).toUpperCase() + card.type.slice(1)}</span>
+            <h5 class="card-name">${card.name}</h5>
+            <small class="card-set">${card.set}</small>
+            <small class="card-meta">${colorEmoji} ${card.color.charAt(0).toUpperCase() + card.color.slice(1)} | ${typeIcon}</small>
         </div>
-        ${card.imageUrl ? `<div class="card-image"><img src="${card.imageUrl}" alt="${card.name}" loading="lazy"></div>` : ""}
-        <div class="card-details">
-            <p><b>Coste de Maná:</b> ${card.manaCost}</p>
-            ${card.power !== null ? `<p><b>Fuerza/Resistencia:</b> ${card.power}/${card.toughness}</p>` : ""}
-            <p><b>Rareza:</b> ${card.rarity}</p>
-            <p><b>Edición:</b> ${card.set}</p>
-            <p><i>${card.text}</i></p>
+        ${card.imageUrl ? `<div class="card-image text-center"><img src="${card.imageUrl}" alt="${card.name}" loading="lazy" style="max-height: 150px; width: auto;"></div>` : ""}
+        <div class="card-body card-details">
+            <small><b>Maná:</b> ${card.manaCost}</small><br>
+            ${card.power !== null ? `<small><b>P/R:</b> ${card.power}/${card.toughness}</small><br>` : ""}
+            <small><b>Rareza:</b> ${card.rarity}</small><br>
+            <small><b>Edición:</b> ${card.set}</small><br>
+            <small class="text-muted"><i>${card.text.substring(0, 80)}${card.text.length > 80 ? '...' : ''}</i></small>
             <hr>
-            <p class="card-price">Precio: $${Math.round(card.price)} CLP</p>
-            <p>
-                ${card.normalStock > 0 ? `<span class="card-stock-normal">Normal: ${card.normalStock}</span>` : ""}
+            <p class="card-price mb-2">$${Math.round(card.price)} CLP</p>
+            <small>
+                ${card.normalStock > 0 ? `<span class="card-stock-normal">Normal: ${card.normalStock}</span> ` : ""}
                 ${card.foilStock > 0 ? `<span class="card-stock-foil">✨ Foil: ${card.foilStock}</span>` : ""}
-            </p>
-            <p><span class="card-stock-status ${stockStatusClass}">${stockStatus}</span></p>
-            <button class="btn-details" onclick="viewCardDetail('${card.id}')">Ver Detalles</button>
-            ${totalStock > 0 ? `<button class="btn-add-cart" onclick="showFoilSelection('${card.id}')">Agregar al Carrito</button>` : "<button disabled>Agotado</button>"}
+            </small>
+            <br>
+            <span class="badge ${stockStatusClass} mt-2 mb-2">${stockStatus}</span>
+            <div class="d-grid gap-2 mt-3">
+                <button class="btn btn-sm btn-outline-primary" onclick="viewCardDetail('${card.id}')">Ver Detalles</button>
+                ${totalStock > 0 ? `<button class="btn btn-sm btn-success" onclick="showFoilSelection('${card.id}')">Agregar</button>` : "<button class=\"btn btn-sm btn-secondary\" disabled>Agotado</button>"}
+            </div>
         </div>
     </div>
    `;
