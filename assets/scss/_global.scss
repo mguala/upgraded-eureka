@@ -9,10 +9,12 @@
 }
 
 body {
-  font-family: $font-family;
+  font-family: $font-body;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background-color: #0a0a14;
+  color: #e0e0e0;
 }
 
 main {

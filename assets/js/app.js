@@ -510,50 +510,61 @@ function updateCartDisplay() {
 
 // View cart
 function viewCart() {
-  const modal = document.getElementById("cart-modal");
-  const cartItemsDiv = document.getElementById("cart-items");
+   const modal = document.getElementById("cart-modal");
+   const cartItemsDiv = document.getElementById("cart-items");
 
-  if (shoppingCart.length === 0) {
-    cartItemsDiv.innerHTML = '<p class="cart-empty">Tu carrito está vacío</p>';
-  } else {
-    let html = '<table class="cart-items-table"><thead>';
-    html +=
-      '<tr><th>Carta</th><th>Precio</th><th>Cantidad</th><th>Subtotal</th><th>Acción</th></tr></thead><tbody>';
+   if (shoppingCart.length === 0) {
+     cartItemsDiv.innerHTML = '<p class="cart-empty">Tu carrito está vacío</p>';
+   } else {
+     let html = '<table class="cart-items-table"><thead>';
+     html +=
+       '<tr><th>Carta</th><th>Precio</th><th>Cantidad</th><th>Subtotal</th><th>Acción</th></tr></thead><tbody>';
 
-    shoppingCart.forEach((item, index) => {
-      const subtotal = item.price * item.quantity;
-      html += `
-                <tr>
-                    <td>${item.name} ${item.isForil ? '<span class="cart-badge-foil">✨ Foil</span>' : ""}</td>
-                    <td>$${Math.round(item.price)} CLP</td>
-                    <td>
-                        <button onclick="decreaseQuantity(${index})">-</button>
-                        ${item.quantity}
-                        <button onclick="increaseQuantity(${index})">+</button>
-                    </td>
-                    <td>$${Math.round(subtotal)} CLP</td>
-                    <td><button onclick="removeFromCart(${index})">Eliminar</button></td>
-                </tr>
-            `;
-    });
+     shoppingCart.forEach((item, index) => {
+       const subtotal = item.price * item.quantity;
+       html += `
+                 <tr>
+                     <td>${item.name} ${item.isForil ? '<span class="cart-badge-foil">✨ Foil</span>' : ""}</td>
+                     <td>$${Math.round(item.price)} CLP</td>
+                     <td>
+                         <button data-decrease="${index}">-</button>
+                         ${item.quantity}
+                         <button data-increase="${index}">+</button>
+                     </td>
+                     <td>$${Math.round(subtotal)} CLP</td>
+                     <td><button data-remove="${index}">Eliminar</button></td>
+                 </tr>
+             `;
+     });
 
-    html += "</tbody></table>";
-    cartItemsDiv.innerHTML = html;
-  }
+     html += "</tbody></table>";
+     cartItemsDiv.innerHTML = html;
+     
+     // Attach event listeners to dynamically created buttons
+     cartItemsDiv.querySelectorAll('[data-decrease]').forEach(btn => {
+       btn.addEventListener('click', () => decreaseQuantity(parseInt(btn.dataset.decrease)));
+     });
+     cartItemsDiv.querySelectorAll('[data-increase]').forEach(btn => {
+       btn.addEventListener('click', () => increaseQuantity(parseInt(btn.dataset.increase)));
+     });
+     cartItemsDiv.querySelectorAll('[data-remove]').forEach(btn => {
+       btn.addEventListener('click', () => removeFromCart(parseInt(btn.dataset.remove)));
+     });
+   }
 
-  const cartTotal = shoppingCart.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
-  document.getElementById("modal-cart-total").textContent =
-    Math.round(cartTotal) + " CLP";
+   const cartTotal = shoppingCart.reduce(
+     (sum, item) => sum + item.price * item.quantity,
+     0
+   );
+   document.getElementById("modal-cart-total").textContent =
+     Math.round(cartTotal) + " CLP";
 
-  modal.style.display = "block";
+   modal.showModal();
 }
 
 // Close cart
 function closeCart() {
-  document.getElementById("cart-modal").style.display = "none";
+   document.getElementById("cart-modal").close();
 }
 
 // Increase quantity
@@ -739,11 +750,11 @@ function viewCardDetail(cardId) {
          </table>
      `;
 
-   modal.style.display = "block";
-}
+   modal.showModal();
+   }
 
-// Select foil or normal version in detail modal
-function selectVersionInDetail(isFoil, cardId) {
+   // Select foil or normal version in detail modal
+   function selectVersionInDetail(isFoil, cardId) {
    selectedFoilInDetail = isFoil;
    const card = cardDatabase.find((c) => c.id === cardId);
    
@@ -773,43 +784,26 @@ function selectVersionInDetail(isFoil, cardId) {
      buttons.forEach(btn => {
        btn.classList.remove("active");
      });
-     event.target.classList.add("active");
+     if (event.target) event.target.classList.add("active");
    }
-}
+   }
 
-// Close card detail modal
-function closeCardDetail() {
-  document.getElementById("card-detail-modal").style.display = "none";
-}
+   // Close card detail modal
+   function closeCardDetail() {
+   document.getElementById("card-detail-modal").close();
+   }
 
 // Open filters modal
 function openFiltersModal() {
-  const filtersModal = document.getElementById("filters-modal");
-  filtersModal.style.display = "block";
+   const filtersModal = document.getElementById("filters-modal");
+   filtersModal.showModal();
 }
 
 // Close filters modal
 function closeFiltersModal() {
-  const filtersModal = document.getElementById("filters-modal");
-  filtersModal.style.display = "none";
+   const filtersModal = document.getElementById("filters-modal");
+   filtersModal.close();
 }
-
-// Close modals when clicking outside
-window.onclick = function (event) {
-  const cartModal = document.getElementById("cart-modal");
-  const detailModal = document.getElementById("card-detail-modal");
-  const filtersModal = document.getElementById("filters-modal");
-
-  if (event.target === cartModal) {
-    closeCart();
-  }
-  if (event.target === detailModal) {
-    closeCardDetail();
-  }
-  if (event.target === filtersModal) {
-    closeFiltersModal();
-  }
-};
 
 // Scroll to contact section
 function scrollToContact() {
@@ -819,5 +813,106 @@ function scrollToContact() {
   }
 }
 
+// Event listeners setup
+function setupEventListeners() {
+  // Navigation
+  document.getElementById('home-link')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    location.reload();
+  });
+
+  // Cart button
+  document.getElementById('nav-cart-btn')?.addEventListener('click', viewCart);
+
+  // Filters modal
+  document.getElementById('open-filters-btn')?.addEventListener('click', openFiltersModal);
+  document.getElementById('close-filters-btn')?.addEventListener('click', closeFiltersModal);
+  document.getElementById('search-btn')?.addEventListener('click', searchCards);
+  
+  // Search input enter key
+  document.getElementById('search-input')?.addEventListener('keyup', (e) => {
+    if (e.key === 'Enter') searchCards();
+  });
+
+  // Filter links - categories
+  document.querySelectorAll('[data-filter]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      filterCards(e.target.dataset.filter);
+      closeFiltersModal();
+    });
+  });
+
+  // Filter links - colors
+  document.querySelectorAll('[data-color]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      filterByColor(e.target.dataset.color);
+      closeFiltersModal();
+    });
+  });
+
+  // Filter links - foil
+  document.querySelectorAll('[data-foil]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      filterByFoil(e.target.dataset.foil);
+      closeFiltersModal();
+    });
+  });
+
+  // Cart modal
+  document.getElementById('close-cart-btn')?.addEventListener('click', closeCart);
+  document.getElementById('checkout-btn')?.addEventListener('click', checkout);
+  document.getElementById('clear-cart-btn')?.addEventListener('click', clearCart);
+
+  // Card detail modal
+  document.getElementById('close-detail-btn')?.addEventListener('click', closeCardDetail);
+
+  // Contact form
+  document.getElementById('contact-form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    handleContactForm();
+  });
+
+  // Dialog backdrop clicks to close
+  document.getElementById('cart-modal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'cart-modal') closeCart();
+  });
+  
+  document.getElementById('card-detail-modal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'card-detail-modal') closeCardDetail();
+  });
+  
+  document.getElementById('filters-modal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'filters-modal') closeFiltersModal();
+  });
+}
+
+// Handle contact form submission
+function handleContactForm() {
+  const form = document.getElementById('contact-form');
+  const formData = new FormData(form);
+  
+  // Simple validation
+  if (!formData.get('name') || !formData.get('email') || !formData.get('message')) {
+    alert('Por favor completa todos los campos');
+    return;
+  }
+  
+  // Email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(formData.get('email'))) {
+    alert('Por favor ingresa un email válido');
+    return;
+  }
+  
+  alert('¡Gracias por tu mensaje! Nos pondremos en contacto pronto.');
+  form.reset();
+}
+
 // Initialize store when page loads
-window.onload = initStore;
+window.addEventListener('DOMContentLoaded', () => {
+  setupEventListeners();
+  initStore();
+});

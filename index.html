@@ -11,16 +11,16 @@
   </head>
   <body>
     <!-- Navigation Bar -->
-    <nav class="navbar">
+    <nav class="navbar" aria-label="Navegación principal">
       <div class="navbar-container">
-        <a href="#" class="navbar-brand" onclick="location.reload(); return false;">🏠 Inicio</a>
+        <a href="#" class="navbar-brand" id="home-link">🏠 Inicio</a>
         <div class="navbar-links">
-          <a href="#" class="nav-link" onclick="scrollToContact(); return false;">📧 Contacto</a>
+          <a href="#contact-section" class="nav-link" id="contact-link">📧 Contacto</a>
           <div class="nav-cart-summary">
-            <button class="nav-cart-btn" onclick="viewCart();">
-              🛒 Carrito <span id="nav-cart-count" class="cart-badge">0</span>
+            <button class="nav-cart-btn" id="nav-cart-btn" aria-label="Ver carrito">
+              🛒 Carrito <span id="nav-cart-count" class="cart-badge" aria-live="polite">0</span>
             </button>
-            <div class="nav-cart-tooltip">
+            <div class="nav-cart-tooltip" role="tooltip">
               <p><strong>Total:</strong> <span id="nav-cart-total">0 CLP</span></p>
               <p class="cart-items-label"><strong>Artículos:</strong> <span id="nav-cart-items">0</span></p>
             </div>
@@ -30,182 +30,124 @@
     </nav>
 
     <!-- Header -->
-    <table class="header-table">
-      <tr>
-        <td>
-          <h1>🃏 Bazar de Cartulinas 🃏</h1>
-          <p>Tu destino principal para cartas de Magic: The Gathering</p>
-        </td>
-      </tr>
-    </table>
-
-    <!-- Filter and Search Modal -->
-    <div id="filters-modal" class="modal-overlay">
-      <div class="modal-content filters-modal-content">
-        <button class="modal-close-btn" onclick="closeFiltersModal()">✕ Cerrar</button>
-        <h2>🔍 Filtros y Búsqueda</h2>
-        
-        <!-- Search Bar -->
-        <div class="modal-search-container">
-          <input
-            type="text"
-            id="search-input"
-            placeholder="Buscar cartas..."
-            size="50"
-            onkeyup="searchCards()"
-          />
-          <button onclick="searchCards()">Buscar</button>
-        </div>
-
-        <hr />
-
-        <!-- Categories -->
-        <h3>Categorías</h3>
-        <ul class="filter-list">
-          <li>
-            <a href="#" onclick="filterCards('all'); return false;"
-              >Todas las Cartas</a
-            >
-          </li>
-          <li>
-            <a href="#" onclick="filterCards('creature'); return false;"
-              >Criaturas</a
-            >
-          </li>
-          <li>
-            <a href="#" onclick="filterCards('instant'); return false;"
-              >Instantáneos</a
-            >
-          </li>
-          <li>
-            <a href="#" onclick="filterCards('sorcery'); return false;"
-              >Hechizos</a
-            >
-          </li>
-          <li>
-            <a href="#" onclick="filterCards('enchantment'); return false;"
-              >Encantamientos</a
-            >
-          </li>
-          <li>
-            <a href="#" onclick="filterCards('artifact'); return false;"
-              >Artefactos</a
-            >
-          </li>
-          <li>
-            <a href="#" onclick="filterCards('planeswalker'); return false;"
-              >Planeswalkers</a
-            >
-          </li>
-        </ul>
-
-        <hr />
-
-        <!-- Color Filter -->
-        <h3>Filtro de Color</h3>
-        <ul class="filter-list">
-          <li>
-            <a href="#" onclick="filterByColor('all'); return false;"
-              >Todos los Colores</a
-            >
-          </li>
-          <li>
-            <a href="#" onclick="filterByColor('white'); return false;"
-              >⚪ Blanco</a
-            >
-          </li>
-          <li>
-            <a href="#" onclick="filterByColor('blue'); return false;"
-              >🔵 Azul</a
-            >
-          </li>
-          <li>
-            <a href="#" onclick="filterByColor('black'); return false;"
-              >⚫ Negro</a
-            >
-          </li>
-          <li>
-            <a href="#" onclick="filterByColor('red'); return false;"
-              >🔴 Rojo</a
-            >
-          </li>
-          <li>
-            <a href="#" onclick="filterByColor('green'); return false;"
-              >🟢 Verde</a
-            >
-          </li>
-        </ul>
-
-        <hr />
-
-        <!-- Foil Filter -->
-        <h3>Filtro de Acabado</h3>
-        <ul class="filter-list">
-          <li>
-            <a href="#" onclick="filterByFoil('all'); return false;"
-              >Todos</a
-            >
-          </li>
-          <li>
-            <a href="#" onclick="filterByFoil('foil'); return false;"
-              >✨ Foil</a
-            >
-          </li>
-          <li>
-            <a href="#" onclick="filterByFoil('normal'); return false;"
-              >Normal</a
-            >
-          </li>
-        </ul>
-      </div>
-    </div>
+    <header class="header-table">
+      <h1>🃏 Bazar de Cartulinas 🃏</h1>
+      <p>Tu destino principal para cartas de Magic: The Gathering</p>
+    </header>
 
     <!-- Main Content Area -->
-    <div class="main-content">
-      <button class="btn-open-filters" onclick="openFiltersModal()">🔍 Filtros</button>
+    <main class="main-content">
+      <!-- Filter and Search Modal -->
+      <dialog id="filters-modal" class="modal-overlay">
+        <div class="modal-content filters-modal-content">
+          <div class="modal-header">
+            <h2>🔍 Filtros y Búsqueda</h2>
+            <button class="modal-close-btn" id="close-filters-btn" aria-label="Cerrar filtros">✕</button>
+          </div>
+          
+          <!-- Search Bar -->
+          <div class="modal-search-container">
+            <input
+              type="text"
+              id="search-input"
+              placeholder="Buscar cartas..."
+              aria-label="Buscar cartas"
+            />
+            <button id="search-btn" aria-label="Ejecutar búsqueda">Buscar</button>
+          </div>
+
+          <hr />
+
+          <!-- Categories -->
+          <section aria-labelledby="categories-heading">
+            <h3 id="categories-heading">Categorías</h3>
+            <ul class="filter-list">
+              <li><a href="#" data-filter="all">Todas las Cartas</a></li>
+              <li><a href="#" data-filter="creature">Criaturas</a></li>
+              <li><a href="#" data-filter="instant">Instantáneos</a></li>
+              <li><a href="#" data-filter="sorcery">Hechizos</a></li>
+              <li><a href="#" data-filter="enchantment">Encantamientos</a></li>
+              <li><a href="#" data-filter="artifact">Artefactos</a></li>
+              <li><a href="#" data-filter="planeswalker">Planeswalkers</a></li>
+            </ul>
+          </section>
+
+          <hr />
+
+          <!-- Color Filter -->
+          <section aria-labelledby="color-heading">
+            <h3 id="color-heading">Filtro de Color</h3>
+            <ul class="filter-list">
+              <li><a href="#" data-color="all">Todos los Colores</a></li>
+              <li><a href="#" data-color="white">⚪ Blanco</a></li>
+              <li><a href="#" data-color="blue">🔵 Azul</a></li>
+              <li><a href="#" data-color="black">⚫ Negro</a></li>
+              <li><a href="#" data-color="red">🔴 Rojo</a></li>
+              <li><a href="#" data-color="green">🟢 Verde</a></li>
+            </ul>
+          </section>
+
+          <hr />
+
+          <!-- Foil Filter -->
+          <section aria-labelledby="foil-heading">
+            <h3 id="foil-heading">Filtro de Acabado</h3>
+            <ul class="filter-list">
+              <li><a href="#" data-foil="all">Todos</a></li>
+              <li><a href="#" data-foil="foil">✨ Foil</a></li>
+              <li><a href="#" data-foil="normal">Normal</a></li>
+            </ul>
+          </section>
+        </div>
+      </dialog>
+
+      <button class="btn-open-filters" id="open-filters-btn" aria-label="Abrir filtros">🔍 Filtros</button>
       
       <!-- Cards Display Area -->
-      <div id="cards-container">
-        <table class="cards-grid-table">
-          <tbody id="cards-grid"></tbody>
-        </table>
-      </div>
-    </div>
+      <section id="cards-container" class="cards-grid" aria-label="Catálogo de cartas">
+        <div id="cards-grid"></div>
+      </section>
+    </main>
 
     <!-- Cart Modal -->
-    <div id="cart-modal" class="modal-overlay">
+    <dialog id="cart-modal" class="modal-overlay">
       <div class="modal-content">
-        <h2 class="modal-header">Carrito de Compras</h2>
-        <button class="modal-close-btn" onclick="closeCart()">✕ Cerrar</button>
+        <div class="modal-header">
+          <h2>Carrito de Compras</h2>
+          <button class="modal-close-btn" id="close-cart-btn" aria-label="Cerrar carrito">✕</button>
+        </div>
         <div id="cart-items"></div>
         <hr />
         <div class="cart-total-section">
           <h3>Total: <span id="modal-cart-total">0 CLP</span></h3>
-          <button class="btn-checkout" onclick="checkout()">Finalizar Compra</button>
-          <button class="btn-clear-cart" onclick="clearCart()">Vaciar Carrito</button>
+          <button class="btn-checkout" id="checkout-btn">Finalizar Compra</button>
+          <button class="btn-clear-cart" id="clear-cart-btn">Vaciar Carrito</button>
         </div>
       </div>
-    </div>
+    </dialog>
 
     <!-- Card Detail Modal -->
-    <div id="card-detail-modal" class="modal-overlay">
+    <dialog id="card-detail-modal" class="modal-overlay">
       <div class="modal-content">
-        <button class="modal-close-btn" onclick="closeCardDetail()">✕ Cerrar</button>
+        <button class="modal-close-btn" id="close-detail-btn" aria-label="Cerrar detalles">✕</button>
         <div id="card-detail-content"></div>
       </div>
-    </div>
+    </dialog>
 
     <!-- Contact Section -->
-    <div id="contact-section" class="contact-section">
+    <section id="contact-section" class="contact-section" aria-labelledby="contact-heading">
       <div class="contact-container">
-        <h2>📧 Contacto</h2>
+        <h2 id="contact-heading">📧 Contacto</h2>
         <p>¿Tienes preguntas o necesitas ayuda? Nos encantaría escucharte.</p>
+        
         <div class="contact-info">
           <div class="contact-item">
-            <strong>Email:</strong> info@bazardecartulinas.com
+            <strong>Email:</strong> 
+            <a href="mailto:info@bazardecartulinas.com">info@bazardecartulinas.com</a>
           </div>
           <div class="contact-item">
-            <strong>Teléfono:</strong> +56 9 1234 5678
+            <strong>Teléfono:</strong> 
+            <a href="tel:+56912345678">+56 9 1234 5678</a>
           </div>
           <div class="contact-item">
             <strong>Ubicación:</strong> Santiago, Chile
@@ -214,17 +156,27 @@
             <strong>Horario:</strong> Lunes a Viernes 10:00 - 18:00
           </div>
         </div>
-        <form class="contact-form">
-          <input type="text" placeholder="Tu nombre" required>
-          <input type="email" placeholder="Tu email" required>
-          <textarea placeholder="Tu mensaje" rows="4" required></textarea>
+
+        <form class="contact-form" id="contact-form" novalidate>
+          <div class="form-group">
+            <label for="contact-name">Tu nombre</label>
+            <input type="text" id="contact-name" name="name" required />
+          </div>
+          <div class="form-group">
+            <label for="contact-email">Tu email</label>
+            <input type="email" id="contact-email" name="email" required />
+          </div>
+          <div class="form-group">
+            <label for="contact-message">Tu mensaje</label>
+            <textarea id="contact-message" name="message" rows="4" required></textarea>
+          </div>
           <button type="submit" class="btn-submit">Enviar Mensaje</button>
         </form>
       </div>
-    </div>
+    </section>
 
     <!-- Footer -->
-    <footer class="footer">
+    <footer class="footer" role="contentinfo">
       <p>&copy; 2025 Bazar de Cartulinas. Todos los derechos reservados.</p>
     </footer>
 

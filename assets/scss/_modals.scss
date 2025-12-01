@@ -26,6 +26,7 @@
   font-size: 24px;
   font-weight: bold;
   margin-bottom: $spacing-lg;
+  font-family: $font-title;
 }
 
 .modal-close-btn {
@@ -77,6 +78,8 @@
     margin-bottom: $spacing-xl;
     text-align: center;
     color: $color-text-header;
+    font-family: $font-title;
+    font-size: 28px;
   }
 
   h3 {
@@ -84,6 +87,7 @@
     margin-bottom: $spacing-md;
     font-size: 18px;
     color: $color-secondary;
+    font-family: $font-title;
   }
 
   hr {

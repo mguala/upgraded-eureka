@@ -25,12 +25,14 @@
   padding: $spacing-md;
   background-color: $color-white;
   border-collapse: collapse;
+  font-family: $font-cards;
 }
 
 .card-header {
   background-color: $color-gray-darker;
   font-weight: bold;
   padding: $spacing-md;
+  font-family: $font-cards;
 }
 
 .card-image {
@@ -59,12 +61,14 @@
   font-weight: bold;
   font-size: 16px;
   margin-bottom: $spacing-xs;
+  font-family: $font-cards;
 }
 
 .card-set {
   font-size: 12px;
   color: $color-text-light;
   font-weight: bold;
+  font-family: $font-cards;
 }
 
 .card-badge-foil {

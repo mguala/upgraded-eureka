@@ -10,11 +10,15 @@
   h1 {
     text-align: center;
     margin: 0;
+    font-family: $font-title;
+    font-size: 48px;
+    letter-spacing: 2px;
   }
 
   p {
     text-align: center;
     font-style: italic;
     margin: 0;
+    font-family: $font-body;
   }
 }

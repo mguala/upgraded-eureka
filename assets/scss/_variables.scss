@@ -33,7 +33,32 @@ $color-foil: gold;
 $color-normal: #3498db;
 $color-overlay: rgba(0, 0, 0, 0.5);
 
-// Fonts
+// Font Face Definitions
+@font-face {
+  font-family: 'Goudy Medieval';
+  src: url('../fonts/Goudymedieval.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Matrix Bold';
+  src: url('../fonts/Matrix\ Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Beleren 2016';
+  src: url('../fonts/Beleren2016-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+// Font Family Variables
+$font-title: 'Goudy Medieval', serif;
+$font-body: 'Matrix Bold', sans-serif;
+$font-cards: 'Beleren 2016', serif;
 $font-family: Arial, sans-serif;
 
 // Spacing
