@@ -1,4 +1,4 @@
-// Card database - will be populated from CSV + Scryfall
+// Card database - will be populated from CSV only
 let cardDatabase = [];
 
 // Shopping cart
@@ -30,7 +30,7 @@ async function loadCSV(filename) {
     // Use PapaParse to properly handle quoted fields and commas
     const result = Papa.parse(csvText, {
       header: true, // Treat the first row as headers
-      dynamicTyping: true, // Attempt to convert values to appropriate types
+      dynamicTyping: false, // Keep as strings to preserve data
       skipEmptyLines: true,
       transformHeader: (header) => header.trim(), // Trim header names
     });
@@ -47,29 +47,55 @@ async function loadCSV(filename) {
   }
 }
 
-// Fetch card data from Scryfall - exact match with all versions
+// Fetch card data from Scryfall - exact match to get image and details
 async function fetchCardFromScryfall(cardName) {
   try {
     // Use exact search
     const response = await fetch(
-      `${SCRYFALL_API}/cards/search?q=!${encodeURIComponent(cardName)}&order=set&unique=prints`
+      `${SCRYFALL_API}/cards/search?q=!"${encodeURIComponent(cardName)}"&order=set&unique=prints`
     );
 
     if (!response.ok) {
-      console.error(`No se encontró la carta: ${cardName}`);
+      console.warn(`No se encontró la carta en Scryfall: ${cardName}`);
       return null;
     }
 
     const data = await response.json();
-    return data.data && data.data.length > 0 ? data.data : null;
+    return data.data && data.data.length > 0 ? data.data[0] : null;
   } catch (error) {
     console.error(`Error obteniendo carta ${cardName}:`, error);
     return null;
   }
 }
 
-// Convert Scryfall card to our format
-function convertScryfallCard(scryfallCard, csvData) {
+// Convert Scryfall card + CSV data to our format
+function convertCardData(scryfallCard, csvRow) {
+  // If no Scryfall data, use CSV data as fallback
+  if (!scryfallCard) {
+    return {
+      id: csvRow["Scryfall ID"] || csvRow.Name,
+      name: csvRow.Name,
+      type: "other",
+      color: "colorless",
+      manaCost: "0",
+      power: null,
+      toughness: null,
+      text: "",
+      price: (parseFloat(csvRow["Purchase price"]) || 0) * USD_TO_CLP,
+      stock: parseInt(csvRow.Quantity) || 0,
+      rarity: csvRow.Rarity || "common",
+      rarityLevel: csvRow.Rarity || "common",
+      set: csvRow["Set name"],
+      imageUrl: null,
+      normalImageUrl: null,
+      foilImageUrl: null,
+      scryfallUri: null,
+      isForil: csvRow.Foil && csvRow.Foil.toLowerCase() === "foil",
+      foilStock: csvRow.Foil && csvRow.Foil.toLowerCase() === "foil" ? parseInt(csvRow.Quantity) || 0 : 0,
+      normalStock: csvRow.Foil && csvRow.Foil.toLowerCase() === "normal" ? parseInt(csvRow.Quantity) || 0 : 0,
+    };
+  }
+
   // Get card type (simplified)
   let cardType = "other";
   const typeLine = scryfallCard.type_line.toLowerCase();
@@ -103,18 +129,11 @@ function convertScryfallCard(scryfallCard, csvData) {
     mythic: "Mítica rara",
   };
 
-  // Get rarity for image selection
-  const rarity = scryfallCard.rarity || "common";
+  // Get image URL
+  let imageUrl = scryfallCard.image_uris ? scryfallCard.image_uris.large : null;
 
-  // Get images for different versions if available
-  // Note: Scryfall doesn't provide separate foil/non-foil images for same printing
-  // Both use the same image URL
-  let imageUrl = scryfallCard.image_uris ? scryfallCard.image_uris.normal : null;
-
-  // Try to get large image for better quality
-  if (scryfallCard.image_uris && scryfallCard.image_uris.large) {
-    imageUrl = scryfallCard.image_uris.large;
-  }
+  const isFoil = csvRow.Foil && csvRow.Foil.toLowerCase() === "foil";
+  const quantity = parseInt(csvRow.Quantity) || 0;
 
   return {
     id: scryfallCard.id,
@@ -125,125 +144,117 @@ function convertScryfallCard(scryfallCard, csvData) {
     power: scryfallCard.power || null,
     toughness: scryfallCard.toughness || null,
     text: scryfallCard.oracle_text || "",
-    // Map CSV columns: "Purchase price" and "Quantity", convert USD to CLP
-    price: (parseFloat(csvData["Purchase price"]) || 0) * USD_TO_CLP,
-    stock: parseInt(csvData["Quantity"]) || 0,
+    price: (parseFloat(csvRow["Purchase price"]) || 0) * USD_TO_CLP,
+    stock: quantity,
     rarity: rarityMap[scryfallCard.rarity] || scryfallCard.rarity,
-    rarityLevel: rarity,
+    rarityLevel: scryfallCard.rarity || "common",
     set: scryfallCard.set_name,
     imageUrl: imageUrl,
     normalImageUrl: imageUrl,
     foilImageUrl: imageUrl,
     scryfallUri: scryfallCard.scryfall_uri,
-    isForil: csvData["Foil"] && csvData["Foil"].toLowerCase() === "foil",
+    isForil: isFoil,
+    foilStock: isFoil ? quantity : 0,
+    normalStock: !isFoil ? quantity : 0,
   };
 }
 
-// Load all cards from CSV and Scryfall
+// Load all cards from CSV and enrich with Scryfall data
 async function loadAllCards() {
-   showLoadingMessage();
+  showLoadingMessage();
 
-   // Load CSV data
-   const csvData = await loadCSV("cards.csv");
+  // Load CSV data
+  const csvData = await loadCSV("cards.csv");
 
-   if (csvData.length === 0) {
-     showErrorMessage("No se pudo cargar el archivo CSV");
-     return;
-   }
+  if (csvData.length === 0) {
+    showErrorMessage("No se pudo cargar el archivo CSV");
+    return;
+  }
 
-   console.log(`Cargando ${csvData.length} cartas desde Scryfall...`);
+  console.log(`Cargando ${csvData.length} cartas desde CSV + Scryfall...`);
 
-   // Store CSV card names for filtering
-   const csvCardNames = new Set(csvData.map(row => row.Name.toLowerCase()));
+  // Process each CSV row
+  const promises = csvData.map(async (row, index) => {
+    // Add delay to respect Scryfall rate limits (10 requests per second)
+    await new Promise((resolve) => setTimeout(resolve, index * 100));
 
-   // Fetch each card from Scryfall
-   const promises = csvData.map(async (row, index) => {
-     // Add delay to respect Scryfall rate limits (10 requests per second)
-     await new Promise((resolve) => setTimeout(resolve, index * 100));
+    // Fetch card details from Scryfall
+    const scryfallCard = await fetchCardFromScryfall(row.Name);
+    return convertCardData(scryfallCard, row);
+  });
 
-     const scryfallCards = await fetchCardFromScryfall(row.Name);
-     if (scryfallCards && Array.isArray(scryfallCards)) {
-       return scryfallCards.map(card => convertScryfallCard(card, row));
-     }
-     return null;
-   });
+  const cards = await Promise.all(promises);
 
-   const cardsArrays = await Promise.all(promises);
-   const rawCards = cardsArrays
-     .filter((cards) => cards !== null)
-     .flat();
-
-   // Consolidate foil/normal versions of the same card and group by set
-   cardDatabase = consolidateCardsBySet(rawCards);
-   
-   // Filter: only cards with stock AND that are in CSV
-   cardDatabase = cardDatabase.filter(card => {
-     const inCsv = csvCardNames.has(card.name.toLowerCase());
-     const hasStock = (card.foilStock + card.normalStock) > 0;
-     return inCsv && hasStock;
-   });
-
-   console.log(`${cardDatabase.length} cartas únicas cargadas exitosamente`);
-
-   isLoading = false;
-   displayCards(cardDatabase);
-   updateCartDisplay();
-}
-
-// Consolidate foil and normal versions, group by set, and order by set number
-function consolidateCardsBySet(cards) {
-    const consolidated = {};
+  // Group by card name + foil status to consolidate duplicates from CSV
+  const consolidated = {};
+  cards.forEach((card) => {
+    const key = `${card.name}|${card.isForil ? 'foil' : 'normal'}`;
     
-    cards.forEach((card) => {
-      const key = `${card.name}|${card.set}`;
-      
-      if (!consolidated[key]) {
-        consolidated[key] = {
-          ...card,
-          foilStock: 0,
-          normalStock: 0,
-          versions: []
-        };
-      }
-      
+    if (!consolidated[key]) {
+      consolidated[key] = { ...card };
+    } else {
+      // Add to existing quantity
+      consolidated[key].stock += card.stock;
       if (card.isForil) {
         consolidated[key].foilStock += card.stock;
       } else {
         consolidated[key].normalStock += card.stock;
       }
-      
-      consolidated[key].versions.push(card);
-    });
-    
-    // Sort by set code and return
-    return Object.values(consolidated).sort((a, b) => {
-      // Sort alphabetically by name first, then by set
-      if (a.name !== b.name) {
-        return a.name.localeCompare(b.name);
-      }
-      return a.set.localeCompare(b.set);
-    });
+    }
+  });
+
+  cardDatabase = Object.values(consolidated).sort((a, b) => a.name.localeCompare(b.name));
+
+  console.log(`${cardDatabase.length} cartas únicas cargadas exitosamente`);
+
+  isLoading = false;
+  displayCards(cardDatabase);
+  updateCartDisplay();
 }
 
-// Show loading message with random GIF
-function showLoadingMessage() {
-  const cardsGrid = document.getElementById("cards-grid");
+// Get GIF based on search term or filter
+function getContextualGif(searchTerm = "") {
+  const gifMap = {
+    creature: "https://media.giphy.com/media/3o6Zt6KHxJTbXCnSvu/giphy.gif", // dragons
+    instant: "https://media.giphy.com/media/l3q2K5jinAlChoCLS/giphy.gif", // lightning
+    sorcery: "https://media.giphy.com/media/3ohzdKdb7qxVxJWQPe/giphy.gif", // magic spell
+    enchantment: "https://media.giphy.com/media/l0HlNaQ9ob2Udo369/giphy.gif", // mystical
+    artifact: "https://media.giphy.com/media/3o7TKU8G4PgF2fJ5JS/giphy.gif", // gear/mechanical
+    planeswalker: "https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif", // sparkles
+    white: "https://media.giphy.com/media/xT9IgEx8SbQ0teblYA/giphy.gif", // light
+    blue: "https://media.giphy.com/media/3o7TKQFbKwrK0gI0M8/giphy.gif", // water
+    black: "https://media.giphy.com/media/3o7TK9R7eULWV8VJOo/giphy.gif", // dark
+    red: "https://media.giphy.com/media/3o7TKMdt5LoJYxL8gE/giphy.gif", // fire
+    green: "https://media.giphy.com/media/l0HlQwEt4UqKT5yg0/giphy.gif", // nature
+    foil: "https://media.giphy.com/media/3o7TL3pjR5Qq04yy5O/giphy.gif", // sparkles
+  };
+
+  if (searchTerm) {
+    const term = searchTerm.toLowerCase();
+    for (const [key, gif] of Object.entries(gifMap)) {
+      if (term.includes(key)) return gif;
+    }
+  }
   
-  const loadingGifs = [
+  // Default Magic/card GIFs
+  const defaultGifs = [
     "https://media.giphy.com/media/3o6Zt6KHxJTbXCnSvu/giphy.gif",
-    "https://media.giphy.com/media/l3q2K5jinAlChoCLS/giphy.gif",
-    "https://media.giphy.com/media/3ohzdKdb7qxVxJWQPe/giphy.gif",
-    "https://media.giphy.com/media/l0HlNaQ9ob2Udo369/giphy.gif",
-    "https://media.giphy.com/media/3o7TKU8G4PgF2fJ5JS/giphy.gif",
     "https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif",
+    "https://media.giphy.com/media/3o7TKQFbKwrK0gI0M8/giphy.gif",
   ];
   
-  const randomGif = loadingGifs[Math.floor(Math.random() * loadingGifs.length)];
+  return defaultGifs[Math.floor(Math.random() * defaultGifs.length)];
+}
+
+// Show loading message with contextual GIF
+function showLoadingMessage(searchTerm = "") {
+  const cardsGrid = document.getElementById("cards-grid");
+  const gif = getContextualGif(searchTerm);
   
   cardsGrid.innerHTML =
     `<div class="col-12 text-center py-5">
-      <img src="${randomGif}" alt="Loading..." style="max-width: 300px; margin: 20px 0; border-radius: 8px;">
-      <h2>⏳ Cargando cartas desde Scryfall...</h2>
+      <img src="${gif}" alt="Loading..." style="max-width: 300px; margin: 20px 0; border-radius: 8px;">
+      <h2>⏳ Cargando cartas desde tu inventario...</h2>
       <p>Por favor espera mientras obtenemos los datos de las cartas.</p>
     </div>`;
 }
@@ -347,40 +358,45 @@ function getTypeIcon(type) {
 // Filter cards by type
 function filterCards(type) {
   currentTypeFilter = type;
-  applyFilters();
+  applyFilters(type);
 }
 
 // Filter cards by color
 function filterByColor(color) {
    currentColorFilter = color;
-   applyFilters();
+   applyFilters(color);
 }
 
 // Filter cards by foil status
 function filterByFoil(foilStatus) {
    currentFoilFilter = foilStatus;
-   applyFilters();
+   applyFilters(foilStatus);
 }
 
 // Apply all active filters
-function applyFilters() {
-   let filtered = cardDatabase;
+function applyFilters(filterTerm = "") {
+   showLoadingMessage(filterTerm);
+   
+   // Simulate brief loading for visual feedback
+   setTimeout(() => {
+     let filtered = cardDatabase;
 
-   if (currentTypeFilter !== "all") {
-     filtered = filtered.filter((card) => card.type === currentTypeFilter);
-   }
+     if (currentTypeFilter !== "all") {
+       filtered = filtered.filter((card) => card.type === currentTypeFilter);
+     }
 
-   if (currentColorFilter !== "all") {
-     filtered = filtered.filter((card) => card.color === currentColorFilter);
-   }
+     if (currentColorFilter !== "all") {
+       filtered = filtered.filter((card) => card.color === currentColorFilter);
+     }
 
-   if (currentFoilFilter === "foil") {
-     filtered = filtered.filter((card) => card.isForil);
-   } else if (currentFoilFilter === "normal") {
-     filtered = filtered.filter((card) => !card.isForil);
-   }
+     if (currentFoilFilter === "foil") {
+       filtered = filtered.filter((card) => card.foilStock > 0);
+     } else if (currentFoilFilter === "normal") {
+       filtered = filtered.filter((card) => card.normalStock > 0);
+     }
 
-   displayCards(filtered);
+     displayCards(filtered);
+   }, 500);
 }
 
 // Search cards
@@ -394,15 +410,20 @@ function searchCards() {
     return;
   }
 
-  const results = cardDatabase.filter(
-    (card) =>
-      card.name.toLowerCase().includes(searchTerm) ||
-      card.text.toLowerCase().includes(searchTerm) ||
-      card.type.toLowerCase().includes(searchTerm) ||
-      card.color.toLowerCase().includes(searchTerm)
-  );
+  showLoadingMessage(searchTerm);
+  
+  // Simulate brief loading for visual feedback
+  setTimeout(() => {
+    const results = cardDatabase.filter(
+      (card) =>
+        card.name.toLowerCase().includes(searchTerm) ||
+        card.text.toLowerCase().includes(searchTerm) ||
+        card.type.toLowerCase().includes(searchTerm) ||
+        card.color.toLowerCase().includes(searchTerm)
+    );
 
-  displayCards(results);
+    displayCards(results);
+  }, 500);
 }
 
 // Show foil selection dialog
@@ -641,134 +662,134 @@ function viewCardDetail(cardId) {
    const displayImageUrl = selectedFoilInDetail ? card.foilImageUrl : card.normalImageUrl;
 
    content.innerHTML = `
-         <table class="detail-table">
-             <tr>
-                 <td colspan="2" class="detail-header">
-                     <h2>${card.name}</h2>
-                 </td>
-             </tr>
-             ${
-               displayImageUrl
-                 ? `<tr>
-                 <td colspan="2" class="detail-image">
-                     <img id="detail-card-image" src="${displayImageUrl}" alt="${card.name}" width="300">
-                     ${selectedFoilInDetail && card.foilStock > 0 ? '<div class="foil-indicator">✨ Versión Foil</div>' : '<div class="normal-indicator">Normal</div>'}
-                 </td>
-             </tr>`
-                 : ""
-             }
-             <tr>
-                 <td><b>Coste de Maná:</b></td>
-                 <td>${card.manaCost}</td>
-             </tr>
-             <tr>
-                 <td><b>Tipo:</b></td>
-                 <td>${typeIcon} ${
-     card.type.charAt(0).toUpperCase() + card.type.slice(1)
-   }</td>
-             </tr>
-             <tr>
-                 <td><b>Color:</b></td>
-                 <td>${colorEmoji} ${
-     card.color.charAt(0).toUpperCase() + card.color.slice(1)
-   }</td>
-             </tr>
-             ${
-               card.power !== null
-                 ? `
-             <tr>
-                 <td><b>Fuerza/Resistencia:</b></td>
-                 <td>${card.power}/${card.toughness}</td>
-             </tr>
-             `
-                 : ""
-             }
-             <tr>
-                 <td><b>Rareza:</b></td>
-                 <td>${card.rarity}</td>
-             </tr>
-             <tr>
-                 <td><b>Edición:</b></td>
-                 <td>${card.set}</td>
-             </tr>
-             <tr>
-                 <td colspan="2" class="detail-description">
-                     <p><i>${card.text}</i></p>
-                 </td>
-             </tr>
-             <tr>
-                 <td><b>Precio:</b></td>
-                 <td class="detail-price">$${Math.round(card.price)} CLP</td>
-             </tr>
-             <tr>
-                 <td><b>Stock:</b></td>
-                 <td class="detail-stock">
-                   ${card.normalStock > 0 ? `<span class="card-stock-normal">Normal: ${card.normalStock}</span> ` : ""}
-                   ${card.foilStock > 0 ? `<span class="card-stock-foil">✨ Foil: ${card.foilStock}</span>` : ""}
-                 </td>
-             </tr>
-             <tr>
-                 <td colspan="2" class="detail-version-selector">
-                   <div class="version-buttons">
-                     ${card.normalStock > 0 ? `<button class="btn-version ${!selectedFoilInDetail ? 'active' : ''}" onclick="selectVersionInDetail(false, '${card.id}')">Normal</button>` : ""}
-                     ${card.foilStock > 0 ? `<button class="btn-version ${selectedFoilInDetail ? 'active' : ''}" onclick="selectVersionInDetail(true, '${card.id}')">✨ Foil</button>` : ""}
-                   </div>
-                 </td>
-             </tr>
-             <tr>
-                 <td colspan="2" class="detail-actions">
-                     ${
-                       (card.foilStock + card.normalStock) > 0
-                         ? `<button class="btn-add-cart" onclick="addToCart('${card.id}', ${selectedFoilInDetail}); closeCardDetail();">Agregar al Carrito</button>`
-                         : "<button disabled>Agotado</button>"
-                     }
-                 </td>
-             </tr>
-         </table>
-     `;
+        <table class="detail-table">
+            <tr>
+                <td colspan="2" class="detail-header">
+                    <h2>${card.name}</h2>
+                </td>
+            </tr>
+            ${
+              displayImageUrl
+                ? `<tr>
+                <td colspan="2" class="detail-image">
+                    <img id="detail-card-image" src="${displayImageUrl}" alt="${card.name}" width="300">
+                    ${selectedFoilInDetail && card.foilStock > 0 ? '<div class="foil-indicator">✨ Versión Foil</div>' : '<div class="normal-indicator">Normal</div>'}
+                </td>
+            </tr>`
+                : ""
+            }
+            <tr>
+                <td><b>Coste de Maná:</b></td>
+                <td>${card.manaCost}</td>
+            </tr>
+            <tr>
+                <td><b>Tipo:</b></td>
+                <td>${typeIcon} ${
+      card.type.charAt(0).toUpperCase() + card.type.slice(1)
+    }</td>
+            </tr>
+            <tr>
+                <td><b>Color:</b></td>
+                <td>${colorEmoji} ${
+      card.color.charAt(0).toUpperCase() + card.color.slice(1)
+    }</td>
+            </tr>
+            ${
+              card.power !== null
+                ? `
+            <tr>
+                <td><b>Fuerza/Resistencia:</b></td>
+                <td>${card.power}/${card.toughness}</td>
+            </tr>
+            `
+                : ""
+            }
+            <tr>
+                <td><b>Rareza:</b></td>
+                <td>${card.rarity}</td>
+            </tr>
+            <tr>
+                <td><b>Edición:</b></td>
+                <td>${card.set}</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="detail-description">
+                    <p><i>${card.text}</i></p>
+                </td>
+            </tr>
+            <tr>
+                <td><b>Precio:</b></td>
+                <td class="detail-price">$${Math.round(card.price)} CLP</td>
+            </tr>
+            <tr>
+                <td><b>Stock:</b></td>
+                <td class="detail-stock">
+                  ${card.normalStock > 0 ? `<span class="card-stock-normal">Normal: ${card.normalStock}</span> ` : ""}
+                  ${card.foilStock > 0 ? `<span class="card-stock-foil">✨ Foil: ${card.foilStock}</span>` : ""}
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="detail-version-selector">
+                  <div class="version-buttons">
+                    ${card.normalStock > 0 ? `<button class="btn-version ${!selectedFoilInDetail ? 'active' : ''}" onclick="selectVersionInDetail(false, '${card.id}')">Normal</button>` : ""}
+                    ${card.foilStock > 0 ? `<button class="btn-version ${selectedFoilInDetail ? 'active' : ''}" onclick="selectVersionInDetail(true, '${card.id}')">✨ Foil</button>` : ""}
+                  </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="detail-actions">
+                    ${
+                      (card.foilStock + card.normalStock) > 0
+                        ? `<button class="btn-add-cart" onclick="addToCart('${card.id}', ${selectedFoilInDetail}); closeCardDetail();">Agregar al Carrito</button>`
+                        : "<button disabled>Agotado</button>"
+                    }
+                </td>
+            </tr>
+        </table>
+    `;
 
    modal.showModal();
-   }
+}
 
-   // Select foil or normal version in detail modal
-   function selectVersionInDetail(isFoil, cardId) {
-   selectedFoilInDetail = isFoil;
-   const card = cardDatabase.find((c) => c.id === cardId);
-   
-   if (card && card.imageUrl) {
-     // Update the image
-     const detailImage = document.getElementById("detail-card-image");
-     const foilIndicator = document.querySelector(".foil-indicator, .normal-indicator");
-     
-     if (detailImage) {
-       const newImageUrl = isFoil ? card.foilImageUrl : card.normalImageUrl;
-       detailImage.src = newImageUrl;
-     }
-     
-     // Update indicator
-     if (foilIndicator) {
-       if (isFoil && card.foilStock > 0) {
-         foilIndicator.className = "foil-indicator";
-         foilIndicator.textContent = "✨ Versión Foil";
-       } else {
-         foilIndicator.className = "normal-indicator";
-         foilIndicator.textContent = "Normal";
-       }
-     }
-     
-     // Update active button
-     const buttons = document.querySelectorAll(".btn-version");
-     buttons.forEach(btn => {
-       btn.classList.remove("active");
-     });
-     if (event.target) event.target.classList.add("active");
-   }
-   }
+// Select foil or normal version in detail modal
+function selectVersionInDetail(isFoil, cardId) {
+  selectedFoilInDetail = isFoil;
+  const card = cardDatabase.find((c) => c.id === cardId);
+  
+  if (card && card.imageUrl) {
+    // Update the image
+    const detailImage = document.getElementById("detail-card-image");
+    const foilIndicator = document.querySelector(".foil-indicator, .normal-indicator");
+    
+    if (detailImage) {
+      const newImageUrl = isFoil ? card.foilImageUrl : card.normalImageUrl;
+      detailImage.src = newImageUrl;
+    }
+    
+    // Update indicator
+    if (foilIndicator) {
+      if (isFoil && card.foilStock > 0) {
+        foilIndicator.className = "foil-indicator";
+        foilIndicator.textContent = "✨ Versión Foil";
+      } else {
+        foilIndicator.className = "normal-indicator";
+        foilIndicator.textContent = "Normal";
+      }
+    }
+    
+    // Update active button
+    const buttons = document.querySelectorAll(".btn-version");
+    buttons.forEach(btn => {
+      btn.classList.remove("active");
+    });
+    if (event.target) event.target.classList.add("active");
+  }
+}
 
-   // Close card detail modal
-   function closeCardDetail() {
-   document.getElementById("card-detail-modal").close();
-   }
+// Close card detail modal
+function closeCardDetail() {
+  document.getElementById("card-detail-modal").close();
+}
 
 // Open filters modal
 function openFiltersModal() {
