@@ -70,6 +70,10 @@ async function fetchCardFromScryfall(cardName) {
 
 // Convert Scryfall card + CSV data to our format
 function convertCardData(scryfallCard, csvRow) {
+  const isFoil = csvRow.Foil && csvRow.Foil.toLowerCase() === "foil";
+  const quantity = parseInt(csvRow.Quantity) || 0;
+  const price = (parseFloat(csvRow["Purchase price"]) || 0) * USD_TO_CLP;
+
   // If no Scryfall data, use CSV data as fallback
   if (!scryfallCard) {
     return {
@@ -81,18 +85,14 @@ function convertCardData(scryfallCard, csvRow) {
       power: null,
       toughness: null,
       text: "",
-      price: (parseFloat(csvRow["Purchase price"]) || 0) * USD_TO_CLP,
-      stock: parseInt(csvRow.Quantity) || 0,
       rarity: csvRow.Rarity || "common",
       rarityLevel: csvRow.Rarity || "common",
       set: csvRow["Set name"],
       imageUrl: null,
-      normalImageUrl: null,
-      foilImageUrl: null,
       scryfallUri: null,
-      isForil: csvRow.Foil && csvRow.Foil.toLowerCase() === "foil",
-      foilStock: csvRow.Foil && csvRow.Foil.toLowerCase() === "foil" ? parseInt(csvRow.Quantity) || 0 : 0,
-      normalStock: csvRow.Foil && csvRow.Foil.toLowerCase() === "normal" ? parseInt(csvRow.Quantity) || 0 : 0,
+      isForil: isFoil,
+      quantity: quantity,
+      price: price,
     };
   }
 
@@ -132,9 +132,6 @@ function convertCardData(scryfallCard, csvRow) {
   // Get image URL
   let imageUrl = scryfallCard.image_uris ? scryfallCard.image_uris.large : null;
 
-  const isFoil = csvRow.Foil && csvRow.Foil.toLowerCase() === "foil";
-  const quantity = parseInt(csvRow.Quantity) || 0;
-
   return {
     id: scryfallCard.id,
     name: scryfallCard.name,
@@ -144,18 +141,14 @@ function convertCardData(scryfallCard, csvRow) {
     power: scryfallCard.power || null,
     toughness: scryfallCard.toughness || null,
     text: scryfallCard.oracle_text || "",
-    price: (parseFloat(csvRow["Purchase price"]) || 0) * USD_TO_CLP,
-    stock: quantity,
     rarity: rarityMap[scryfallCard.rarity] || scryfallCard.rarity,
     rarityLevel: scryfallCard.rarity || "common",
     set: scryfallCard.set_name,
     imageUrl: imageUrl,
-    normalImageUrl: imageUrl,
-    foilImageUrl: imageUrl,
     scryfallUri: scryfallCard.scryfall_uri,
     isForil: isFoil,
-    foilStock: isFoil ? quantity : 0,
-    normalStock: !isFoil ? quantity : 0,
+    quantity: quantity,
+    price: price,
   };
 }
 
@@ -185,25 +178,35 @@ async function loadAllCards() {
 
   const cards = await Promise.all(promises);
 
-  // Group by card name + foil status to consolidate duplicates from CSV
-  const consolidated = {};
+  // Group by card name to show both versions together
+  const grouped = {};
   cards.forEach((card) => {
-    const key = `${card.name}|${card.isForil ? 'foil' : 'normal'}`;
+    const key = card.name;
     
-    if (!consolidated[key]) {
-      consolidated[key] = { ...card };
+    if (!grouped[key]) {
+      grouped[key] = {
+        ...card,
+        versions: [{ isForil: card.isForil, quantity: card.quantity, price: card.price }],
+        foilStock: card.isForil ? card.quantity : 0,
+        normalStock: !card.isForil ? card.quantity : 0,
+        foilPrice: card.isForil ? card.price : 0,
+        normalPrice: !card.isForil ? card.price : 0,
+      };
     } else {
-      // Add to existing quantity
-      consolidated[key].stock += card.stock;
+      // Add version info
+      grouped[key].versions.push({ isForil: card.isForil, quantity: card.quantity, price: card.price });
+      
       if (card.isForil) {
-        consolidated[key].foilStock += card.stock;
+        grouped[key].foilStock += card.quantity;
+        grouped[key].foilPrice = card.price;
       } else {
-        consolidated[key].normalStock += card.stock;
+        grouped[key].normalStock += card.quantity;
+        grouped[key].normalPrice = card.price;
       }
     }
   });
 
-  cardDatabase = Object.values(consolidated).sort((a, b) => a.name.localeCompare(b.name));
+  cardDatabase = Object.values(grouped).sort((a, b) => a.name.localeCompare(b.name));
 
   console.log(`${cardDatabase.length} cartas únicas cargadas exitosamente`);
 
@@ -281,7 +284,7 @@ function displayCards(cards) {
     return;
   }
 
-  // Display cards using Bootstrap
+  // Display cards using custom grid
   cards.forEach(card => {
     const cardElement = document.createElement("div");
     cardElement.className = "col-12 col-sm-6 col-lg-4 col-xl-3";
@@ -313,20 +316,50 @@ function createCardHTML(card) {
             <small><b>Edición:</b> ${card.set}</small><br>
             <small class="text-muted"><i>${card.text.substring(0, 80)}${card.text.length > 80 ? '...' : ''}</i></small>
             <hr>
-            <p class="card-price mb-2">$${Math.round(card.price)} CLP</p>
-            <small>
-                ${card.normalStock > 0 ? `<span class="card-stock-normal">Normal: ${card.normalStock}</span> ` : ""}
-                ${card.foilStock > 0 ? `<span class="card-stock-foil">✨ Foil: ${card.foilStock}</span>` : ""}
-            </small>
-            <br>
+            <div style="display: grid; gap: 0.5rem; margin-bottom: 1rem;">
+                ${card.normalStock > 0 ? `<div><span class="card-stock-normal">Normal (${card.normalStock})</span> - $${Math.round(card.normalPrice)} CLP</div>` : ""}
+                ${card.foilStock > 0 ? `<div><span class="card-stock-foil">✨ Foil (${card.foilStock})</span> - $${Math.round(card.foilPrice)} CLP</div>` : ""}
+            </div>
             <span class="badge ${stockStatusClass} mt-2 mb-2">${stockStatus}</span>
             <div class="d-grid gap-2 mt-3">
                 <button class="btn btn-sm btn-outline-primary" onclick="viewCardDetail('${card.id}')">Ver Detalles</button>
-                ${totalStock > 0 ? `<button class="btn btn-sm btn-success" onclick="showFoilSelection('${card.id}')">Agregar</button>` : "<button class=\"btn btn-sm btn-secondary\" disabled>Agotado</button>"}
+                ${totalStock > 0 ? `<button class="btn btn-sm btn-success" onclick="addVersionSelection('${card.id}')">Agregar</button>` : "<button class=\"btn btn-sm btn-secondary\" disabled>Agotado</button>"}
             </div>
         </div>
     </div>
    `;
+}
+
+// Show version selection before adding to cart
+function addVersionSelection(cardId) {
+  const card = cardDatabase.find((c) => c.id === cardId);
+  
+  if (!card) return;
+  
+  const totalStock = card.foilStock + card.normalStock;
+  
+  if (totalStock === 0) {
+    alert("¡Lo sentimos, esta carta está agotada!");
+    return;
+  }
+
+  let message = `¿Qué versión de ${card.name} deseas?\n\n`;
+  if (card.normalStock > 0) {
+    message += `Normal (${card.normalStock} disponibles): $${Math.round(card.normalPrice)} CLP\n`;
+  }
+  if (card.foilStock > 0) {
+    message += `✨ Foil (${card.foilStock} disponibles): $${Math.round(card.foilPrice)} CLP\n`;
+  }
+
+  const options = [];
+  if (card.normalStock > 0) options.push("normal");
+  if (card.foilStock > 0) options.push("foil");
+
+  const selection = prompt(message, options[0]);
+  
+  if (selection === "foil" || selection === "normal") {
+    addToCart(cardId, selection === "foil");
+  }
 }
 
 // Get color emoji
@@ -426,41 +459,11 @@ function searchCards() {
   }, 500);
 }
 
-// Show foil selection dialog
-function showFoilSelection(cardId) {
-   const card = cardDatabase.find((c) => c.id === cardId);
-   
-   if (!card) return;
-   
-   const totalStock = card.foilStock + card.normalStock;
-   
-   if (totalStock === 0) {
-     alert("¡Lo sentimos, esta carta está agotada!");
-     return;
-   }
-   
-   let options = "";
-   if (card.normalStock > 0) {
-     options += `<option value="normal">Normal (${card.normalStock} disponibles)</option>`;
-   }
-   if (card.foilStock > 0) {
-     options += `<option value="foil">✨ Foil (${card.foilStock} disponibles)</option>`;
-   }
-   
-   const selection = prompt(
-     `¿Qué versión de ${card.name} deseas?\n\n${card.normalStock > 0 ? `Normal: ${card.normalStock}\n` : ""}${card.foilStock > 0 ? `✨ Foil: ${card.foilStock}` : ""}`,
-     card.foilStock > 0 ? "foil" : "normal"
-   );
-   
-   if (selection === "foil" || selection === "normal") {
-     addToCart(cardId, selection === "foil");
-   }
-}
-
 // Add card to cart
 function addToCart(cardId, isForil = false) {
    const card = cardDatabase.find((c) => c.id === cardId);
    const availableStock = isForil ? card.foilStock : card.normalStock;
+   const price = isForil ? card.foilPrice : card.normalPrice;
 
    if (!card || availableStock === 0) {
      alert("¡Lo sentimos, esta versión de la carta está agotada!");
@@ -482,7 +485,7 @@ function addToCart(cardId, isForil = false) {
      shoppingCart.push({
        id: card.id,
        name: card.name,
-       price: card.price,
+       price: price,
        quantity: 1,
        isForil: isForil,
      });
@@ -659,7 +662,7 @@ function viewCardDetail(cardId) {
    // Default to foil if available, otherwise normal
    selectedFoilInDetail = card.foilStock > 0 ? true : false;
 
-   const displayImageUrl = selectedFoilInDetail ? card.foilImageUrl : card.normalImageUrl;
+   const displayImageUrl = card.imageUrl;
 
    content.innerHTML = `
         <table class="detail-table">
@@ -673,7 +676,6 @@ function viewCardDetail(cardId) {
                 ? `<tr>
                 <td colspan="2" class="detail-image">
                     <img id="detail-card-image" src="${displayImageUrl}" alt="${card.name}" width="300">
-                    ${selectedFoilInDetail && card.foilStock > 0 ? '<div class="foil-indicator">✨ Versión Foil</div>' : '<div class="normal-indicator">Normal</div>'}
                 </td>
             </tr>`
                 : ""
@@ -718,29 +720,17 @@ function viewCardDetail(cardId) {
                 </td>
             </tr>
             <tr>
-                <td><b>Precio:</b></td>
-                <td class="detail-price">$${Math.round(card.price)} CLP</td>
-            </tr>
-            <tr>
-                <td><b>Stock:</b></td>
-                <td class="detail-stock">
-                  ${card.normalStock > 0 ? `<span class="card-stock-normal">Normal: ${card.normalStock}</span> ` : ""}
-                  ${card.foilStock > 0 ? `<span class="card-stock-foil">✨ Foil: ${card.foilStock}</span>` : ""}
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2" class="detail-version-selector">
-                  <div class="version-buttons">
-                    ${card.normalStock > 0 ? `<button class="btn-version ${!selectedFoilInDetail ? 'active' : ''}" onclick="selectVersionInDetail(false, '${card.id}')">Normal</button>` : ""}
-                    ${card.foilStock > 0 ? `<button class="btn-version ${selectedFoilInDetail ? 'active' : ''}" onclick="selectVersionInDetail(true, '${card.id}')">✨ Foil</button>` : ""}
-                  </div>
+                <td><b>Disponibilidad y Precios:</b></td>
+                <td>
+                  ${card.normalStock > 0 ? `<div><span class="card-stock-normal">Normal: ${card.normalStock}</span> - $${Math.round(card.normalPrice)} CLP</div>` : ""}
+                  ${card.foilStock > 0 ? `<div><span class="card-stock-foil">✨ Foil: ${card.foilStock}</span> - $${Math.round(card.foilPrice)} CLP</div>` : ""}
                 </td>
             </tr>
             <tr>
                 <td colspan="2" class="detail-actions">
                     ${
                       (card.foilStock + card.normalStock) > 0
-                        ? `<button class="btn-add-cart" onclick="addToCart('${card.id}', ${selectedFoilInDetail}); closeCardDetail();">Agregar al Carrito</button>`
+                        ? `<button class="btn-add-cart" onclick="addVersionSelection('${card.id}'); closeCardDetail();">Agregar al Carrito</button>`
                         : "<button disabled>Agotado</button>"
                     }
                 </td>
@@ -749,41 +739,6 @@ function viewCardDetail(cardId) {
     `;
 
    modal.showModal();
-}
-
-// Select foil or normal version in detail modal
-function selectVersionInDetail(isFoil, cardId) {
-  selectedFoilInDetail = isFoil;
-  const card = cardDatabase.find((c) => c.id === cardId);
-  
-  if (card && card.imageUrl) {
-    // Update the image
-    const detailImage = document.getElementById("detail-card-image");
-    const foilIndicator = document.querySelector(".foil-indicator, .normal-indicator");
-    
-    if (detailImage) {
-      const newImageUrl = isFoil ? card.foilImageUrl : card.normalImageUrl;
-      detailImage.src = newImageUrl;
-    }
-    
-    // Update indicator
-    if (foilIndicator) {
-      if (isFoil && card.foilStock > 0) {
-        foilIndicator.className = "foil-indicator";
-        foilIndicator.textContent = "✨ Versión Foil";
-      } else {
-        foilIndicator.className = "normal-indicator";
-        foilIndicator.textContent = "Normal";
-      }
-    }
-    
-    // Update active button
-    const buttons = document.querySelectorAll(".btn-version");
-    buttons.forEach(btn => {
-      btn.classList.remove("active");
-    });
-    if (event.target) event.target.classList.add("active");
-  }
 }
 
 // Close card detail modal
