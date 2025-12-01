@@ -1,0 +1,70 @@
+/* ========================================
+   LAYOUT: Navigation Structure
+   ======================================== */
+
+.l-navbar {
+  position: sticky;
+  top: 0;
+  z-index: $z-navbar;
+  background-color: $primary-color;
+  border-bottom: 1px solid $color-border;
+}
+
+.navbar {
+  padding: $spacing-md 0;
+  background-color: $primary-color;
+}
+
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 $spacing-lg;
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: $color-gold;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    color: $color-gold-alt;
+  }
+}
+
+.navbar-links {
+  display: flex;
+  gap: $spacing-lg;
+  align-items: center;
+}
+
+.nav-cart-summary {
+  position: relative;
+}
+
+.nav-cart-tooltip {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: $primary-color;
+  border: 1px solid $color-border;
+  border-radius: $border-radius-md;
+  padding: $spacing-md;
+  margin-top: $spacing-sm;
+  white-space: nowrap;
+  display: none;
+  z-index: $z-tooltip;
+
+  p {
+    margin-bottom: $spacing-xs;
+    font-size: 0.9rem;
+  }
+}
+
+.nav-cart-summary:hover .nav-cart-tooltip {
+  display: block;
+}

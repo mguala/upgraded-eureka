@@ -1,0 +1,43 @@
+/* ========================================
+   THEME: Spacing Scale
+   ======================================== */
+
+// Spacing Units
+$spacing-base: 1rem;
+$spacing-xs: 0.25rem;   // 4px
+$spacing-sm: 0.5rem;    // 8px
+$spacing-md: 0.75rem;   // 12px
+$spacing-lg: 1rem;      // 16px
+$spacing-xl: 1.5rem;    // 24px
+$spacing-xxl: 2rem;     // 32px
+
+// Border Radius
+$border-radius-sm: 3px;
+$border-radius-md: 4px;
+$border-radius-lg: 8px;
+$border-radius-xl: 15px;
+$border-radius-full: 50%;
+
+// Shadows
+$shadow-light: 0 2px 4px rgba(0, 0, 0, 0.1);
+$shadow-medium: 0 4px 6px rgba(0, 0, 0, 0.2);
+$shadow-foil: 0 2px 5px rgba(218, 165, 32, 0.5);
+$shadow-blue: 0 2px 5px rgba(52, 152, 219, 0.5);
+$shadow-green: 0 0 10px rgba(76, 175, 80, 0.3);
+
+// Z-index
+$z-navbar: 900;
+$z-tooltip: 999;
+$z-modal: 1000;
+$z-modal-card-detail: 1001;
+$z-modal-filters: 1002;
+
+// Transitions & Animations
+$transition-default: 0.3s ease;
+$transition-fast: 0.2s ease;
+$transition-slow: 0.5s ease;
+
+// Breakpoints
+$breakpoint-mobile: 768px;
+$breakpoint-tablet: 1024px;
+$breakpoint-desktop: 1440px;

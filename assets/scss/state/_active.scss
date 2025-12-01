@@ -1,0 +1,28 @@
+/* ========================================
+   STATE: Active/Selected States
+   ======================================== */
+
+.is-active {
+  background-color: $accent-color;
+  color: white;
+}
+
+.is-selected {
+  border: 2px solid $accent-color;
+  background-color: rgba($accent-color, 0.05);
+}
+
+.is-current {
+  font-weight: bold;
+  color: $accent-color;
+}
+
+a.is-active {
+  color: $accent-color;
+  text-decoration: underline;
+}
+
+button.is-active {
+  background-color: $accent-color;
+  color: white;
+}

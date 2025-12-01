@@ -5,7 +5,7 @@
    SCSS Variables
    ======================================== */
 @font-face {
-  font-family: "Goudy Medieval";
+  font-family: "GoudyMedieval";
   src: url("../fonts/Goudymedieval.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
@@ -176,7 +176,7 @@ main {
 .header-table h1 {
   text-align: center;
   margin: 0;
-  font-family: "Goudy Medieval", serif;
+  font-family: "GoudyMedieval", serif;
   font-size: 48px;
   letter-spacing: 2px;
 }

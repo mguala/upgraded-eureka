@@ -1,0 +1,56 @@
+/* ========================================
+   BASE: Typography
+   ======================================== */
+
+h1, h2, h3, h4, h5, h6 {
+  margin-bottom: $spacing-lg;
+  line-height: 1.2;
+  font-weight: bold;
+}
+
+h1 {
+  font-size: $h1-font-size;
+  font-family: $font-title;
+}
+
+h2 {
+  font-size: $h2-font-size;
+  font-family: $font-title;
+}
+
+h3 {
+  font-size: $h3-font-size;
+  font-family: $font-title;
+}
+
+h4 {
+  font-size: $h4-font-size;
+}
+
+h5 {
+  font-size: $h5-font-size;
+}
+
+h6 {
+  font-size: $h6-font-size;
+}
+
+p {
+  margin-bottom: $spacing-md;
+  line-height: 1.6;
+}
+
+strong {
+  font-weight: bold;
+}
+
+em {
+  font-style: italic;
+}
+
+code {
+  font-family: 'Courier New', monospace;
+  background-color: $color-gray-light;
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $border-radius-sm;
+}

@@ -1,0 +1,41 @@
+/* ========================================
+   LAYOUT: Grid & Container System
+   ======================================== */
+
+.l-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 $spacing-lg;
+}
+
+.main-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: $spacing-lg;
+  flex: 1;
+}
+
+.l-grid {
+  display: grid;
+  gap: $spacing-lg;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: $spacing-lg;
+
+  &.g-4 {
+    gap: 1.5rem;
+  }
+}
+
+#cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: $spacing-lg;
+}
+
+#cards-container {
+  margin: $spacing-lg 0;
+}

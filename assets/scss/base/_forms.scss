@@ -1,0 +1,45 @@
+/* ========================================
+   BASE: Form Elements
+   ======================================== */
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+textarea,
+select {
+  width: 100%;
+  padding: $spacing-sm $spacing-md;
+  border: 1px solid $color-border;
+  border-radius: $border-radius-md;
+  font-size: 1rem;
+  font-family: inherit;
+  
+  &:focus {
+    outline: none;
+    border-color: $accent-color;
+    box-shadow: 0 0 0 3px rgba($accent-color, 0.1);
+  }
+}
+
+textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+label {
+  display: block;
+  margin-bottom: $spacing-xs;
+  font-weight: 500;
+}
+
+fieldset {
+  border: none;
+  padding: 0;
+  margin-bottom: $spacing-lg;
+}
+
+legend {
+  font-weight: bold;
+  margin-bottom: $spacing-sm;
+}

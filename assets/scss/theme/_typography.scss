@@ -1,0 +1,49 @@
+/* ========================================
+   THEME: Typography Settings
+   ======================================== */
+
+// Font Faces
+@font-face {
+  font-family: 'Goudy Medieval';
+  src: url('../fonts/Goudymedieval.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Matrix Bold';
+  src: url('../fonts/Matrix\ Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Beleren 2016';
+  src: url('../fonts/Beleren2016-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+// Font Families
+$font-title: 'Goudy Medieval', serif;
+$font-body: 'Matrix Bold', sans-serif;
+$font-cards: 'Beleren 2016', serif;
+$font-fallback: Arial, sans-serif;
+
+// Font Sizes
+$font-size-base: 1rem;
+$h1-font-size: 2.5rem;
+$h2-font-size: 2rem;
+$h3-font-size: 1.75rem;
+$h4-font-size: 1.5rem;
+$h5-font-size: 1.25rem;
+$h6-font-size: 1rem;
+
+// Line Height
+$line-height-base: 1.5;
+$line-height-heading: 1.2;
+$line-height-loose: 1.8;
+
+// Font Weights
+$font-weight-normal: 400;
+$font-weight-bold: 700;

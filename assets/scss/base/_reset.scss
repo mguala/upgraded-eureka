@@ -1,0 +1,59 @@
+/* ========================================
+   BASE: Reset/Normalize Styles
+   ======================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: $font-body;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #0a0a14;
+  color: #e0e0e0;
+  line-height: $line-height-base;
+}
+
+main {
+  flex: 1;
+}
+
+/* Remove default list styles */
+ul, ol {
+  list-style: none;
+}
+
+/* Remove default link styles */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Make images responsive */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Remove default button styles */
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+/* Make form elements inherit fonts */
+input, textarea, select {
+  font-family: inherit;
+  font-size: inherit;
+}
