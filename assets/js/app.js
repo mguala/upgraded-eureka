@@ -21,7 +21,7 @@ const USD_TO_CLP = 500;
 // Load CSV file using PapaParse
 async function loadCSV(filename) {
   try {
-    const response = await fetch(filename);
+    const response = await fetch("assets/CSV/" + filename);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -239,32 +239,32 @@ function createCardHTML(card) {
    const typeIcon = getTypeIcon(card.type);
    const totalStock = card.foilStock + card.normalStock;
    const stockStatus = totalStock > 0 ? `En Stock (${totalStock})` : "Agotado";
-   const stockColor = totalStock > 0 ? "green" : "red";
+   const stockStatusClass = totalStock > 0 ? "card-stock-in" : "card-stock-out";
 
   return `
-        <table width="100%" border="1" cellpadding="10" bgcolor="white">
-            <tr bgcolor="#f0f0f0">
+        <table class="card-table">
+            <tr class="card-header">
                 <td>
-                    <b>${card.name}</b> ${card.isForil ? '<span style="color: gold; font-weight: bold;">✨ FOIL</span>' : ''}
+                    <span class="card-name">${card.name}</span> ${card.isForil ? '<span class="card-badge-foil">✨ FOIL</span>' : ''}
                     <br>
-                    <small>${colorEmoji} ${
+                    <span class="card-meta">${colorEmoji} ${
     card.color.charAt(0).toUpperCase() + card.color.slice(1)
   } | ${typeIcon} ${
     card.type.charAt(0).toUpperCase() + card.type.slice(1)
-  }</small>
+  }</span>
                 </td>
             </tr>
             ${
               card.imageUrl
                 ? `<tr>
-                <td align="center">
-                    <img src="${card.imageUrl}" alt="${card.name}" width="200" style="border-radius: 10px;">
+                <td class="card-image">
+                    <img src="${card.imageUrl}" alt="${card.name}" width="200">
                 </td>
             </tr>`
                 : ""
             }
             <tr>
-                <td>
+                <td class="card-details">
                     <p><b>Coste de Maná:</b> ${card.manaCost}</p>
                     ${
                       card.power !== null
@@ -275,18 +275,18 @@ function createCardHTML(card) {
                     <p><b>Edición:</b> ${card.set}</p>
                     <p><i>${card.text}</i></p>
                     <hr>
-                    <p><b>Precio: $${Math.round(card.price)} CLP</b></p>
+                    <p class="card-price"><b>Precio: $${Math.round(card.price)} CLP</b></p>
                      <p>
-                       ${card.normalStock > 0 ? `<font color="blue">Normal: ${card.normalStock}</font> ` : ""}
-                       ${card.foilStock > 0 ? `<font color="gold">✨ Foil: ${card.foilStock}</font>` : ""}
+                       ${card.normalStock > 0 ? `<span class="card-stock-normal">Normal: ${card.normalStock}</span>` : ""}
+                       ${card.foilStock > 0 ? `<span class="card-stock-foil">✨ Foil: ${card.foilStock}</span>` : ""}
                      </p>
-                     <p><font color="${stockColor}">${stockStatus}</font></p>
-                     <button onclick="viewCardDetail('${
+                     <p><span class="card-stock-status ${stockStatusClass}">${stockStatus}</span></p>
+                     <button class="btn-details" onclick="viewCardDetail('${
                        card.id
                      }')">Ver Detalles</button>
                      ${
                        totalStock > 0
-                         ? `<button onclick="showFoilSelection('${card.id}')">Agregar al Carrito</button>`
+                         ? `<button class="btn-add-cart" onclick="showFoilSelection('${card.id}')">Agregar al Carrito</button>`
                          : "<button disabled>Agotado</button>"
                      }
                 </td>
@@ -467,17 +467,17 @@ function viewCart() {
   const cartItemsDiv = document.getElementById("cart-items");
 
   if (shoppingCart.length === 0) {
-    cartItemsDiv.innerHTML = "<p><i>Tu carrito está vacío</i></p>";
+    cartItemsDiv.innerHTML = '<p class="cart-empty">Tu carrito está vacío</p>';
   } else {
-    let html = '<table width="100%" border="1" cellpadding="5">';
+    let html = '<table class="cart-items-table"><thead>';
     html +=
-      '<tr bgcolor="#e0e0e0"><th>Carta</th><th>Precio</th><th>Cantidad</th><th>Subtotal</th><th>Acción</th></tr>';
+      '<tr><th>Carta</th><th>Precio</th><th>Cantidad</th><th>Subtotal</th><th>Acción</th></tr></thead><tbody>';
 
     shoppingCart.forEach((item, index) => {
       const subtotal = item.price * item.quantity;
       html += `
                 <tr>
-                    <td>${item.name} ${item.isForil ? "<font color='gold'>✨ Foil</font>" : ""}</td>
+                    <td>${item.name} ${item.isForil ? '<span class="cart-badge-foil">✨ Foil</span>' : ""}</td>
                     <td>$${Math.round(item.price)} CLP</td>
                     <td>
                         <button onclick="decreaseQuantity(${index})">-</button>
@@ -490,7 +490,7 @@ function viewCart() {
             `;
     });
 
-    html += "</table>";
+    html += "</tbody></table>";
     cartItemsDiv.innerHTML = html;
   }
 
@@ -585,99 +585,118 @@ function checkout() {
   }
 }
 
+// Track selected foil version in detail modal
+let selectedFoilInDetail = false;
+
 // View card details
 function viewCardDetail(cardId) {
-  const card = cardDatabase.find((c) => c.id === cardId);
+   const card = cardDatabase.find((c) => c.id === cardId);
 
-  if (!card) return;
+   if (!card) return;
 
-  const modal = document.getElementById("card-detail-modal");
-  const content = document.getElementById("card-detail-content");
+   const modal = document.getElementById("card-detail-modal");
+   const content = document.getElementById("card-detail-content");
 
-  const colorEmoji = getColorEmoji(card.color);
-  const typeIcon = getTypeIcon(card.type);
+   const colorEmoji = getColorEmoji(card.color);
+   const typeIcon = getTypeIcon(card.type);
 
-  content.innerHTML = `
-        <table width="100%" cellpadding="10">
-            <tr bgcolor="#f0f0f0">
-                <td colspan="2" align="center">
-                    <h2>${card.name}</h2>
-                </td>
-            </tr>
-            ${
-              card.imageUrl
-                ? `<tr>
-                <td colspan="2" align="center">
-                    <img src="${card.imageUrl}" alt="${card.name}" width="300" style="border-radius: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
-                </td>
-            </tr>`
-                : ""
-            }
-            <tr>
-                <td><b>Coste de Maná:</b></td>
-                <td>${card.manaCost}</td>
-            </tr>
-            <tr>
-                <td><b>Tipo:</b></td>
-                <td>${typeIcon} ${
-    card.type.charAt(0).toUpperCase() + card.type.slice(1)
-  }</td>
-            </tr>
-            <tr>
-                <td><b>Color:</b></td>
-                <td>${colorEmoji} ${
-    card.color.charAt(0).toUpperCase() + card.color.slice(1)
-  }</td>
-            </tr>
-            ${
-              card.power !== null
-                ? `
-            <tr>
-                <td><b>Fuerza/Resistencia:</b></td>
-                <td>${card.power}/${card.toughness}</td>
-            </tr>
-            `
-                : ""
-            }
-            <tr>
-                <td><b>Rareza:</b></td>
-                <td>${card.rarity}</td>
-            </tr>
-            <tr>
-                <td><b>Edición:</b></td>
-                <td>${card.set}</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <hr>
-                    <p><i>${card.text}</i></p>
-                    <hr>
-                </td>
-            </tr>
-            <tr>
-                <td><b>Precio:</b></td>
-                <td><font size="5">$${Math.round(card.price)} CLP</font></td>
-            </tr>
-            <tr>
-                <td><b>Stock:</b></td>
-                <td>
-                  ${card.normalStock > 0 ? `<font color="blue">Normal: ${card.normalStock}</font> ` : ""}
-                  ${card.foilStock > 0 ? `<font color="gold">✨ Foil: ${card.foilStock}</font>` : ""}
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2" align="center">
-                    ${
-                      (card.foilStock + card.normalStock) > 0
-                        ? `<button onclick="showFoilSelection('${card.id}'); closeCardDetail();">Agregar al Carrito</button>`
-                        : "<button disabled>Agotado</button>"
-                    }
-                </td>
-            </tr>
-        </table>
-    `;
+   // Default to foil if available, otherwise normal
+   selectedFoilInDetail = card.foilStock > 0 ? true : false;
 
-  modal.style.display = "block";
+   content.innerHTML = `
+         <table class="detail-table">
+             <tr>
+                 <td colspan="2" class="detail-header">
+                     <h2>${card.name}</h2>
+                 </td>
+             </tr>
+             ${
+               card.imageUrl
+                 ? `<tr>
+                 <td colspan="2" class="detail-image">
+                     <img src="${card.imageUrl}" alt="${card.name}" width="300">
+                     ${selectedFoilInDetail && card.foilStock > 0 ? '<div class="foil-indicator">✨ Versión Foil</div>' : ''}
+                 </td>
+             </tr>`
+                 : ""
+             }
+             <tr>
+                 <td><b>Coste de Maná:</b></td>
+                 <td>${card.manaCost}</td>
+             </tr>
+             <tr>
+                 <td><b>Tipo:</b></td>
+                 <td>${typeIcon} ${
+     card.type.charAt(0).toUpperCase() + card.type.slice(1)
+   }</td>
+             </tr>
+             <tr>
+                 <td><b>Color:</b></td>
+                 <td>${colorEmoji} ${
+     card.color.charAt(0).toUpperCase() + card.color.slice(1)
+   }</td>
+             </tr>
+             ${
+               card.power !== null
+                 ? `
+             <tr>
+                 <td><b>Fuerza/Resistencia:</b></td>
+                 <td>${card.power}/${card.toughness}</td>
+             </tr>
+             `
+                 : ""
+             }
+             <tr>
+                 <td><b>Rareza:</b></td>
+                 <td>${card.rarity}</td>
+             </tr>
+             <tr>
+                 <td><b>Edición:</b></td>
+                 <td>${card.set}</td>
+             </tr>
+             <tr>
+                 <td colspan="2" class="detail-description">
+                     <p><i>${card.text}</i></p>
+                 </td>
+             </tr>
+             <tr>
+                 <td><b>Precio:</b></td>
+                 <td class="detail-price">$${Math.round(card.price)} CLP</td>
+             </tr>
+             <tr>
+                 <td><b>Stock:</b></td>
+                 <td class="detail-stock">
+                   ${card.normalStock > 0 ? `<span class="card-stock-normal">Normal: ${card.normalStock}</span> ` : ""}
+                   ${card.foilStock > 0 ? `<span class="card-stock-foil">✨ Foil: ${card.foilStock}</span>` : ""}
+                 </td>
+             </tr>
+             <tr>
+                 <td colspan="2" class="detail-version-selector">
+                   <div class="version-buttons">
+                     ${card.normalStock > 0 ? `<button class="btn-version ${!selectedFoilInDetail ? 'active' : ''}" onclick="selectVersionInDetail(false, '${card.id}')">Normal</button>` : ""}
+                     ${card.foilStock > 0 ? `<button class="btn-version ${selectedFoilInDetail ? 'active' : ''}" onclick="selectVersionInDetail(true, '${card.id}')">✨ Foil</button>` : ""}
+                   </div>
+                 </td>
+             </tr>
+             <tr>
+                 <td colspan="2" class="detail-actions">
+                     ${
+                       (card.foilStock + card.normalStock) > 0
+                         ? `<button class="btn-add-cart" onclick="addToCart('${card.id}', ${selectedFoilInDetail}); closeCardDetail();">Agregar al Carrito</button>`
+                         : "<button disabled>Agotado</button>"
+                     }
+                 </td>
+             </tr>
+         </table>
+     `;
+
+   modal.style.display = "block";
+}
+
+// Select foil or normal version in detail modal
+function selectVersionInDetail(isFoil, cardId) {
+   selectedFoilInDetail = isFoil;
+   viewCardDetail(cardId);
 }
 
 // Close card detail modal
@@ -697,6 +716,14 @@ window.onclick = function (event) {
     closeCardDetail();
   }
 };
+
+// Scroll to contact section
+function scrollToContact() {
+  const contactSection = document.getElementById("contact-section");
+  if (contactSection) {
+    contactSection.scrollIntoView({ behavior: "smooth" });
+  }
+}
 
 // Initialize store when page loads
 window.onload = initStore;
