@@ -2,6 +2,9 @@
    UTILS: Utility Classes & Helpers
    ======================================== */
 
+@use '../theme/spacing';
+@use '../theme/colors';
+
 // Flexbox Utilities
 .flex {
   display: flex;
@@ -23,9 +26,9 @@
   flex-direction: column;
 }
 
-.gap-sm { gap: $spacing-sm; }
-.gap-md { gap: $spacing-md; }
-.gap-lg { gap: $spacing-lg; }
+.gap-sm { gap: spacing.$spacing-sm; }
+.gap-md { gap: spacing.$spacing-md; }
+.gap-lg { gap: spacing.$spacing-lg; }
 
 // Text Utilities
 .text-center { text-align: center; }
@@ -40,26 +43,26 @@
   white-space: nowrap;
 }
 
-.text-primary { color: $accent-color; }
-.text-secondary { color: $secondary-color; }
-.text-success { color: $color-success; }
-.text-danger { color: $color-danger; }
-.text-warning { color: $color-warning; }
-.text-muted { color: $color-text-light; }
+.text-primary { color: colors.$accent-color; }
+.text-secondary { color: colors.$secondary-color; }
+.text-success { color: colors.$color-success; }
+.text-danger { color: colors.$color-danger; }
+.text-warning { color: colors.$color-warning; }
+.text-muted { color: colors.$color-text-light; }
 
 // Spacing Utilities
 .m-0 { margin: 0; }
-.mt-sm { margin-top: $spacing-sm; }
-.mt-md { margin-top: $spacing-md; }
-.mt-lg { margin-top: $spacing-lg; }
-.mb-sm { margin-bottom: $spacing-sm; }
-.mb-md { margin-bottom: $spacing-md; }
-.mb-lg { margin-bottom: $spacing-lg; }
+.mt-sm { margin-top: spacing.$spacing-sm; }
+.mt-md { margin-top: spacing.$spacing-md; }
+.mt-lg { margin-top: spacing.$spacing-lg; }
+.mb-sm { margin-bottom: spacing.$spacing-sm; }
+.mb-md { margin-bottom: spacing.$spacing-md; }
+.mb-lg { margin-bottom: spacing.$spacing-lg; }
 
 .p-0 { padding: 0; }
-.p-sm { padding: $spacing-sm; }
-.p-md { padding: $spacing-md; }
-.p-lg { padding: $spacing-lg; }
+.p-sm { padding: spacing.$spacing-sm; }
+.p-md { padding: spacing.$spacing-md; }
+.p-lg { padding: spacing.$spacing-lg; }
 
 // Display Utilities
 .block { display: block; }

@@ -2,7 +2,7 @@
    SCSS Global Configuration Variables
    ======================================== */
 
-// Import all theme variables
-@import 'theme/colors';
-@import 'theme/typography';
-@import 'theme/spacing';
+// Re-export all theme variables for backwards compatibility
+@use 'theme/colors' as *;
+@use 'theme/typography' as *;
+@use 'theme/spacing' as *;

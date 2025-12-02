@@ -2,17 +2,20 @@
    LAYOUT: Navigation Structure
    ======================================== */
 
+@use '../theme/colors';
+@use '../theme/spacing';
+
 .l-navbar {
   position: sticky;
   top: 0;
-  z-index: $z-navbar;
-  background-color: $primary-color;
-  border-bottom: 1px solid $color-border;
+  z-index: spacing.$z-navbar;
+  background-color: colors.$primary-color;
+  border-bottom: 1px solid colors.$color-border;
 }
 
 .navbar {
-  padding: $spacing-md 0;
-  background-color: $primary-color;
+  padding: spacing.$spacing-md 0;
+  background-color: colors.$primary-color;
 }
 
 .navbar-container {
@@ -21,24 +24,24 @@
   align-items: center;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 $spacing-lg;
+  padding: 0 spacing.$spacing-lg;
 }
 
 .navbar-brand {
   font-size: 1.5rem;
   font-weight: bold;
-  color: $color-gold;
+  color: colors.$color-gold;
   display: flex;
   align-items: center;
 
   &:hover {
-    color: $color-gold-alt;
+    color: colors.$color-gold-alt;
   }
 }
 
 .navbar-links {
   display: flex;
-  gap: $spacing-lg;
+  gap: spacing.$spacing-lg;
   align-items: center;
 }
 
@@ -50,17 +53,17 @@
   position: absolute;
   top: 100%;
   right: 0;
-  background-color: $primary-color;
-  border: 1px solid $color-border;
-  border-radius: $border-radius-md;
-  padding: $spacing-md;
-  margin-top: $spacing-sm;
+  background-color: colors.$primary-color;
+  border: 1px solid colors.$color-border;
+  border-radius: spacing.$border-radius-md;
+  padding: spacing.$spacing-md;
+  margin-top: spacing.$spacing-sm;
   white-space: nowrap;
   display: none;
-  z-index: $z-tooltip;
+  z-index: spacing.$z-tooltip;
 
   p {
-    margin-bottom: $spacing-xs;
+    margin-bottom: spacing.$spacing-xs;
     font-size: 0.9rem;
   }
 }

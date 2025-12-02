@@ -2,27 +2,30 @@
    LAYOUT: Header Structure
    ======================================== */
 
+@use '../theme/colors';
+@use '../theme/spacing';
+
 .l-header {
   background-color: #1a1a2e;
   border-bottom: 2px solid #16213e;
-  padding: $spacing-lg 0;
+  padding: spacing.$spacing-lg 0;
 }
 
 .header-table {
   background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
   text-align: center;
-  padding: $spacing-xxl $spacing-lg;
+  padding: spacing.$spacing-xxl spacing.$spacing-lg;
 
   h1 {
-    font-size: $h1-font-size;
-    color: $color-gold;
-    margin-bottom: $spacing-md;
+    font-size: 2.5rem;
+    color: colors.$color-gold;
+    margin-bottom: spacing.$spacing-md;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   }
 
   p {
     font-size: 1.25rem;
-    color: $color-gray-darker;
+    color: colors.$color-gray-darker;
     margin: 0;
   }
 }

@@ -2,41 +2,44 @@
    BASE: Typography
    ======================================== */
 
+@use '../theme/typography';
+@use '../theme/spacing';
+
 h1, h2, h3, h4, h5, h6 {
-  margin-bottom: $spacing-lg;
+  margin-bottom: spacing.$spacing-lg;
   line-height: 1.2;
   font-weight: bold;
 }
 
 h1 {
-  font-size: $h1-font-size;
-  font-family: $font-title;
+  font-size: typography.$h1-font-size;
+  font-family: typography.$font-title;
 }
 
 h2 {
-  font-size: $h2-font-size;
-  font-family: $font-title;
+  font-size: typography.$h2-font-size;
+  font-family: typography.$font-title;
 }
 
 h3 {
-  font-size: $h3-font-size;
-  font-family: $font-title;
+  font-size: typography.$h3-font-size;
+  font-family: typography.$font-title;
 }
 
 h4 {
-  font-size: $h4-font-size;
+  font-size: typography.$h4-font-size;
 }
 
 h5 {
-  font-size: $h5-font-size;
+  font-size: typography.$h5-font-size;
 }
 
 h6 {
-  font-size: $h6-font-size;
+  font-size: typography.$h6-font-size;
 }
 
 p {
-  margin-bottom: $spacing-md;
+  margin-bottom: spacing.$spacing-md;
   line-height: 1.6;
 }
 
@@ -50,7 +53,7 @@ em {
 
 code {
   font-family: 'Courier New', monospace;
-  background-color: $color-gray-light;
-  padding: $spacing-xs $spacing-sm;
-  border-radius: $border-radius-sm;
+  background-color: #f5f5f5;
+  padding: spacing.$spacing-xs spacing.$spacing-sm;
+  border-radius: spacing.$border-radius-sm;
 }

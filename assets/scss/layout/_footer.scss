@@ -2,28 +2,31 @@
    LAYOUT: Footer Structure
    ======================================== */
 
+@use '../theme/colors';
+@use '../theme/spacing';
+
 .l-footer {
-  background-color: $primary-color;
-  border-top: 2px solid $color-border;
-  padding: $spacing-xxl $spacing-lg;
-  margin-top: $spacing-xxl;
+  background-color: colors.$primary-color;
+  border-top: 2px solid colors.$color-border;
+  padding: spacing.$spacing-xxl spacing.$spacing-lg;
+  margin-top: spacing.$spacing-xxl;
 }
 
 footer {
-  background-color: $primary-color;
-  border-top: 1px solid $color-border;
-  padding: $spacing-lg;
+  background-color: colors.$primary-color;
+  border-top: 1px solid colors.$color-border;
+  padding: spacing.$spacing-lg;
   text-align: center;
-  color: $color-text-light;
+  color: colors.$color-text-light;
 
   p {
-    margin-bottom: $spacing-sm;
+    margin-bottom: spacing.$spacing-sm;
     font-size: 0.9rem;
   }
 
   .footer-info {
-    margin-top: $spacing-md;
-    padding-top: $spacing-md;
-    border-top: 1px solid $color-border-light;
+    margin-top: spacing.$spacing-md;
+    padding-top: spacing.$spacing-md;
+    border-top: 1px solid colors.$color-border-light;
   }
 }

@@ -12,8 +12,8 @@ let currentFoilFilter = "all";
 // Loading state
 let isLoading = true;
 
-// Scryfall API base URL
-const SCRYFALL_API = "https://api.scryfall.com";
+// Gatherer API base URL (Magic card database)
+const GATHERER_API = "https://api.gatherer.wizards.com";
 
 // USD to CLP conversion rate
 const USD_TO_CLP = 980;
@@ -47,43 +47,43 @@ async function loadCSV(filename) {
   }
 }
 
-// Fetch card data from Scryfall - exact match to get image and details
-async function fetchCardFromScryfall(cardName) {
+// Fetch card data from Gatherer API - exact match to get image and details
+async function fetchCardFromGatherer(cardName) {
   try {
     // Use exact search with timeout
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
     
     const response = await fetch(
-      `${SCRYFALL_API}/cards/search?q=!"${encodeURIComponent(cardName)}"&order=set&unique=prints`,
+      `${GATHERER_API}/cards/search?q=name:"${encodeURIComponent(cardName)}"`,
       { signal: controller.signal }
     );
 
     clearTimeout(timeoutId);
 
     if (!response.ok) {
-      console.warn(`No se encontró la carta en Scryfall: ${cardName}`);
+      console.warn(`No se encontró la carta en Gatherer: ${cardName}`);
       return null;
     }
 
     const data = await response.json();
-    return data.data && data.data.length > 0 ? data.data[0] : null;
+    return data && data.cards && data.cards.length > 0 ? data.cards[0] : null;
   } catch (error) {
     console.warn(`Error obteniendo carta ${cardName} (usando datos CSV):`, error.message);
     return null;
   }
 }
 
-// Convert Scryfall card + CSV data to our format
-function convertCardData(scryfallCard, csvRow) {
+// Convert Gatherer card + CSV data to our format
+function convertCardData(gathererCard, csvRow) {
   const isFoil = csvRow.Foil && csvRow.Foil.toLowerCase() === "foil";
   const quantity = parseInt(csvRow.Quantity) || 0;
   const price = (parseFloat(csvRow["Purchase price"]) || 0) * USD_TO_CLP;
 
-  // If no Scryfall data, use CSV data as fallback
-  if (!scryfallCard) {
+  // If no Gatherer data, use CSV data as fallback
+  if (!gathererCard) {
     return {
-      id: csvRow["Scryfall ID"] || csvRow.Name,
+      id: csvRow["Gatherer ID"] || csvRow.Name,
       name: csvRow.Name,
       type: "other",
       color: "colorless",
@@ -95,7 +95,7 @@ function convertCardData(scryfallCard, csvRow) {
       rarityLevel: csvRow.Rarity || "common",
       set: csvRow["Set name"],
       imageUrl: null,
-      scryfallUri: null,
+      gathererUri: null,
       isForil: isFoil,
       quantity: quantity,
       price: price,
@@ -104,7 +104,7 @@ function convertCardData(scryfallCard, csvRow) {
 
   // Get card type (simplified)
   let cardType = "other";
-  const typeLine = scryfallCard.type_line.toLowerCase();
+  const typeLine = gathererCard.types ? gathererCard.types.join(" ").toLowerCase() : "";
 
   if (typeLine.includes("creature")) cardType = "creature";
   else if (typeLine.includes("instant")) cardType = "instant";
@@ -116,7 +116,7 @@ function convertCardData(scryfallCard, csvRow) {
 
   // Get primary color
   let color = "colorless";
-  if (scryfallCard.colors && scryfallCard.colors.length > 0) {
+  if (gathererCard.colors && gathererCard.colors.length > 0) {
     const colorMap = {
       W: "white",
       U: "blue",
@@ -124,7 +124,7 @@ function convertCardData(scryfallCard, csvRow) {
       R: "red",
       G: "green",
     };
-    color = colorMap[scryfallCard.colors[0]] || "colorless";
+    color = colorMap[gathererCard.colors[0]] || "colorless";
   }
 
   // Translate rarity
@@ -135,30 +135,30 @@ function convertCardData(scryfallCard, csvRow) {
     mythic: "Mítica rara",
   };
 
-  // Get image URL
-  let imageUrl = scryfallCard.image_uris ? scryfallCard.image_uris.large : null;
+  // Get image URL from Gatherer
+  let imageUrl = gathererCard.image_uri || null;
 
   return {
-    id: scryfallCard.id,
-    name: scryfallCard.name,
+    id: gathererCard.id || gathererCard.gatherer_id,
+    name: gathererCard.name,
     type: cardType,
     color: color,
-    manaCost: scryfallCard.mana_cost || "0",
-    power: scryfallCard.power || null,
-    toughness: scryfallCard.toughness || null,
-    text: scryfallCard.oracle_text || "",
-    rarity: rarityMap[scryfallCard.rarity] || scryfallCard.rarity,
-    rarityLevel: scryfallCard.rarity || "common",
-    set: scryfallCard.set_name,
+    manaCost: gathererCard.mana_cost || "0",
+    power: gathererCard.power || null,
+    toughness: gathererCard.toughness || null,
+    text: gathererCard.text || "",
+    rarity: rarityMap[gathererCard.rarity] || gathererCard.rarity,
+    rarityLevel: gathererCard.rarity || "common",
+    set: gathererCard.set_name,
     imageUrl: imageUrl,
-    scryfallUri: scryfallCard.scryfall_uri,
+    gathererUri: gathererCard.gatherer_uri,
     isForil: isFoil,
     quantity: quantity,
     price: price,
   };
 }
 
-// Load all cards from CSV and enrich with Scryfall data
+// Load all cards from CSV and enrich with Gatherer data
 async function loadAllCards() {
   showLoadingMessage();
 
@@ -170,7 +170,7 @@ async function loadAllCards() {
     return;
   }
 
-  console.log(`Cargando ${csvData.length} cartas desde CSV + Scryfall...`);
+  console.log(`Cargando ${csvData.length} cartas desde CSV + Gatherer...`);
 
   // Process each CSV row with batching to avoid rate limits
   const batchSize = 5;
@@ -180,12 +180,12 @@ async function loadAllCards() {
     const batch = csvData.slice(i, i + batchSize);
     const batchPromises = batch.map(async (row) => {
       try {
-        // Fetch card details from Scryfall
-        const scryfallCard = await fetchCardFromScryfall(row.Name);
-        return convertCardData(scryfallCard, row);
+        // Fetch card details from Gatherer
+        const gathererCard = await fetchCardFromGatherer(row.Name);
+        return convertCardData(gathererCard, row);
       } catch (error) {
         console.error(`Error processing card ${row.Name}:`, error);
-        // Return card with just CSV data if Scryfall fails
+        // Return card with just CSV data if Gatherer fails
         return convertCardData(null, row);
       }
     });
@@ -278,7 +278,7 @@ function showLoadingMessage(searchTerm = "") {
   cardsGrid.innerHTML =
     `<div class="col-12 text-center py-5">
       <img src="${gif}" alt="Loading..." style="max-width: 300px; margin: 20px 0; border-radius: 8px;">
-      <h2>⏳ Cargando cartas desde Scryfall...</h2>
+      <h2>⏳ Cargando cartas desde Gatherer...</h2>
       <p>Por favor espera mientras obtenemos los datos de las cartas.</p>
       <p style="font-size: 0.9rem; color: #999;">Si toma mucho tiempo, usa los datos del CSV disponibles.</p>
     </div>`;

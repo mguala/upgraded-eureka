@@ -2,12 +2,14 @@
    Responsive Design Breakpoints
    ======================================== */
 
+@use 'theme/spacing';
+
 // Mobile First Approach
 @media (max-width: 768px) {
   // Layout
   .navbar-container {
     flex-direction: column;
-    gap: $spacing-md;
+    gap: spacing.$spacing-md;
   }
 
   .navbar-links {
@@ -15,9 +17,9 @@
     justify-content: center;
   }
 
-  // Grid
+  // Grid - 2 columns on tablet
   #cards-grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
   }
 
   // Cards
@@ -32,7 +34,7 @@
   // Modals
   .modal-content {
     max-width: 90vw;
-    margin: $spacing-lg;
+    margin: spacing.$spacing-lg;
   }
 
   .filters-modal-content {
@@ -59,7 +61,7 @@
   }
 
   .header-table {
-    padding: $spacing-lg;
+    padding: spacing.$spacing-lg;
 
     h1 {
       font-size: 1.5rem;
@@ -72,7 +74,7 @@
 
   // Spacing
   .main-content {
-    padding: $spacing-md;
+    padding: spacing.$spacing-md;
   }
 
   .modal-header {
@@ -85,60 +87,61 @@
   }
 }
 
-// Tablet and up
+// Tablet and up - 3 columns
 @media (min-width: 769px) and (max-width: 1024px) {
   #cards-grid {
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
-// Large screens
+// Large screens - 5 columns
 @media (min-width: 1025px) {
   #cards-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-columns: repeat(5, 1fr);
   }
 }
 
-// Extra small screens
+// Extra small screens - 1 column
 @media (max-width: 480px) {
-  .navbar-container {
-    padding: 0 $spacing-sm;
-  }
+   .navbar-container {
+     padding: 0 spacing.$spacing-sm;
+   }
 
-  .navbar-brand {
-    font-size: 1.2rem;
-  }
+   .navbar-brand {
+     font-size: 1.2rem;
+   }
 
-  #cards-grid {
-    grid-template-columns: 1fr;
-    gap: $spacing-md;
-  }
+   // Grid - 1 column on mobile
+   #cards-grid {
+     grid-template-columns: 1fr;
+     gap: spacing.$spacing-md;
+   }
 
-  .card-footer {
-    flex-direction: column;
-  }
+   .card-footer {
+     flex-direction: column;
+   }
 
-  .card-actions {
-    flex-direction: column;
+   .card-actions {
+     flex-direction: column;
 
-    button {
-      width: 100%;
-    }
-  }
+     button {
+       width: 100%;
+     }
+   }
 
-  .version-options {
-    grid-template-columns: 1fr;
-  }
+   .version-options {
+     grid-template-columns: 1fr;
+   }
 
-  .modal-content {
-    border-radius: 0;
-  }
+   .modal-content {
+     border-radius: 0;
+   }
 
-  .button {
-    font-size: 0.9rem;
-    padding: $spacing-xs $spacing-sm;
-  }
-}
+   .button {
+     font-size: 0.9rem;
+     padding: spacing.$spacing-xs spacing.$spacing-sm;
+   }
+ }
 
 // Print styles
 @media print {

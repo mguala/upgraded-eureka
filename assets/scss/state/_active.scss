@@ -2,27 +2,29 @@
    STATE: Active/Selected States
    ======================================== */
 
+@use '../theme/colors';
+
 .is-active {
-  background-color: $accent-color;
+  background-color: colors.$accent-color;
   color: white;
 }
 
 .is-selected {
-  border: 2px solid $accent-color;
-  background-color: rgba($accent-color, 0.05);
+  border: 2px solid colors.$accent-color;
+  background-color: rgba(colors.$accent-color, 0.05);
 }
 
 .is-current {
   font-weight: bold;
-  color: $accent-color;
+  color: colors.$accent-color;
 }
 
 a.is-active {
-  color: $accent-color;
+  color: colors.$accent-color;
   text-decoration: underline;
 }
 
 button.is-active {
-  background-color: $accent-color;
+  background-color: colors.$accent-color;
   color: white;
 }

@@ -2,6 +2,8 @@
    STATE: Disabled/Inactive States
    ======================================== */
 
+@use '../theme/colors';
+
 .is-disabled,
 button:disabled,
 input:disabled,
@@ -13,23 +15,23 @@ select:disabled {
 }
 
 button.is-disabled {
-  background-color: $color-gray-medium;
-  color: $color-text-lighter;
+  background-color: colors.$color-gray-medium;
+  color: colors.$color-text-lighter;
 }
 
 input.is-disabled,
 textarea.is-disabled,
 select.is-disabled {
-  background-color: $color-gray-light;
-  color: $color-text-lighter;
+  background-color: colors.$color-gray-light;
+  color: colors.$color-text-lighter;
 }
 
 a.is-disabled {
-  color: $color-text-lighter;
+  color: colors.$color-text-lighter;
   text-decoration: none;
   cursor: not-allowed;
 
   &:hover {
-    color: $color-text-lighter;
+    color: colors.$color-text-lighter;
   }
 }

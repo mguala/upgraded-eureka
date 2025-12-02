@@ -2,13 +2,16 @@
    Navigation Bar Styles
    ======================================== */
 
+@use 'theme/colors';
+@use 'theme/spacing';
+
 .navbar {
-  background-color: $color-primary;
+  background-color: colors.$primary-color;
   padding: 0;
-  box-shadow: $shadow-light;
+  box-shadow: spacing.$shadow-light;
   position: sticky;
   top: 0;
-  z-index: $z-navbar;
+  z-index: spacing.$z-navbar;
 }
 
 .navbar-container {
@@ -17,40 +20,40 @@
   align-items: center;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 $spacing-xl;
+  padding: 0 spacing.$spacing-xl;
   height: 60px;
 }
 
 .navbar-brand {
-  color: $color-white;
+  color: colors.$color-white;
   font-size: 20px;
   font-weight: bold;
   text-decoration: none;
   display: flex;
   align-items: center;
-  transition: color $transition-default;
+  transition: color spacing.$transition-default;
 
   &:hover {
-    color: $color-accent;
+    color: colors.$accent-color;
   }
 }
 
 .navbar-links {
   display: flex;
-  gap: $spacing-xl;
+  gap: spacing.$spacing-xl;
 }
 
 .nav-link {
-  color: $color-white;
+  color: colors.$color-white;
   font-size: 16px;
   font-weight: bold;
   text-decoration: none;
-  transition: color $transition-default;
+  transition: color spacing.$transition-default;
   display: flex;
   align-items: center;
 
   &:hover {
-    color: $color-accent;
+    color: colors.$accent-color;
   }
 }
 
@@ -61,18 +64,18 @@
 }
 
 .nav-cart-btn {
-  background-color: $color-danger;
-  color: $color-white;
+  background-color: colors.$color-danger;
+  color: colors.$color-white;
   border: none;
-  padding: $spacing-md $spacing-lg;
-  border-radius: $border-radius-md;
+  padding: spacing.$spacing-md spacing.$spacing-lg;
+  border-radius: spacing.$border-radius-md;
   cursor: pointer;
   font-weight: bold;
   font-size: 14px;
   display: flex;
   align-items: center;
-  gap: $spacing-sm;
-  transition: background-color $transition-default;
+  gap: spacing.$spacing-sm;
+  transition: background-color spacing.$transition-default;
   position: relative;
 
   &:hover {
@@ -81,9 +84,9 @@
 }
 
 .cart-badge {
-  background-color: $color-warning;
-  color: $color-white;
-  border-radius: $border-radius-full;
+  background-color: colors.$color-warning;
+  color: colors.$color-white;
+  border-radius: spacing.$border-radius-full;
   padding: 2px 6px;
   font-size: 12px;
   font-weight: bold;
@@ -95,21 +98,21 @@
   position: absolute;
   bottom: -70px;
   right: 0;
-  background-color: $color-white;
-  border: 2px solid $color-primary;
-  border-radius: $border-radius-md;
-  padding: $spacing-md $spacing-lg;
+  background-color: colors.$color-white;
+  border: 2px solid colors.$primary-color;
+  border-radius: spacing.$border-radius-md;
+  padding: spacing.$spacing-md spacing.$spacing-lg;
   min-width: 200px;
-  box-shadow: $shadow-medium;
+  box-shadow: spacing.$shadow-medium;
   opacity: 0;
   visibility: hidden;
-  transition: opacity $transition-default, visibility $transition-default;
-  z-index: $z-tooltip;
+  transition: opacity spacing.$transition-default, visibility spacing.$transition-default;
+  z-index: spacing.$z-tooltip;
   white-space: nowrap;
 
   p {
-    margin: $spacing-xs 0;
-    color: $color-primary;
+    margin: spacing.$spacing-xs 0;
+    color: colors.$primary-color;
     font-size: 13px;
   }
 }
@@ -120,6 +123,6 @@
 }
 
 .cart-items-label {
-  border-top: 1px solid $color-border;
-  padding-top: $spacing-xs;
+  border-top: 1px solid colors.$color-border;
+  padding-top: spacing.$spacing-xs;
 }

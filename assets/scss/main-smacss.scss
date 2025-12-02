@@ -3,46 +3,45 @@
    Scalable and Modular Architecture for CSS
    ======================================== */
 
-/* 1. Configuration & Utilities
-   ============================== */
-@import 'variables';
-@import 'mixins';
+/* 1. Configuration & Utilities (Sass Modules)
+   ============================================ */
+@use 'theme/colors' as colors;
+@use 'theme/typography' as typography;
+@use 'theme/spacing' as spacing;
+@use 'mixins' as *;
 
 /* 2. THEME - Paleta de colores y tipografía
    ============================================ */
-@import 'theme/colors';
-@import 'theme/typography';
-@import 'theme/spacing';
 
 /* 3. BASE - Estilos globales predeterminados
    ============================================ */
-@import 'base/reset';
-@import 'base/typography';
-@import 'base/forms';
+@use 'base/reset';
+@use 'base/typography' as base-typography;
+@use 'base/forms';
 
 /* 4. LAYOUT - Estructura de la página
    ====================================== */
-@import 'layout/header';
-@import 'layout/navigation';
-@import 'layout/footer';
-@import 'layout/grid';
+@use 'layout/header';
+@use 'layout/navigation';
+@use 'layout/footer';
+@use 'layout/grid';
 
 /* 5. MODULE - Componentes reutilizables
    ======================================== */
-@import 'module/button';
-@import 'module/card';
-@import 'module/modal';
+@use 'module/button';
+@use 'module/card';
+@use 'module/modal';
 
 /* 6. STATE - Estados específicos
    ================================ */
-@import 'state/active';
-@import 'state/disabled';
-@import 'state/hidden';
+@use 'state/active';
+@use 'state/disabled';
+@use 'state/hidden';
 
 /* 7. UTILS - Clases auxiliares (último para máxima especificidad)
    ================================================================= */
-@import 'utils/helpers';
+@use 'utils/helpers';
 
 /* 8. RESPONSIVE - Media queries y breakpoints
    ============================================== */
-@import 'responsive';
+@use 'responsive';

@@ -2,20 +2,24 @@
    MODULE: Button Component
    ======================================== */
 
+@use 'sass:color';
+@use '../theme/colors';
+@use '../theme/spacing';
+
 .button {
   display: inline-block;
-  padding: $spacing-sm $spacing-lg;
-  border-radius: $border-radius-md;
+  padding: spacing.$spacing-sm spacing.$spacing-lg;
+  border-radius: spacing.$border-radius-md;
   border: none;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all $transition-default;
+  transition: all spacing.$transition-default;
   text-decoration: none;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: $shadow-medium;
+    box-shadow: spacing.$shadow-medium;
   }
 
   &:active {
@@ -25,60 +29,60 @@
 
 // Button Variants - Colors
 .button-primary {
-  background-color: $accent-color;
+  background-color: colors.$accent-color;
   color: white;
 
   &:hover {
-    background-color: darken($accent-color, 10%);
+    background-color: color.adjust(colors.$accent-color, $lightness: -10%);
   }
 }
 
 .button-secondary {
-  background-color: $secondary-color;
+  background-color: colors.$secondary-color;
   color: white;
 
   &:hover {
-    background-color: darken($secondary-color, 10%);
+    background-color: color.adjust(colors.$secondary-color, $lightness: -10%);
   }
 }
 
 .button-success {
-  background-color: $color-success;
+  background-color: colors.$color-success;
   color: white;
 
   &:hover {
-    background-color: darken($color-success, 10%);
+    background-color: color.adjust(colors.$color-success, $lightness: -10%);
   }
 }
 
 .button-danger {
-  background-color: $color-danger;
+  background-color: colors.$color-danger;
   color: white;
 
   &:hover {
-    background-color: darken($color-danger, 10%);
+    background-color: color.adjust(colors.$color-danger, $lightness: -10%);
   }
 }
 
 // Button Variants - Sizes
 .button-large {
-  padding: $spacing-md $spacing-xl;
+  padding: spacing.$spacing-md spacing.$spacing-xl;
   font-size: 1.125rem;
 }
 
 .button-small {
-  padding: $spacing-xs $spacing-md;
+  padding: spacing.$spacing-xs spacing.$spacing-md;
   font-size: 0.875rem;
 }
 
 // Button Variants - Styles
 .button-outline {
   background-color: transparent;
-  border: 2px solid $accent-color;
-  color: $accent-color;
+  border: 2px solid colors.$accent-color;
+  color: colors.$accent-color;
 
   &:hover {
-    background-color: $accent-color;
+    background-color: colors.$accent-color;
     color: white;
   }
 }
@@ -109,18 +113,18 @@
 .btn-checkout {
   @extend .button-success;
   width: 100%;
-  margin-top: $spacing-md;
+  margin-top: spacing.$spacing-md;
 }
 
 .btn-clear-cart {
   @extend .button-danger;
   width: 100%;
-  margin-top: $spacing-sm;
+  margin-top: spacing.$spacing-sm;
 }
 
 .btn-open-filters {
   @extend .button-primary;
-  margin-bottom: $spacing-lg;
+  margin-bottom: spacing.$spacing-lg;
 }
 
 .nav-cart-btn {
@@ -130,9 +134,9 @@
 
 .cart-badge {
   display: inline-block;
-  background-color: $color-danger;
+  background-color: colors.$color-danger;
   color: white;
-  border-radius: $border-radius-full;
+  border-radius: spacing.$border-radius-full;
   width: 1.5rem;
   height: 1.5rem;
   display: flex;
@@ -140,5 +144,5 @@
   justify-content: center;
   font-size: 0.75rem;
   font-weight: bold;
-  margin-left: $spacing-xs;
+  margin-left: spacing.$spacing-xs;
 }

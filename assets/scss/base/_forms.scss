@@ -2,6 +2,9 @@
    BASE: Form Elements
    ======================================== */
 
+@use '../theme/colors';
+@use '../theme/spacing';
+
 input[type="text"],
 input[type="email"],
 input[type="password"],
@@ -9,16 +12,16 @@ input[type="search"],
 textarea,
 select {
   width: 100%;
-  padding: $spacing-sm $spacing-md;
-  border: 1px solid $color-border;
-  border-radius: $border-radius-md;
+  padding: spacing.$spacing-sm spacing.$spacing-md;
+  border: 1px solid colors.$color-border;
+  border-radius: spacing.$border-radius-md;
   font-size: 1rem;
   font-family: inherit;
   
   &:focus {
     outline: none;
-    border-color: $accent-color;
-    box-shadow: 0 0 0 3px rgba($accent-color, 0.1);
+    border-color: colors.$accent-color;
+    box-shadow: 0 0 0 3px rgba(colors.$accent-color, 0.1);
   }
 }
 
@@ -29,17 +32,17 @@ textarea {
 
 label {
   display: block;
-  margin-bottom: $spacing-xs;
+  margin-bottom: spacing.$spacing-xs;
   font-weight: 500;
 }
 
 fieldset {
   border: none;
   padding: 0;
-  margin-bottom: $spacing-lg;
+  margin-bottom: spacing.$spacing-lg;
 }
 
 legend {
   font-weight: bold;
-  margin-bottom: $spacing-sm;
+  margin-bottom: spacing.$spacing-sm;
 }
