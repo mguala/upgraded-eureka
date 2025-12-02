@@ -1,8 +1,0 @@
-/* ========================================
-   SCSS Global Configuration Variables
-   ======================================== */
-
-// Re-export all theme variables for backwards compatibility
-@use 'theme/colors' as *;
-@use 'theme/typography' as *;
-@use 'theme/spacing' as *;
