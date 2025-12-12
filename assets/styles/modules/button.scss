@@ -1,0 +1,19 @@
+// Button Module
+
+.m-button {
+  padding: $spacing-sm $spacing-md;
+  background-color: $color-gray-light;
+  border: $border-width solid $border-color;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color $transition-default;
+
+  &:hover {
+    background-color: $color-gray-medium;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}

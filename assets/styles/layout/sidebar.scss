@@ -1,0 +1,25 @@
+// Sidebar Layout
+
+.l-sidebar {
+  width: $sidebar-width;
+  background-color: $color-gray-medium;
+  padding: $spacing-md;
+  overflow-y: auto;
+
+  ul {
+    li {
+      margin-bottom: $spacing-sm;
+
+      a {
+        display: block;
+        padding: $spacing-xs $spacing-sm;
+        border-radius: 4px;
+        transition: background-color $transition-default;
+
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.1);
+        }
+      }
+    }
+  }
+}

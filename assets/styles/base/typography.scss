@@ -1,0 +1,35 @@
+// Typography Base Styles
+
+h1 {
+  font-size: $font-size-heading-1;
+  font-weight: 700;
+  margin-bottom: $spacing-sm;
+}
+
+h2 {
+  font-size: $font-size-heading-2;
+  font-weight: 700;
+  margin-bottom: $spacing-sm;
+}
+
+h3 {
+  font-size: $font-size-heading-3;
+  font-weight: 600;
+  margin-bottom: $spacing-sm;
+}
+
+p {
+  margin-bottom: $spacing-md;
+
+  i {
+    font-style: italic;
+  }
+
+  b {
+    font-weight: 700;
+  }
+}
+
+li {
+  margin-bottom: $spacing-xs;
+}

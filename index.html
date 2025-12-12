@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Pringles Brillantes Store - Explora y compra cartas de Magic: The Gathering"
+    />
+    <title>Pringles Brillantes Store - Cartas de Magic: The Gathering</title>
+    <link rel="icon" href="assets/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="assets/styles/main.css" />
+  </head>
+  <body>
+    <header class="l-header">
+      <div class="l-header__content">
+        <h1>🃏 Pringles Brillantes Store</h1>
+        <p><i>Tu destino principal para cartas de Magic: The Gathering</i></p>
+      </div>
+    </header>
+
+    <div class="l-container">
+      <aside class="l-sidebar">
+        <section class="m-category-filter">
+          <h3>Categorías</h3>
+          <ul>
+            <li><a href="#" class="js-filter" data-filter="all">Todas las Cartas</a></li>
+            <li><a href="#" class="js-filter" data-filter="creature">Criaturas</a></li>
+            <li><a href="#" class="js-filter" data-filter="instant">Instantáneos</a></li>
+            <li><a href="#" class="js-filter" data-filter="sorcery">Hechizos</a></li>
+            <li><a href="#" class="js-filter" data-filter="enchantment">Encantamientos</a></li>
+            <li><a href="#" class="js-filter" data-filter="artifact">Artefactos</a></li>
+            <li><a href="#" class="js-filter" data-filter="planeswalker">Planeswalkers</a></li>
+          </ul>
+        </section>
+
+        <hr class="m-divider" />
+
+        <section class="m-color-filter">
+          <h3>Filtro de Color</h3>
+          <ul>
+            <li><a href="#" class="js-color-filter" data-color="all">Todos los Colores</a></li>
+            <li><a href="#" class="js-color-filter" data-color="white">⚪ Blanco</a></li>
+            <li><a href="#" class="js-color-filter" data-color="blue">🔵 Azul</a></li>
+            <li><a href="#" class="js-color-filter" data-color="black">⚫ Negro</a></li>
+            <li><a href="#" class="js-color-filter" data-color="red">🔴 Rojo</a></li>
+            <li><a href="#" class="js-color-filter" data-color="green">🟢 Verde</a></li>
+          </ul>
+        </section>
+
+        <hr class="m-divider" />
+
+        <section class="m-cart-summary">
+          <h3>Carrito de Compras</h3>
+          <div id="cart-summary">
+            <p><b>Artículos:</b> <span id="cart-count">0</span></p>
+            <p><b>Total:</b> <span id="cart-total">0 CLP</span></p>
+            <button id="view-cart-btn" class="m-button">Ver Carrito</button>
+          </div>
+        </section>
+      </aside>
+
+      <main class="l-main">
+        <section class="m-search">
+          <input
+            type="text"
+            id="search-input"
+            class="m-search__input"
+            placeholder="Buscar cartas..."
+          />
+          <button id="search-btn" class="m-button">Buscar</button>
+        </section>
+
+        <div id="cards-container" class="m-cards-container">
+          <div id="cards-grid" class="m-cards-grid"></div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Cart Modal -->
+    <div id="cart-modal" class="m-modal is-hidden">
+      <div class="m-modal__content">
+        <button id="close-cart-btn" class="m-modal__close">✕ Cerrar</button>
+        <h2>Carrito de Compras</h2>
+        <div id="cart-items"></div>
+        <hr />
+        <div class="m-modal__footer">
+          <h3>Total: <span id="modal-cart-total">0 CLP</span></h3>
+          <button id="checkout-btn" class="m-button">Finalizar Compra</button>
+          <button id="clear-cart-btn" class="m-button">Vaciar Carrito</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card Detail Modal -->
+    <div id="card-detail-modal" class="m-modal is-hidden">
+      <div class="m-modal__content">
+        <button id="close-card-detail-btn" class="m-modal__close">✕ Cerrar</button>
+        <div id="card-detail-content"></div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="assets/js/app.js"></script>
+  </body>
+</html>

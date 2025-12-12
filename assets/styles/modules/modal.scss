@@ -1,0 +1,57 @@
+// Modal Module
+
+.m-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: $shadow-dark;
+  z-index: $modal-z-index;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &__content {
+    position: relative;
+    width: 80%;
+    max-width: $max-modal-width;
+    background-color: $color-white;
+    padding: $spacing-md;
+    border: $border-width solid $border-color;
+    border-radius: 4px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  &__close {
+    position: absolute;
+    top: $spacing-sm;
+    right: $spacing-sm;
+    background: none;
+    border: none;
+    font-size: $font-size-large;
+    cursor: pointer;
+    padding: $spacing-xs;
+    transition: transform $transition-fast;
+
+    &:hover {
+      transform: scale(1.2);
+    }
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: $spacing-sm;
+
+    h3 {
+      margin: 0;
+    }
+
+    button {
+      flex: 1;
+      min-width: 120px;
+    }
+  }
+}

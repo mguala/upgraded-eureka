@@ -1,0 +1,17 @@
+// Modal States
+
+.m-modal {
+  &.is-hidden {
+    display: none;
+  }
+
+  &.is-visible {
+    display: flex;
+  }
+}
+
+.is-active {
+  &--modal {
+    z-index: $modal-z-index;
+  }
+}

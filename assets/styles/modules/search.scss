@@ -1,0 +1,24 @@
+// Search Module
+
+.m-search {
+  display: flex;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-md;
+  padding: $spacing-md;
+  background-color: $color-gray-light;
+  border-radius: 4px;
+
+  &__input {
+    flex: 1;
+    padding: $spacing-sm;
+    border: $border-width solid $border-color;
+    border-radius: 4px;
+    font-size: $font-size-base;
+
+    &:focus {
+      outline: none;
+      border-color: $color-blue-card;
+      box-shadow: 0 0 4px rgba(0, 102, 204, 0.3);
+    }
+  }
+}

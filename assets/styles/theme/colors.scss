@@ -1,0 +1,32 @@
+// Color Theme
+
+// Card type colors
+.card-type {
+  &--white {
+    border-left: 4px solid $color-white-card;
+  }
+
+  &--blue {
+    border-left: 4px solid $color-blue-card;
+  }
+
+  &--black {
+    border-left: 4px solid $color-black-card;
+  }
+
+  &--red {
+    border-left: 4px solid $color-red-card;
+  }
+
+  &--green {
+    border-left: 4px solid $color-green-card;
+  }
+}
+
+// Link hover state styling
+a {
+  &.is-active {
+    color: $color-white;
+    font-weight: 700;
+  }
+}

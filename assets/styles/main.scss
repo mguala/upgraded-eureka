@@ -1,0 +1,31 @@
+// SMACSS Architecture with SCSS
+// 1. Base - Element selectors, resets
+// 2. Layout - Major layout components
+// 3. Module - Reusable, modular components
+// 4. State - State changes (is-active, is-hidden)
+// 5. Theme - Color and visual theming
+
+// ===== BASE =====
+@import 'base/variables';
+@import 'base/reset';
+@import 'base/typography';
+
+// ===== LAYOUT =====
+@import 'layout/header';
+@import 'layout/container';
+@import 'layout/sidebar';
+@import 'layout/main';
+
+// ===== MODULES =====
+@import 'modules/button';
+@import 'modules/search';
+@import 'modules/cards';
+@import 'modules/modal';
+@import 'modules/filters';
+@import 'modules/divider';
+
+// ===== STATE =====
+@import 'state/modal-states';
+
+// ===== THEME =====
+@import 'theme/colors';

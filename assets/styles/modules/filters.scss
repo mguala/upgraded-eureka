@@ -1,0 +1,35 @@
+// Filters Module
+
+.m-category-filter,
+.m-color-filter,
+.m-cart-summary {
+  margin-bottom: $spacing-md;
+
+  h3 {
+    margin-bottom: $spacing-sm;
+  }
+
+  ul {
+    li {
+      margin-bottom: $spacing-xs;
+
+      a {
+        display: block;
+        padding: $spacing-xs $spacing-sm;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all $transition-default;
+
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.1);
+          text-decoration: none;
+        }
+
+        &.is-active {
+          background-color: $color-blue-card;
+          color: $color-white;
+        }
+      }
+    }
+  }
+}
