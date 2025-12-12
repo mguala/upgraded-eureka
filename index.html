@@ -21,31 +21,230 @@
 
     <div class="l-container">
       <aside class="l-sidebar">
-        <section class="m-category-filter">
-          <h3>Categorías</h3>
-          <ul>
-            <li><a href="#" class="js-filter" data-filter="all">Todas las Cartas</a></li>
-            <li><a href="#" class="js-filter" data-filter="creature">Criaturas</a></li>
-            <li><a href="#" class="js-filter" data-filter="instant">Instantáneos</a></li>
-            <li><a href="#" class="js-filter" data-filter="sorcery">Hechizos</a></li>
-            <li><a href="#" class="js-filter" data-filter="enchantment">Encantamientos</a></li>
-            <li><a href="#" class="js-filter" data-filter="artifact">Artefactos</a></li>
-            <li><a href="#" class="js-filter" data-filter="planeswalker">Planeswalkers</a></li>
+        <!-- Type Filter -->
+        <section class="m-filter-section">
+          <h3>Tipo de Carta</h3>
+          <ul class="m-filter-list">
+            <li><label><input type="radio" name="type" value="all" checked /> Todas las Cartas</label></li>
+            <li><label><input type="radio" name="type" value="creature" /> Criaturas</label></li>
+            <li><label><input type="radio" name="type" value="instant" /> Instantáneos</label></li>
+            <li><label><input type="radio" name="type" value="sorcery" /> Hechizos</label></li>
+            <li><label><input type="radio" name="type" value="enchantment" /> Encantamientos</label></li>
+            <li><label><input type="radio" name="type" value="artifact" /> Artefactos</label></li>
+            <li><label><input type="radio" name="type" value="planeswalker" /> Planeswalkers</label></li>
           </ul>
         </section>
 
         <hr class="m-divider" />
 
-        <section class="m-color-filter">
-          <h3>Filtro de Color</h3>
-          <ul>
-            <li><a href="#" class="js-color-filter" data-color="all">Todos los Colores</a></li>
-            <li><a href="#" class="js-color-filter" data-color="white">⚪ Blanco</a></li>
-            <li><a href="#" class="js-color-filter" data-color="blue">🔵 Azul</a></li>
-            <li><a href="#" class="js-color-filter" data-color="black">⚫ Negro</a></li>
-            <li><a href="#" class="js-color-filter" data-color="red">🔴 Rojo</a></li>
-            <li><a href="#" class="js-color-filter" data-color="green">🟢 Verde</a></li>
+        <!-- Color Filter -->
+        <section class="m-filter-section">
+          <h3>Color</h3>
+          <fieldset class="m-color-filter">
+            <legend>Modo de Color:</legend>
+            <label class="m-filter-label">
+              <input type="radio" name="color-mode" value="including" checked />
+              Incluyendo estos colores
+            </label>
+            <label class="m-filter-label">
+              <input type="radio" name="color-mode" value="exactly" />
+              Exactamente estos colores
+            </label>
+            <label class="m-filter-label">
+              <input type="radio" name="color-mode" value="at-most" />
+              Como máximo estos colores
+            </label>
+          </fieldset>
+          <ul class="m-filter-list m-color-list">
+            <li><label><input type="checkbox" name="color" value="white" /> ⚪ Blanco</label></li>
+            <li><label><input type="checkbox" name="color" value="blue" /> 🔵 Azul</label></li>
+            <li><label><input type="checkbox" name="color" value="black" /> ⚫ Negro</label></li>
+            <li><label><input type="checkbox" name="color" value="red" /> 🔴 Rojo</label></li>
+            <li><label><input type="checkbox" name="color" value="green" /> 🟢 Verde</label></li>
+            <li><label><input type="checkbox" name="color" value="colorless" /> ⚱️ Incoloro</label></li>
           </ul>
+        </section>
+
+        <hr class="m-divider" />
+
+        <!-- Double Color Filter -->
+        <section class="m-filter-section">
+          <h3>Combinaciones de Color</h3>
+          <ul class="m-filter-list m-dual-color-list">
+            <li><label><input type="checkbox" name="dual-color" value="WU" /> ⚪🔵 Azorius</label></li>
+            <li><label><input type="checkbox" name="dual-color" value="WB" /> ⚪⚫ Orzhov</label></li>
+            <li><label><input type="checkbox" name="dual-color" value="WR" /> ⚪🔴 Boros</label></li>
+            <li><label><input type="checkbox" name="dual-color" value="WG" /> ⚪🟢 Selesnya</label></li>
+            <li><label><input type="checkbox" name="dual-color" value="UB" /> 🔵⚫ Dimir</label></li>
+            <li><label><input type="checkbox" name="dual-color" value="UR" /> 🔵🔴 Izzet</label></li>
+            <li><label><input type="checkbox" name="dual-color" value="UG" /> 🔵🟢 Simic</label></li>
+            <li><label><input type="checkbox" name="dual-color" value="BR" /> ⚫🔴 Rakdos</label></li>
+            <li><label><input type="checkbox" name="dual-color" value="BG" /> ⚫🟢 Golgari</label></li>
+            <li><label><input type="checkbox" name="dual-color" value="RG" /> 🔴🟢 Gruul</label></li>
+          </ul>
+        </section>
+
+        <hr class="m-divider" />
+
+        <!-- Rarity Filter -->
+        <section class="m-filter-section">
+          <h3>Rareza</h3>
+          <ul class="m-filter-list">
+            <li><label><input type="checkbox" name="rarity" value="common" /> Común</label></li>
+            <li><label><input type="checkbox" name="rarity" value="uncommon" /> Infrecuente</label></li>
+            <li><label><input type="checkbox" name="rarity" value="rare" /> Rara</label></li>
+            <li><label><input type="checkbox" name="rarity" value="mythic" /> Mítica</label></li>
+          </ul>
+        </section>
+
+        <hr class="m-divider" />
+
+        <!-- Mana Cost Filter -->
+        <section class="m-filter-section">
+          <h3>Costo de Maná</h3>
+          <div class="m-filter-group">
+            <label>Mínimo:</label>
+            <input type="number" id="mana-min" class="m-input-small" min="0" max="20" placeholder="0" />
+          </div>
+          <div class="m-filter-group">
+            <label>Máximo:</label>
+            <input type="number" id="mana-max" class="m-input-small" min="0" max="20" placeholder="20" />
+          </div>
+        </section>
+
+        <hr class="m-divider" />
+
+        <!-- Edition/Set Filter -->
+        <section class="m-filter-section">
+          <h3>Edición</h3>
+          <input type="text" class="m-filter-search" placeholder="Buscar edición..." />
+          <ul class="m-filter-list m-filter-scrollable">
+            <li><label><input type="checkbox" name="set" value="MKM" /> Murders at Karlov Manor (MKM)</label></li>
+            <li><label><input type="checkbox" name="set" value="OTP" /> Outlaws of Thunder Junction (OTP)</label></li>
+            <li><label><input type="checkbox" name="set" value="LCI" /> Lost Caverns of Ixalan (LCI)</label></li>
+            <li><label><input type="checkbox" name="set" value="ONE" /> Phyrexia: All Will Be One (ONE)</label></li>
+            <li><label><input type="checkbox" name="set" value="DMU" /> Dominaria United (DMU)</label></li>
+            <li><label><input type="checkbox" name="set" value="SIR" /> Shadows over Innistrad Remastered (SIR)</label></li>
+            <li><label><input type="checkbox" name="set" value="BRO" /> The Brothers' War (BRO)</label></li>
+            <li><label><input type="checkbox" name="set" value="BRR" /> Bloomburrow (BRR)</label></li>
+            <li><label><input type="checkbox" name="set" value="M20" /> Core Set 2020 (M20)</label></li>
+          </ul>
+        </section>
+
+        <hr class="m-divider" />
+
+        <!-- Price Filter -->
+        <section class="m-filter-section">
+          <h3>Precio</h3>
+          <div class="m-filter-group">
+            <label>Moneda:</label>
+            <select class="m-filter-select">
+              <option value="usd">USD</option>
+              <option value="eur">EUR</option>
+              <option value="clp">CLP</option>
+            </select>
+          </div>
+          <div class="m-filter-group">
+            <label>Mínimo:</label>
+            <input type="number" id="price-min" class="m-input-small" min="0" placeholder="0" step="0.01" />
+          </div>
+          <div class="m-filter-group">
+            <label>Máximo:</label>
+            <input type="number" id="price-max" class="m-input-small" min="0" placeholder="100" step="0.01" />
+          </div>
+        </section>
+
+        <hr class="m-divider" />
+
+        <!-- Artist Filter -->
+        <section class="m-filter-section">
+          <h3>Artista</h3>
+          <input type="text" id="artist-input" class="m-filter-search" placeholder="Nombre del artista..." />
+        </section>
+
+        <hr class="m-divider" />
+
+        <!-- Flavor Text Filter -->
+        <section class="m-filter-section">
+          <h3>Texto de Sabor</h3>
+          <input type="text" id="flavor-input" class="m-filter-search" placeholder="Buscar en texto..." />
+        </section>
+
+        <hr class="m-divider" />
+
+        <!-- Criteria Filter -->
+        <section class="m-filter-section">
+          <h3>Criterios</h3>
+          <div class="m-filter-group">
+            <select class="m-filter-select" id="criteria-mode">
+              <option value="is">ES</option>
+              <option value="not">NO ES</option>
+            </select>
+            <input type="text" id="criteria-input" class="m-filter-search" placeholder="Ej: Foil, Promo..." />
+          </div>
+        </section>
+
+        <hr class="m-divider" />
+
+        <!-- Language Filter -->
+        <section class="m-filter-section">
+          <h3>Idioma</h3>
+          <select class="m-filter-select" id="language-select">
+            <option value="any">Cualquier Idioma</option>
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="fr">Français</option>
+            <option value="de">Deutsch</option>
+            <option value="it">Italiano</option>
+            <option value="pt">Português</option>
+            <option value="ja">日本語</option>
+            <option value="ko">한국어</option>
+            <option value="ru">Русский</option>
+            <option value="zh-s">简体中文</option>
+            <option value="zh-t">繁體中文</option>
+          </select>
+        </section>
+
+        <hr class="m-divider" />
+
+        <!-- Display Preferences -->
+        <section class="m-filter-section">
+          <h3>Preferencias de Visualización</h3>
+          <fieldset class="m-display-options">
+            <legend>Mostrar como:</legend>
+            <label class="m-filter-label">
+              <input type="radio" name="display" value="images" checked />
+              Imágenes
+            </label>
+            <label class="m-filter-label">
+              <input type="radio" name="display" value="list" />
+              Lista
+            </label>
+            <label class="m-filter-label">
+              <input type="radio" name="display" value="text" />
+              Solo Texto
+            </label>
+          </fieldset>
+        </section>
+
+        <hr class="m-divider" />
+
+        <!-- Sort Preferences -->
+        <section class="m-filter-section">
+          <h3>Ordenar por</h3>
+          <select class="m-filter-select" id="sort-select">
+            <option value="name">Nombre</option>
+            <option value="release">Fecha de Lanzamiento</option>
+            <option value="set">Edición/Número</option>
+            <option value="rarity">Rareza</option>
+            <option value="color">Color</option>
+            <option value="price-asc">Precio: Menor a Mayor</option>
+            <option value="price-desc">Precio: Mayor a Menor</option>
+            <option value="mana">Valor de Maná</option>
+            <option value="power">Poder</option>
+            <option value="toughness">Resistencia</option>
+            <option value="artist">Artista</option>
+          </select>
         </section>
 
         <hr class="m-divider" />

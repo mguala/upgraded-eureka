@@ -1,5 +1,217 @@
 // Filters Module
 
+// Filter Section Container
+.m-filter-section {
+  margin-bottom: $spacing-md;
+
+  h3 {
+    margin-bottom: $spacing-sm;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+}
+
+// Filter Lists
+.m-filter-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    margin-bottom: $spacing-xs;
+  }
+
+  label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: 4px;
+    transition: background-color $transition-default;
+    user-select: none;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    input[type="radio"],
+    input[type="checkbox"] {
+      margin-right: $spacing-sm;
+      cursor: pointer;
+    }
+  }
+}
+
+// Color Filter
+.m-color-filter {
+  margin-bottom: $spacing-md;
+
+  legend {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: $spacing-sm;
+  }
+
+  .m-filter-label {
+    display: flex;
+    align-items: center;
+    margin-bottom: $spacing-xs;
+    cursor: pointer;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: 4px;
+    transition: background-color $transition-default;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    input {
+      margin-right: $spacing-sm;
+    }
+  }
+}
+
+.m-color-list {
+  margin-top: $spacing-md;
+}
+
+// Filter Groups
+.m-filter-group {
+  display: flex;
+  gap: $spacing-sm;
+  align-items: center;
+  margin-bottom: $spacing-sm;
+
+  label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+}
+
+// Input Small
+.m-input-small {
+  padding: $spacing-xs $spacing-sm;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  width: 80px;
+
+  &:focus {
+    outline: none;
+    border-color: $color-blue-card;
+    box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.1);
+  }
+}
+
+// Filter Search Input
+.m-filter-search {
+  width: 100%;
+  padding: $spacing-xs $spacing-sm;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  margin-bottom: $spacing-sm;
+
+  &:focus {
+    outline: none;
+    border-color: $color-blue-card;
+    box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.1);
+  }
+}
+
+// Filter Select
+.m-filter-select {
+  width: 100%;
+  padding: $spacing-xs $spacing-sm;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  background-color: $color-white;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+    border-color: $color-blue-card;
+    box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.1);
+  }
+}
+
+// Scrollable Filter List (for sets with many items)
+.m-filter-scrollable {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  padding: $spacing-xs;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+
+    &:hover {
+      background: #555;
+    }
+  }
+}
+
+// Dual Color List
+.m-dual-color-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-xs;
+
+  li {
+    margin-bottom: 0;
+
+    label {
+      font-size: 0.95rem;
+    }
+  }
+}
+
+// Display Options
+.m-display-options {
+  border: none;
+  padding: 0;
+
+  legend {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: $spacing-sm;
+    padding: 0;
+  }
+
+  label {
+    display: flex;
+    align-items: center;
+    margin-bottom: $spacing-xs;
+    cursor: pointer;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: 4px;
+    transition: background-color $transition-default;
+    user-select: none;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    input {
+      margin-right: $spacing-sm;
+    }
+  }
+}
+
+// Backward Compatibility
 .m-category-filter,
 .m-color-filter,
 .m-cart-summary {
