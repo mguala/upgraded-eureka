@@ -1,2 +1,3 @@
 *.json
-AGENTS.md
+*.md
+!README.md
