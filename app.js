@@ -265,7 +265,7 @@ function updateFilterUI(selector) {
   });
 }
 
-function applyFilters() {
+function getFilteredCards() {
   let filtered = cardDatabase;
 
   if (currentTypeFilter !== "all") {
@@ -276,18 +276,23 @@ function applyFilters() {
     filtered = filtered.filter((card) => card.color === currentColorFilter);
   }
 
-  displayCards(filtered);
+  return filtered;
+}
+
+function applyFilters() {
+  displayCards(getFilteredCards());
 }
 
 function searchCards() {
   const searchTerm = document.getElementById("search-input").value.toLowerCase();
+  const baseCards = getFilteredCards();
 
   if (searchTerm === "") {
-    applyFilters();
+    displayCards(baseCards);
     return;
   }
 
-  const results = cardDatabase.filter(
+  const results = baseCards.filter(
     (card) =>
       card.name.toLowerCase().includes(searchTerm) ||
       card.text.toLowerCase().includes(searchTerm) ||
@@ -543,14 +548,14 @@ function initializeEventListeners() {
   document.querySelectorAll(".js-filter").forEach((link) => {
     link.addEventListener("click", (e) => {
       e.preventDefault();
-      filterCards(e.target.dataset.filter);
+      filterCards(e.currentTarget.dataset.filter);
     });
   });
 
   document.querySelectorAll(".js-color-filter").forEach((link) => {
     link.addEventListener("click", (e) => {
       e.preventDefault();
-      filterByColor(e.target.dataset.color);
+      filterByColor(e.currentTarget.dataset.color);
     });
   });
 
