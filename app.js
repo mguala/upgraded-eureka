@@ -15,7 +15,7 @@ let isLoading = true;
 const SCRYFALL_API = "https://api.scryfall.com";
 
 // USD to CLP conversion rate
-const USD_TO_CLP = 500;
+const USD_TO_CLP = "https://cl.dolarapi.com/v1/dolar";
 
 async function loadCSV(filename) {
   try {
