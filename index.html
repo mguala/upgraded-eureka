@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="h-full">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,95 +8,116 @@
       content="Pringles Brillantes Store - Explora y compra cartas de Magic: The Gathering"
     />
     <title>Pringles Brillantes Store - Cartas de Magic: The Gathering</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: "#f5f3ff",
+                500: "#8b5cf6",
+                600: "#7c3aed",
+                700: "#6d28d9",
+              },
+            },
+          },
+        },
+      };
+    </script>
   </head>
-  <body>
-    <header class="l-header">
-      <div class="l-header__content">
-        <h1>🃏 Pringles Brillantes Store</h1>
-        <p><i>Tu destino principal para cartas de Magic: The Gathering</i></p>
+  <body class="min-h-full bg-slate-950 text-slate-100">
+    <header class="border-b border-slate-800 bg-gradient-to-r from-slate-900 via-violet-900/90 to-slate-950 shadow-lg">
+      <div class="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-8 sm:px-6 lg:px-8">
+        <h1 class="text-3xl font-black tracking-tight text-white sm:text-4xl">🃏 Pringles Brillantes Store</h1>
+        <p class="text-base text-slate-300 sm:text-lg">
+          <i>Tu destino principal para cartas de Magic: The Gathering</i>
+        </p>
       </div>
     </header>
 
-    <div class="l-container">
-      <aside class="l-sidebar">
-        <section class="m-category-filter">
-          <h3>Categorías</h3>
-          <ul>
-            <li><a href="#" class="js-filter" data-filter="all">Todas las Cartas</a></li>
-            <li><a href="#" class="js-filter" data-filter="creature">Criaturas</a></li>
-            <li><a href="#" class="js-filter" data-filter="instant">Instantáneos</a></li>
-            <li><a href="#" class="js-filter" data-filter="sorcery">Hechizos</a></li>
-            <li><a href="#" class="js-filter" data-filter="enchantment">Encantamientos</a></li>
-            <li><a href="#" class="js-filter" data-filter="artifact">Artefactos</a></li>
-            <li><a href="#" class="js-filter" data-filter="planeswalker">Planeswalkers</a></li>
+    <div class="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:flex-row lg:px-8">
+      <aside class="w-full shrink-0 rounded-2xl border border-slate-800 bg-slate-900/70 p-5 shadow-xl lg:w-80">
+        <section class="space-y-3">
+          <h3 class="text-lg font-semibold text-white">Categorías</h3>
+          <ul class="space-y-2">
+            <li><a href="#" class="js-filter block rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-violet-300" data-filter="all">Todas las Cartas</a></li>
+            <li><a href="#" class="js-filter block rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-violet-300" data-filter="creature">Criaturas</a></li>
+            <li><a href="#" class="js-filter block rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-violet-300" data-filter="instant">Instantáneos</a></li>
+            <li><a href="#" class="js-filter block rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-violet-300" data-filter="sorcery">Hechizos</a></li>
+            <li><a href="#" class="js-filter block rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-violet-300" data-filter="enchantment">Encantamientos</a></li>
+            <li><a href="#" class="js-filter block rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-violet-300" data-filter="artifact">Artefactos</a></li>
+            <li><a href="#" class="js-filter block rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-violet-300" data-filter="planeswalker">Planeswalkers</a></li>
           </ul>
         </section>
 
-        <hr class="m-divider" />
+        <div class="my-5 h-px bg-slate-800"></div>
 
-        <section class="m-color-filter">
-          <h3>Filtro de Color</h3>
-          <ul>
-            <li><a href="#" class="js-color-filter" data-color="all">Todos los Colores</a></li>
-            <li><a href="#" class="js-color-filter" data-color="white">⚪ Blanco</a></li>
-            <li><a href="#" class="js-color-filter" data-color="blue">🔵 Azul</a></li>
-            <li><a href="#" class="js-color-filter" data-color="black">⚫ Negro</a></li>
-            <li><a href="#" class="js-color-filter" data-color="red">🔴 Rojo</a></li>
-            <li><a href="#" class="js-color-filter" data-color="green">🟢 Verde</a></li>
+        <section class="space-y-3">
+          <h3 class="text-lg font-semibold text-white">Filtro de Color</h3>
+          <ul class="space-y-2">
+            <li><a href="#" class="js-color-filter block rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-violet-300" data-color="all">Todos los Colores</a></li>
+            <li><a href="#" class="js-color-filter block rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-violet-300" data-color="white">⚪ Blanco</a></li>
+            <li><a href="#" class="js-color-filter block rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-violet-300" data-color="blue">🔵 Azul</a></li>
+            <li><a href="#" class="js-color-filter block rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-violet-300" data-color="black">⚫ Negro</a></li>
+            <li><a href="#" class="js-color-filter block rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-violet-300" data-color="red">🔴 Rojo</a></li>
+            <li><a href="#" class="js-color-filter block rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-violet-300" data-color="green">🟢 Verde</a></li>
           </ul>
         </section>
 
-        <hr class="m-divider" />
+        <div class="my-5 h-px bg-slate-800"></div>
 
-        <section class="m-cart-summary">
-          <h3>Carrito de Compras</h3>
-          <div id="cart-summary">
-            <p><b>Artículos:</b> <span id="cart-count">0</span></p>
-            <p><b>Total:</b> <span id="cart-total">0 CLP</span></p>
-            <button id="view-cart-btn" class="m-button">Ver Carrito</button>
+        <section class="space-y-3 rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
+          <h3 class="text-lg font-semibold text-white">Carrito de Compras</h3>
+          <div id="cart-summary" class="space-y-2 text-sm text-slate-300">
+            <p><span class="font-semibold text-slate-100">Artículos:</span> <span id="cart-count">0</span></p>
+            <p><span class="font-semibold text-slate-100">Total:</span> <span id="cart-total">0 CLP</span></p>
+            <button id="view-cart-btn" class="inline-flex w-full items-center justify-center rounded-lg bg-violet-600 px-4 py-2 font-semibold text-white transition hover:bg-violet-500">Ver Carrito</button>
           </div>
         </section>
       </aside>
 
-      <main class="l-main">
-        <section class="m-search">
+      <main class="flex-1">
+        <section class="mb-6 flex flex-col gap-3 rounded-2xl border border-slate-800 bg-slate-900/70 p-4 shadow-xl sm:flex-row sm:items-center">
           <input
             type="text"
             id="search-input"
-            class="m-search__input"
+            class="w-full rounded-xl border border-slate-700 bg-slate-950/80 px-4 py-3 text-sm text-white outline-none ring-0 placeholder:text-slate-400 focus:border-violet-500"
             placeholder="Buscar cartas..."
           />
-          <button id="search-btn" class="m-button">Buscar</button>
+          <button id="search-btn" class="inline-flex items-center justify-center rounded-xl bg-violet-600 px-4 py-3 font-semibold text-white transition hover:bg-violet-500">Buscar</button>
         </section>
 
-        <div id="cards-container" class="m-cards-container">
-          <div id="cards-grid" class="m-cards-grid"></div>
+        <div id="cards-container" class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4 shadow-xl">
+          <div id="cards-grid" class="grid gap-6 md:grid-cols-2 xl:grid-cols-3"></div>
         </div>
       </main>
     </div>
 
-    <!-- Cart Modal -->
-    <div id="cart-modal" class="m-modal is-hidden">
-      <div class="m-modal__content">
-        <button id="close-cart-btn" class="m-modal__close">✕ Cerrar</button>
-        <h2>Carrito de Compras</h2>
-        <div id="cart-items"></div>
-        <hr />
-        <div class="m-modal__footer">
-          <h3>Total: <span id="modal-cart-total">0 CLP</span></h3>
-          <button id="checkout-btn" class="m-button">Finalizar Compra</button>
-          <button id="clear-cart-btn" class="m-button">Vaciar Carrito</button>
+    <div id="cart-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 p-4">
+      <div class="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-3xl border border-slate-700 bg-slate-900 p-6 shadow-2xl">
+        <div class="flex items-center justify-between gap-3">
+          <h2 class="text-2xl font-semibold text-white">Carrito de Compras</h2>
+          <button id="close-cart-btn" class="rounded-lg border border-slate-700 px-3 py-2 text-sm font-medium text-slate-300 transition hover:border-slate-500 hover:text-white">✕ Cerrar</button>
+        </div>
+        <div id="cart-items" class="mt-6"></div>
+        <div class="mt-6 flex flex-col gap-3 border-t border-slate-800 pt-4 md:flex-row md:items-center md:justify-between">
+          <h3 class="text-lg font-semibold text-white">Total: <span id="modal-cart-total">0 CLP</span></h3>
+          <div class="flex flex-wrap gap-3">
+            <button id="checkout-btn" class="inline-flex items-center justify-center rounded-lg bg-violet-600 px-4 py-2 font-semibold text-white transition hover:bg-violet-500">Finalizar Compra</button>
+            <button id="clear-cart-btn" class="inline-flex items-center justify-center rounded-lg border border-slate-700 px-4 py-2 font-semibold text-slate-200 transition hover:border-slate-500 hover:text-white">Vaciar Carrito</button>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Card Detail Modal -->
-    <div id="card-detail-modal" class="m-modal is-hidden">
-      <div class="m-modal__content">
-        <button id="close-card-detail-btn" class="m-modal__close">✕ Cerrar</button>
-        <div id="card-detail-content"></div>
+    <div id="card-detail-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 p-4">
+      <div class="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl border border-slate-700 bg-slate-900 p-6 shadow-2xl">
+        <div class="flex items-center justify-between gap-3">
+          <h2 class="text-2xl font-semibold text-white">Detalle de Carta</h2>
+          <button id="close-card-detail-btn" class="rounded-lg border border-slate-700 px-3 py-2 text-sm font-medium text-slate-300 transition hover:border-slate-500 hover:text-white">✕ Cerrar</button>
+        </div>
+        <div id="card-detail-content" class="mt-6"></div>
       </div>
     </div>
 
