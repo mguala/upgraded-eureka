@@ -10,12 +10,86 @@ let currentColorFilter = "all";
 
 // Loading state
 let isLoading = true;
+let currentSearchTerm = "";
 
 // Scryfall API base URL
 const SCRYFALL_API = "https://api.scryfall.com";
+const DOLAR_API_URL = "https://cl.dolarapi.com/v1/cotizaciones/usd";
 
-// USD to CLP conversion rate
-const USD_TO_CLP = "https://cl.dolarapi.com/v1/dolar";
+let usdToClp = 1000;
+
+function parseExchangeRate(data) {
+  const candidates = [
+    data?.valor,
+    data?.precio,
+    data?.cotizacion,
+    data?.price,
+    data?.valor_cotizacion,
+    data?.promedio,
+    data?.cotizaciones?.[0]?.valor,
+    data?.cotizaciones?.[0]?.precio,
+    data?.cotizaciones?.[0]?.cotizacion,
+    data?.usd?.valor,
+    data?.usd?.precio,
+    data?.usd?.cotizacion,
+    data?.data?.valor,
+    data?.data?.precio,
+    data?.data?.cotizacion,
+  ];
+
+  for (const candidate of candidates) {
+    if (typeof candidate === "number" && Number.isFinite(candidate) && candidate > 0) {
+      return candidate;
+    }
+
+    if (typeof candidate === "string") {
+      const parsed = parseFloat(candidate);
+      if (!Number.isNaN(parsed) && parsed > 0) {
+        return parsed;
+      }
+    }
+  }
+
+  if (Array.isArray(data) && data.length > 0) {
+    for (const item of data) {
+      const nestedRate = parseExchangeRate(item);
+      if (nestedRate) {
+        return nestedRate;
+      }
+    }
+  }
+
+  return null;
+}
+
+async function loadExchangeRate() {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+  try {
+    const response = await fetch(DOLAR_API_URL, { signal: controller.signal });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const rate = parseExchangeRate(data);
+
+    if (rate) {
+      usdToClp = rate;
+    } else {
+      throw new Error("No se encontró un valor válido de dólar en la respuesta");
+    }
+  } catch (error) {
+    console.error("Error obteniendo el valor del dólar:", error);
+    usdToClp = 1000;
+  } finally {
+    updateExchangeRateDisplay(usdToClp);
+    clearTimeout(timeoutId);
+  }
+
+  return usdToClp;
+}
 
 async function loadCSV(filename) {
   try {
@@ -62,7 +136,25 @@ async function fetchCardFromScryfall(cardName) {
   }
 }
 
-function convertScryfallCard(scryfallCard, csvData) {
+function updateExchangeRateDisplay(rate = usdToClp) {
+  const exchangeRateElement = document.getElementById("exchange-rate");
+  if (exchangeRateElement) {
+    exchangeRateElement.textContent = `$${Math.round(rate).toLocaleString("es-CL")} CLP`;
+  }
+}
+
+function updateResultsSummary(cards) {
+  const summaryElement = document.getElementById("results-summary");
+  if (!summaryElement) return;
+
+  const typeLabel = currentTypeFilter === "all" ? "Todas" : currentTypeFilter.charAt(0).toUpperCase() + currentTypeFilter.slice(1);
+  const colorLabel = currentColorFilter === "all" ? "Todos" : currentColorFilter.charAt(0).toUpperCase() + currentColorFilter.slice(1);
+  const searchLabel = currentSearchTerm ? ` · “${currentSearchTerm}”` : "";
+
+  summaryElement.textContent = `${cards.length} cartas • ${typeLabel} • ${colorLabel}${searchLabel}`;
+}
+
+function convertScryfallCard(scryfallCard, csvData, exchangeRate) {
   let cardType = "other";
   const typeLine = scryfallCard.type_line.toLowerCase();
 
@@ -102,7 +194,7 @@ function convertScryfallCard(scryfallCard, csvData) {
     power: scryfallCard.power || null,
     toughness: scryfallCard.toughness || null,
     text: scryfallCard.oracle_text || "",
-    price: (parseFloat(csvData["Purchase price"]) || 0) * USD_TO_CLP,
+    price: (parseFloat(csvData["Purchase price"]) || 0) * exchangeRate,
     stock: parseInt(csvData["Quantity"]) || 0,
     rarity: rarityMap[scryfallCard.rarity] || scryfallCard.rarity,
     set: scryfallCard.set_name,
@@ -114,6 +206,7 @@ function convertScryfallCard(scryfallCard, csvData) {
 async function loadAllCards() {
   showLoadingMessage();
 
+  const exchangeRate = await loadExchangeRate();
   const csvData = await loadCSV("cards.csv");
 
   if (csvData.length === 0) {
@@ -128,7 +221,7 @@ async function loadAllCards() {
 
     const scryfallCard = await fetchCardFromScryfall(row.Name);
     if (scryfallCard) {
-      return convertScryfallCard(scryfallCard, row);
+      return convertScryfallCard(scryfallCard, row, exchangeRate);
     }
     return null;
   });
@@ -146,21 +239,23 @@ async function loadAllCards() {
 function showLoadingMessage() {
   const cardsGrid = document.getElementById("cards-grid");
   cardsGrid.innerHTML = `
-    <div class="col-span-full rounded-2xl border border-slate-800 bg-slate-950/70 p-8 text-center shadow-inner">
+    <div class="col-span-full rounded-3xl border border-slate-800 bg-slate-950/70 p-8 text-center shadow-inner">
       <h2 class="text-xl font-semibold text-white">⏳ Cargando cartas desde Scryfall...</h2>
       <p class="mt-2 text-sm text-slate-400">Por favor espera mientras obtenemos los datos de las cartas.</p>
     </div>
   `;
+  updateResultsSummary([]);
 }
 
 function showErrorMessage(message) {
   const cardsGrid = document.getElementById("cards-grid");
   cardsGrid.innerHTML = `
-    <div class="col-span-full rounded-2xl border border-rose-500/20 bg-rose-500/10 p-8 text-center shadow-inner">
+    <div class="col-span-full rounded-3xl border border-rose-500/20 bg-rose-500/10 p-8 text-center shadow-inner">
       <h2 class="text-xl font-semibold text-rose-300">❌ Error</h2>
       <p class="mt-2 text-sm text-slate-300">${message}</p>
     </div>
   `;
+  updateResultsSummary([]);
 }
 
 function displayCards(cards) {
@@ -169,10 +264,12 @@ function displayCards(cards) {
 
   if (cards.length === 0) {
     cardsGrid.innerHTML = `
-      <div class="col-span-full rounded-2xl border border-slate-800 bg-slate-950/70 p-8 text-center shadow-inner">
+      <div class="col-span-full rounded-3xl border border-slate-800 bg-slate-950/70 p-8 text-center shadow-inner">
         <h3 class="text-lg font-semibold text-white">No se encontraron cartas</h3>
+        <p class="mt-2 text-sm text-slate-400">Prueba con otro filtro, color o término de búsqueda.</p>
       </div>
     `;
+    updateResultsSummary([]);
     return;
   }
 
@@ -180,6 +277,8 @@ function displayCards(cards) {
     const cardElement = createCardElement(card);
     cardsGrid.appendChild(cardElement);
   });
+
+  updateResultsSummary(cards);
 }
 
 function createCardElement(card) {
@@ -190,7 +289,7 @@ function createCardElement(card) {
 
   const cardDiv = document.createElement("article");
   cardDiv.className =
-    "flex flex-col overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/80 shadow-lg transition duration-200 hover:-translate-y-1 hover:border-violet-500/70";
+    "flex flex-col overflow-hidden rounded-3xl border border-slate-800/80 bg-slate-900/80 shadow-lg transition duration-200 hover:-translate-y-1 hover:border-violet-500/70 hover:shadow-violet-950/20";
   cardDiv.dataset.cardId = card.id;
 
   cardDiv.innerHTML = `
@@ -280,27 +379,37 @@ function getFilteredCards() {
 }
 
 function applyFilters() {
+  const filteredCards = getFilteredCards();
+  const baseCards = currentSearchTerm
+    ? filteredCards.filter((card) => {
+        const search = currentSearchTerm.toLowerCase();
+        return (
+          card.name.toLowerCase().includes(search) ||
+          card.text.toLowerCase().includes(search) ||
+          card.type.toLowerCase().includes(search) ||
+          card.color.toLowerCase().includes(search)
+        );
+      })
+    : filteredCards;
+
+  displayCards(baseCards);
+}
+
+function clearFilters() {
+  currentTypeFilter = "all";
+  currentColorFilter = "all";
+  currentSearchTerm = "";
+  document.getElementById("search-input").value = "";
+  updateFilterUI(".js-filter");
+  updateFilterUI(".js-color-filter");
+  document.querySelector('.js-filter[data-filter="all"]')?.classList.add("bg-violet-500/20", "text-violet-300", "font-semibold");
+  document.querySelector('.js-color-filter[data-color="all"]')?.classList.add("bg-violet-500/20", "text-violet-300", "font-semibold");
   displayCards(getFilteredCards());
 }
 
 function searchCards() {
-  const searchTerm = document.getElementById("search-input").value.toLowerCase();
-  const baseCards = getFilteredCards();
-
-  if (searchTerm === "") {
-    displayCards(baseCards);
-    return;
-  }
-
-  const results = baseCards.filter(
-    (card) =>
-      card.name.toLowerCase().includes(searchTerm) ||
-      card.text.toLowerCase().includes(searchTerm) ||
-      card.type.toLowerCase().includes(searchTerm) ||
-      card.color.toLowerCase().includes(searchTerm)
-  );
-
-  displayCards(results);
+  currentSearchTerm = document.getElementById("search-input").value.trim().toLowerCase();
+  applyFilters();
 }
 
 function addToCart(cardId) {
@@ -545,6 +654,11 @@ function closeCardDetail() {
 }
 
 function initializeEventListeners() {
+  updateFilterUI(".js-filter");
+  updateFilterUI(".js-color-filter");
+  document.querySelector('.js-filter[data-filter="all"]')?.classList.add("bg-violet-500/20", "text-violet-300", "font-semibold");
+  document.querySelector('.js-color-filter[data-color="all"]')?.classList.add("bg-violet-500/20", "text-violet-300", "font-semibold");
+
   document.querySelectorAll(".js-filter").forEach((link) => {
     link.addEventListener("click", (e) => {
       e.preventDefault();
@@ -560,7 +674,15 @@ function initializeEventListeners() {
   });
 
   document.getElementById("search-btn").addEventListener("click", searchCards);
-  document.getElementById("search-input").addEventListener("keyup", searchCards);
+  document.getElementById("clear-filters-btn").addEventListener("click", clearFilters);
+  document.getElementById("search-input").addEventListener("keyup", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      searchCards();
+    } else {
+      searchCards();
+    }
+  });
 
   document.getElementById("view-cart-btn").addEventListener("click", viewCart);
   document.getElementById("close-cart-btn").addEventListener("click", closeCart);
