@@ -38,7 +38,11 @@ function parseExchangeRate(data) {
   ];
 
   for (const candidate of candidates) {
-    if (typeof candidate === "number" && Number.isFinite(candidate) && candidate > 0) {
+    if (
+      typeof candidate === "number" &&
+      Number.isFinite(candidate) &&
+      candidate > 0
+    ) {
       return candidate;
     }
 
@@ -78,7 +82,9 @@ async function loadExchangeRate() {
     if (rate) {
       usdToClp = rate;
     } else {
-      throw new Error("No se encontró un valor válido de dólar en la respuesta");
+      throw new Error(
+        "No se encontró un valor válido de dólar en la respuesta",
+      );
     }
   } catch (error) {
     console.error("Error obteniendo el valor del dólar:", error);
@@ -121,7 +127,7 @@ async function loadCSV(filename) {
 async function fetchCardFromScryfall(cardName) {
   try {
     const response = await fetch(
-      `${SCRYFALL_API}/cards/named?fuzzy=${encodeURIComponent(cardName)}`
+      `${SCRYFALL_API}/cards/named?fuzzy=${encodeURIComponent(cardName)}`,
     );
 
     if (!response.ok) {
@@ -147,8 +153,15 @@ function updateResultsSummary(cards) {
   const summaryElement = document.getElementById("results-summary");
   if (!summaryElement) return;
 
-  const typeLabel = currentTypeFilter === "all" ? "Todas" : currentTypeFilter.charAt(0).toUpperCase() + currentTypeFilter.slice(1);
-  const colorLabel = currentColorFilter === "all" ? "Todos" : currentColorFilter.charAt(0).toUpperCase() + currentColorFilter.slice(1);
+  const typeLabel =
+    currentTypeFilter === "all"
+      ? "Todas"
+      : currentTypeFilter.charAt(0).toUpperCase() + currentTypeFilter.slice(1);
+  const colorLabel =
+    currentColorFilter === "all"
+      ? "Todos"
+      : currentColorFilter.charAt(0).toUpperCase() +
+        currentColorFilter.slice(1);
   const searchLabel = currentSearchTerm ? ` · “${currentSearchTerm}”` : "";
 
   summaryElement.textContent = `${cards.length} cartas • ${typeLabel} • ${colorLabel}${searchLabel}`;
@@ -285,7 +298,8 @@ function createCardElement(card) {
   const colorEmoji = getColorEmoji(card.color);
   const typeIcon = getTypeIcon(card.type);
   const stockStatus = card.stock > 0 ? `En Stock (${card.stock})` : "Agotado";
-  const stockStatusClass = card.stock > 0 ? "text-emerald-400" : "text-rose-400";
+  const stockStatusClass =
+    card.stock > 0 ? "text-emerald-400" : "text-rose-400";
 
   const cardDiv = document.createElement("article");
   cardDiv.className =
@@ -344,22 +358,38 @@ function getTypeIcon(type) {
 function filterCards(type) {
   currentTypeFilter = type;
   updateFilterUI(".js-filter");
-  const activeLink = document.querySelector(`.js-filter[data-filter="${type}"]`);
-  activeLink?.classList.add("bg-violet-500/20", "text-violet-300", "font-semibold");
+  const activeLink = document.querySelector(
+    `.js-filter[data-filter="${type}"]`,
+  );
+  activeLink?.classList.add(
+    "bg-violet-500/20",
+    "text-violet-300",
+    "font-semibold",
+  );
   applyFilters();
 }
 
 function filterByColor(color) {
   currentColorFilter = color;
   updateFilterUI(".js-color-filter");
-  const activeLink = document.querySelector(`.js-color-filter[data-color="${color}"]`);
-  activeLink?.classList.add("bg-violet-500/20", "text-violet-300", "font-semibold");
+  const activeLink = document.querySelector(
+    `.js-color-filter[data-color="${color}"]`,
+  );
+  activeLink?.classList.add(
+    "bg-violet-500/20",
+    "text-violet-300",
+    "font-semibold",
+  );
   applyFilters();
 }
 
 function updateFilterUI(selector) {
   document.querySelectorAll(selector).forEach((link) => {
-    link.classList.remove("bg-violet-500/20", "text-violet-300", "font-semibold");
+    link.classList.remove(
+      "bg-violet-500/20",
+      "text-violet-300",
+      "font-semibold",
+    );
     link.classList.add("text-slate-300");
   });
 }
@@ -402,13 +432,20 @@ function clearFilters() {
   document.getElementById("search-input").value = "";
   updateFilterUI(".js-filter");
   updateFilterUI(".js-color-filter");
-  document.querySelector('.js-filter[data-filter="all"]')?.classList.add("bg-violet-500/20", "text-violet-300", "font-semibold");
-  document.querySelector('.js-color-filter[data-color="all"]')?.classList.add("bg-violet-500/20", "text-violet-300", "font-semibold");
+  document
+    .querySelector('.js-filter[data-filter="all"]')
+    ?.classList.add("bg-violet-500/20", "text-violet-300", "font-semibold");
+  document
+    .querySelector('.js-color-filter[data-color="all"]')
+    ?.classList.add("bg-violet-500/20", "text-violet-300", "font-semibold");
   displayCards(getFilteredCards());
 }
 
 function searchCards() {
-  currentSearchTerm = document.getElementById("search-input").value.trim().toLowerCase();
+  currentSearchTerm = document
+    .getElementById("search-input")
+    .value.trim()
+    .toLowerCase();
   applyFilters();
 }
 
@@ -447,11 +484,12 @@ function updateCartDisplay() {
   const cartCount = shoppingCart.reduce((sum, item) => sum + item.quantity, 0);
   const cartTotal = shoppingCart.reduce(
     (sum, item) => sum + item.price * item.quantity,
-    0
+    0,
   );
 
   document.getElementById("cart-count").textContent = cartCount;
-  document.getElementById("cart-total").textContent = Math.round(cartTotal) + " CLP";
+  document.getElementById("cart-total").textContent =
+    Math.round(cartTotal) + " CLP";
 }
 
 function viewCart() {
@@ -459,7 +497,8 @@ function viewCart() {
   const cartItemsDiv = document.getElementById("cart-items");
 
   if (shoppingCart.length === 0) {
-    cartItemsDiv.innerHTML = '<p class="text-sm text-slate-400">Tu carrito está vacío</p>';
+    cartItemsDiv.innerHTML =
+      '<p class="text-sm text-slate-400">Tu carrito está vacío</p>';
   } else {
     let html = '<div class="space-y-3">';
 
@@ -488,9 +527,10 @@ function viewCart() {
 
   const cartTotal = shoppingCart.reduce(
     (sum, item) => sum + item.price * item.quantity,
-    0
+    0,
   );
-  document.getElementById("modal-cart-total").textContent = Math.round(cartTotal) + " CLP";
+  document.getElementById("modal-cart-total").textContent =
+    Math.round(cartTotal) + " CLP";
 
   modal.classList.remove("hidden");
   modal.classList.add("flex");
@@ -552,17 +592,17 @@ function checkout() {
 
   const total = shoppingCart.reduce(
     (sum, item) => sum + item.price * item.quantity,
-    0
+    0,
   );
   const itemCount = shoppingCart.reduce((sum, item) => sum + item.quantity, 0);
 
   if (
     confirm(
-      `¿Finalizar compra de ${itemCount} artículos por $${Math.round(total)} CLP?`
+      `¿Finalizar compra de ${itemCount} artículos por $${Math.round(total)} CLP?`,
     )
   ) {
     alert(
-      "¡Gracias por tu compra! (Esto es una demostración - no se realizó ninguna transacción real)"
+      "¡Gracias por tu compra! (Esto es una demostración - no se realizó ninguna transacción real)",
     );
     shoppingCart = [];
     updateCartDisplay();
@@ -656,8 +696,12 @@ function closeCardDetail() {
 function initializeEventListeners() {
   updateFilterUI(".js-filter");
   updateFilterUI(".js-color-filter");
-  document.querySelector('.js-filter[data-filter="all"]')?.classList.add("bg-violet-500/20", "text-violet-300", "font-semibold");
-  document.querySelector('.js-color-filter[data-color="all"]')?.classList.add("bg-violet-500/20", "text-violet-300", "font-semibold");
+  document
+    .querySelector('.js-filter[data-filter="all"]')
+    ?.classList.add("bg-violet-500/20", "text-violet-300", "font-semibold");
+  document
+    .querySelector('.js-color-filter[data-color="all"]')
+    ?.classList.add("bg-violet-500/20", "text-violet-300", "font-semibold");
 
   document.querySelectorAll(".js-filter").forEach((link) => {
     link.addEventListener("click", (e) => {
@@ -674,7 +718,9 @@ function initializeEventListeners() {
   });
 
   document.getElementById("search-btn").addEventListener("click", searchCards);
-  document.getElementById("clear-filters-btn").addEventListener("click", clearFilters);
+  document
+    .getElementById("clear-filters-btn")
+    .addEventListener("click", clearFilters);
   document.getElementById("search-input").addEventListener("keyup", (event) => {
     if (event.key === "Enter") {
       event.preventDefault();
@@ -685,11 +731,17 @@ function initializeEventListeners() {
   });
 
   document.getElementById("view-cart-btn").addEventListener("click", viewCart);
-  document.getElementById("close-cart-btn").addEventListener("click", closeCart);
+  document
+    .getElementById("close-cart-btn")
+    .addEventListener("click", closeCart);
   document.getElementById("checkout-btn").addEventListener("click", checkout);
-  document.getElementById("clear-cart-btn").addEventListener("click", clearCart);
+  document
+    .getElementById("clear-cart-btn")
+    .addEventListener("click", clearCart);
 
-  document.getElementById("close-card-detail-btn").addEventListener("click", closeCardDetail);
+  document
+    .getElementById("close-card-detail-btn")
+    .addEventListener("click", closeCardDetail);
 
   document.addEventListener("click", (event) => {
     const cartModal = document.getElementById("cart-modal");
