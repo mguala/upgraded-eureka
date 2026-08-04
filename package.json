@@ -1,0 +1,19 @@
+{
+  "name": "upgraded-eureka",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "dev": "http-server -p 8080",
+    "format": "prettier --write \"**/*.{html,js,json,css}\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "prettier": "^3.9.6",
+    "prettier-plugin-tailwindcss": "^0.8.1"
+  }
+}
