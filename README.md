@@ -13,15 +13,15 @@ A Magic: The Gathering card storefront built as a static web app. Browse your co
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Markup | HTML5 |
-| Styling | [Tailwind CSS](https://tailwindcss.com) (CDN) |
-| Logic | Vanilla JavaScript (ES2020+) |
-| CSV Parsing | [PapaParse](https://www.papaparse.com) |
-| Card Data | [Scryfall API](https://scryfall.com/docs/api) |
-| Exchange Rate | [dolarapi.com](https://cl.dolarapi.com) |
-| Deployment | GitHub Pages (via GitHub Actions) |
+| Layer         | Technology                                    |
+| ------------- | --------------------------------------------- |
+| Markup        | HTML5                                         |
+| Styling       | [Tailwind CSS](https://tailwindcss.com) (CDN) |
+| Logic         | Vanilla JavaScript (ES2020+)                  |
+| CSV Parsing   | [PapaParse](https://www.papaparse.com)        |
+| Card Data     | [Scryfall API](https://scryfall.com/docs/api) |
+| Exchange Rate | [dolarapi.com](https://cl.dolarapi.com)       |
+| Deployment    | GitHub Pages (via GitHub Actions)             |
 
 ## Getting Started
 
@@ -54,14 +54,14 @@ npm run format
 
 The card inventory is defined in [`cards.csv`](./cards.csv). It is exported from [ManaBox](https://manabox.app) and contains the following fields:
 
-| Field | Description |
-|---|---|
-| `Name` | Card name (used for Scryfall lookup) |
-| `Set code` | Set abbreviation |
-| `Quantity` | Number of copies in stock |
-| `Purchase price` | Cost in USD |
-| `Foil` | Whether the card is a foil printing |
-| `Condition` | Card condition (e.g. `near_mint`) |
+| Field            | Description                          |
+| ---------------- | ------------------------------------ |
+| `Name`           | Card name (used for Scryfall lookup) |
+| `Set code`       | Set abbreviation                     |
+| `Quantity`       | Number of copies in stock            |
+| `Purchase price` | Cost in USD                          |
+| `Foil`           | Whether the card is a foil printing  |
+| `Condition`      | Card condition (e.g. `near_mint`)    |
 
 To update the inventory, replace `cards.csv` with a new export from ManaBox and push to `main`.
 
@@ -74,11 +74,6 @@ To set up GitHub Pages for your fork:
 1. Go to **Settings → Pages** in your repository.
 2. Under **Build and deployment → Source**, select **GitHub Actions**.
 3. Push to `main` and the workflow will deploy the site automatically.
-
-The live site will be available at:
-```
-https://<your-username>.github.io/<your-repo-name>/
-```
 
 ## License
 
