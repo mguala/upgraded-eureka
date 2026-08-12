@@ -2,3 +2,4 @@ node_modules/
 .tmp-node/
 *.md
 !README.md
+!ROADMAP.md

@@ -1,0 +1,474 @@
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap");
+
+:root {
+  --bg-obsidian: #08070d;
+  --bg-vault: #0f0d1a;
+  --bg-panel: #161326;
+  --accent-gold: #d4af37;
+  --accent-violet: #8b5cf6;
+}
+
+body {
+  background-color: var(--bg-obsidian);
+  font-family:
+    "Plus Jakarta Sans",
+    system-ui,
+    -apple-system,
+    sans-serif;
+  background-image:
+    radial-gradient(
+      circle at 15% 15%,
+      rgba(139, 92, 246, 0.09) 0%,
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 85% 85%,
+      rgba(212, 175, 55, 0.06) 0%,
+      transparent 45%
+    );
+  background-attachment: fixed;
+}
+
+.font-serif {
+  font-family: "Cinzel", Georgia, serif;
+}
+
+/* Glass panel */
+.vault-panel {
+  background: rgba(18, 15, 32, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.vault-border-gold {
+  border-color: rgba(212, 175, 55, 0.2);
+}
+
+/* Card Visual Frame */
+.premium-card {
+  position: relative;
+  background: rgba(22, 19, 38, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.premium-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.08),
+    rgba(255, 255, 255, 0) 60%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.premium-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(212, 175, 55, 0.35);
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.7),
+    0 0 30px -5px rgba(139, 92, 246, 0.15);
+}
+
+/* Foil / Holo Shimmer Animation */
+.foil-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.foil-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    125deg,
+    rgba(255, 0, 128, 0.08) 0%,
+    rgba(0, 255, 255, 0.08) 25%,
+    rgba(255, 255, 0, 0.08) 50%,
+    rgba(0, 255, 255, 0.08) 75%,
+    rgba(255, 0, 128, 0.08) 100%
+  );
+  background-size: 300% 300%;
+  mix-blend-mode: color-dodge;
+  opacity: 0.25;
+  z-index: 2;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  animation: foilMove 8s infinite linear;
+}
+
+.foil-shimmer:hover::after {
+  opacity: 0.65;
+  animation: foilMove 3s infinite linear;
+}
+
+@keyframes foilMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Custom styled MTG mana symbols */
+.mtg-mana {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(0, 0, 0, 0.85);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  margin: 0 1.5px;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.mtg-mana.mana-w {
+  background: radial-gradient(
+    circle at 35% 35%,
+    #fffdf4 0%,
+    #e6dfc8 70%,
+    #c4b998 100%
+  );
+  color: #111;
+  text-shadow: none;
+}
+.mtg-mana.mana-u {
+  background: radial-gradient(
+    circle at 35% 35%,
+    #e1effa 0%,
+    #5198d0 70%,
+    #155d9b 100%
+  );
+  color: #fff;
+}
+.mtg-mana.mana-b {
+  background: radial-gradient(
+    circle at 35% 35%,
+    #88817f 0%,
+    #201a19 70%,
+    #0d0c0c 100%
+  );
+  color: #fff;
+}
+.mtg-mana.mana-r {
+  background: radial-gradient(
+    circle at 35% 35%,
+    #f5cfb5 0%,
+    #db593b 70%,
+    #9e2a13 100%
+  );
+  color: #fff;
+}
+.mtg-mana.mana-g {
+  background: radial-gradient(
+    circle at 35% 35%,
+    #ebf5e6 0%,
+    #2c854c 70%,
+    #0f4b23 100%
+  );
+  color: #fff;
+}
+.mtg-mana.mana-c {
+  background: radial-gradient(
+    circle at 35% 35%,
+    #dedede 0%,
+    #b5b5b5 70%,
+    #8c8c8c 100%
+  );
+  color: #111;
+  text-shadow: none;
+}
+.mtg-mana.mana-x {
+  background: radial-gradient(
+    circle at 35% 35%,
+    #b5b5b5 0%,
+    #8c8c8c 70%,
+    #5e5e5e 100%
+  );
+  color: #fff;
+}
+.mtg-mana.mana-num {
+  background: radial-gradient(
+    circle at 35% 35%,
+    #f5f5f5 0%,
+    #cccccc 70%,
+    #999999 100%
+  );
+  color: #111;
+  text-shadow: none;
+}
+
+/* Custom rarity styling */
+.rarity-badge {
+  padding: 0.15rem 0.5rem;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: inline-block;
+  line-height: 1.2;
+}
+.rarity-common {
+  background: rgba(55, 65, 81, 0.4);
+  border: 1px solid rgba(156, 163, 175, 0.25);
+  color: #e5e7eb;
+}
+.rarity-uncommon {
+  background: linear-gradient(
+    135deg,
+    rgba(148, 163, 184, 0.35),
+    rgba(71, 85, 105, 0.35)
+  );
+  border: 1px solid #94a3b8;
+  color: #f1f5f9;
+}
+.rarity-rare {
+  background: linear-gradient(
+    135deg,
+    rgba(202, 138, 4, 0.3),
+    rgba(133, 77, 14, 0.3)
+  );
+  border: 1px solid #eab308;
+  color: #fef08a;
+}
+.rarity-mythic {
+  background: linear-gradient(
+    135deg,
+    rgba(220, 38, 38, 0.3),
+    rgba(185, 28, 28, 0.3)
+  );
+  border: 1px solid #f87171;
+  color: #fee2e2;
+}
+
+/* Slide-out Cart Drawer */
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 3, 7, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.drawer-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.drawer-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: 480px;
+  background: #0f0d1a;
+  border-left: 1px solid rgba(212, 175, 55, 0.15);
+  box-shadow: -15px 0 45px rgba(0, 0, 0, 0.85);
+  z-index: 101;
+  transform: translateX(100%);
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.drawer-panel.active {
+  transform: translateX(0);
+}
+
+/* Left-sliding filter drawer (mobile) */
+.drawer-panel-left {
+  transform: translateX(-100%);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.drawer-panel-left.active {
+  transform: translateX(0);
+}
+
+@media (min-width: 1024px) {
+  .drawer-panel-left {
+    transform: none;
+    position: static;
+    z-index: auto;
+  }
+}
+
+/* Toast Container & Toasts */
+#toast-container {
+  position: fixed;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+@media (min-width: 640px) {
+  #toast-container {
+    left: auto;
+    right: 24px;
+    bottom: 24px;
+    max-width: 420px;
+  }
+}
+
+.toast-alert {
+  pointer-events: auto;
+  background: rgba(15, 13, 26, 0.95);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-left: 4px solid var(--accent-gold);
+  color: #e2e8f0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+  font-size: 0.8rem;
+  font-weight: 500;
+  transform: translateY(30px) scale(0.95);
+  opacity: 0;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.toast-alert.active {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+.toast-alert.success {
+  border-left-color: #10b981;
+  border-color: rgba(16, 185, 129, 0.25);
+}
+
+.toast-alert.error {
+  border-left-color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.25);
+}
+
+/* Gold button styles */
+.btn-gold {
+  background: linear-gradient(135deg, #d4af37 0%, #b39023 100%);
+  color: #09080e;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-gold:hover:not(:disabled) {
+  background: linear-gradient(135deg, #ebd16a 0%, #cca933 100%);
+  box-shadow: 0 6px 18px rgba(212, 175, 55, 0.4);
+  transform: translateY(-1.5px);
+}
+
+.btn-gold:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-gold:disabled {
+  background: #333333;
+  color: #777777;
+  border-color: transparent;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-obsidian);
+}
+::-webkit-scrollbar-thumb {
+  background: #25203e;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #37305d;
+}
+
+/* skeleton effect */
+.skeleton-glow {
+  background: linear-gradient(
+    90deg,
+    rgba(22, 19, 38, 0.6) 25%,
+    rgba(42, 36, 74, 0.6) 50%,
+    rgba(22, 19, 38, 0.6) 75%
+  );
+  background-size: 200% 100%;
+  animation: loadingGlow 1.6s infinite ease-in-out;
+}
+
+@keyframes loadingGlow {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Custom styled foil and non-foil labels */
+.foil-label-badge {
+  background: linear-gradient(45deg, #ff007f, #00ffff, #ffff00, #ff007f);
+  background-size: 400% 400%;
+  animation: foilLabelAnim 6s ease infinite;
+  color: #000;
+  font-weight: 800;
+  text-shadow: 0 0.5px 0 rgba(255, 255, 255, 0.5);
+  font-size: 9px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+@keyframes foilLabelAnim {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}

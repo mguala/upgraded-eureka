@@ -5,9 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Pringles Brillantes Store - Explora y compra cartas de Magic: The Gathering"
+      content="Pringles Brillantes - Tienda de cartas de Magic: The Gathering con precios en CLP"
     />
-    <title>Pringles Brillantes Store - Cartas de Magic: The Gathering</title>
+    <title>Pringles Brillantes - Tienda MTG</title>
+
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -21,101 +23,206 @@
                 700: "#6d28d9",
               },
             },
+            fontSize: {
+              xxs: "0.7rem",
+            },
           },
         },
       };
     </script>
-    <style>
-      body::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        background: radial-gradient(
-          circle at top left,
-          rgba(139, 92, 246, 0.16),
-          transparent 35%
-        );
-        pointer-events: none;
-      }
 
-      .glass-panel {
-        backdrop-filter: blur(12px);
-        background: linear-gradient(
-          135deg,
-          rgba(15, 23, 42, 0.95),
-          rgba(30, 27, 75, 0.9)
-        );
-      }
-    </style>
+    <!-- Custom Style Redesign -->
+    <link rel="stylesheet" href="style.css" />
   </head>
-  <body class="min-h-full bg-slate-950 text-slate-100">
-    <header
-      class="border-b border-slate-800/80 bg-gradient-to-r from-slate-950 via-violet-950/90 to-slate-900 shadow-2xl"
+  <body
+    class="min-h-full bg-slate-950 text-slate-100 flex flex-col font-sans antialiased"
+  >
+    <!-- Sticky Navigation Bar -->
+    <nav
+      class="sticky top-0 z-40 vault-panel border-b border-slate-800/60 px-4 py-3 sm:px-6 lg:px-8 shadow-lg"
     >
-      <div
-        class="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-8 sm:px-6 lg:px-8"
-      >
-        <div class="flex flex-wrap items-center gap-3">
-          <span
-            class="rounded-full border border-violet-500/40 bg-violet-500/10 px-3 py-1 text-sm font-semibold text-violet-200"
-            >✨ Tienda premium</span
+      <div class="mx-auto max-w-7xl flex items-center justify-between gap-3">
+        <!-- Mobile filter toggle + Logo -->
+        <div class="flex items-center gap-3">
+          <button
+            id="mobile-filter-toggle"
+            class="lg:hidden rounded-xl bg-slate-900 border border-slate-800 hover:border-violet-500/50 p-2.5 text-slate-300 hover:text-white transition"
+            aria-label="Abrir filtros"
           >
-          <span
-            class="rounded-full border border-slate-700 bg-slate-900/70 px-3 py-1 text-sm text-slate-300"
-            >⚡ Precios en CLP con cotización en vivo</span
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="4" y1="6" x2="20" y2="6" />
+              <line x1="4" y1="12" x2="14" y2="12" />
+              <line x1="4" y1="18" x2="10" y2="18" />
+            </svg>
+          </button>
+          <a
+            href="#"
+            class="font-serif text-base sm:text-lg font-black tracking-widest text-white flex items-center gap-2 hover:opacity-90 transition"
           >
+            <span class="text-xl hidden sm:inline">🃏</span>
+            <span
+              class="bg-gradient-to-r from-amber-400 via-yellow-200 to-amber-500 bg-clip-text text-transparent"
+              >PRINGLES BRILLANTES</span
+            >
+          </a>
         </div>
-        <div
-          class="glass-panel rounded-3xl border border-slate-800/70 p-6 shadow-2xl sm:p-8"
-        >
-          <h1 class="text-3xl font-black tracking-tight text-white sm:text-4xl">
-            🃏 Pringles Brillantes Store
-          </h1>
-          <p class="mt-3 max-w-3xl text-base text-slate-300 sm:text-lg">
-            <i
-              >Tu destino principal para cartas de Magic: The Gathering, con
-              filtros rápidos, carrito y precios actualizados.</i
+
+        <!-- Compact search on desktop nav -->
+        <div class="hidden md:flex flex-1 max-w-md mx-4">
+          <div class="relative w-full">
+            <input
+              type="text"
+              id="search-input"
+              class="w-full rounded-xl border border-slate-800 bg-slate-950/80 pl-4 pr-10 py-2 text-sm text-white placeholder:text-slate-500 focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none transition shadow-inner"
+              placeholder="Buscar cartas..."
+              aria-label="Buscar cartas"
+            />
+            <button
+              type="button"
+              id="search-btn"
+              class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-violet-400 p-1 transition"
+              aria-label="Buscar"
             >
-          </p>
-          <div class="mt-5 flex flex-wrap gap-3 text-sm text-slate-300">
-            <span
-              class="rounded-full border border-slate-700 bg-slate-900/70 px-3 py-1"
-              >🧭 Filtros por tipo y color</span
-            >
-            <span
-              class="rounded-full border border-slate-700 bg-slate-900/70 px-3 py-1"
-              >🛒 Carrito de compras</span
-            >
-            <span
-              class="rounded-full border border-slate-700 bg-slate-900/70 px-3 py-1"
-              >🔎 Búsqueda instantánea</span
-            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+            </button>
           </div>
         </div>
-      </div>
-    </header>
 
+        <!-- Right Utilities -->
+        <div class="flex items-center gap-2.5">
+          <!-- Exchange rate chip -->
+          <div
+            class="hidden sm:flex items-center gap-1.5 rounded-lg bg-slate-900/60 border border-slate-800 px-3 py-1.5"
+          >
+            <span class="text-xxs text-slate-500 font-bold uppercase"
+              >USD/CLP</span
+            >
+            <span
+              id="exchange-rate"
+              class="text-xs font-bold text-emerald-400 font-mono"
+              >...</span
+            >
+          </div>
+          <!-- Cart trigger -->
+          <button
+            id="view-cart-btn"
+            class="relative inline-flex items-center gap-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-violet-500/50 hover:bg-slate-800/50 px-3 sm:px-4 py-2 text-sm font-semibold text-slate-200 transition shadow-inner"
+          >
+            <span>🛒</span>
+            <span class="hidden sm:inline">Carrito</span>
+            <span
+              id="cart-count"
+              class="flex h-5 w-5 items-center justify-center rounded-full bg-violet-600 text-xxs font-extrabold text-white shadow-md transition-all"
+              >0</span
+            >
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Mobile search bar (visible only on small screens) -->
+    <div class="md:hidden px-4 pt-3 pb-1">
+      <div class="relative w-full">
+        <input
+          type="text"
+          id="search-input-mobile"
+          class="w-full rounded-xl border border-slate-800 bg-slate-950/80 pl-4 pr-10 py-2.5 text-sm text-white placeholder:text-slate-500 focus:border-violet-500 focus:ring-1 focus:ring-violet-500 outline-none transition shadow-inner"
+          placeholder="Buscar cartas..."
+          aria-label="Buscar cartas en móvil"
+        />
+        <button
+          type="button"
+          id="search-btn-mobile"
+          class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-violet-400 p-1 transition"
+          aria-label="Buscar"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Catalog: Sidebar + Grid -->
     <div
-      class="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:flex-row lg:px-8"
+      class="mx-auto w-full max-w-7xl flex flex-col gap-5 px-4 py-4 sm:px-6 lg:flex-row lg:px-8 flex-1"
     >
+      <!-- Mobile filter overlay -->
+      <div id="filter-overlay" class="drawer-overlay lg:hidden"></div>
+
+      <!-- Filters Sidebar: slides in on mobile, static on desktop -->
       <aside
-        class="glass-panel sticky top-4 w-full shrink-0 rounded-3xl border border-slate-800/70 p-5 shadow-2xl lg:w-80"
+        id="filters-sidebar"
+        class="fixed inset-y-0 left-0 z-50 w-72 drawer-panel-left bg-slate-950 border-r border-slate-800 overflow-y-auto p-5 space-y-5 shadow-2xl lg:static lg:transform-none lg:w-64 lg:shrink-0 lg:bg-transparent lg:border-none lg:shadow-none lg:p-0 lg:overflow-visible"
       >
-        <section class="space-y-3">
-          <h3 class="text-lg font-semibold text-white">Categorías</h3>
-          <ul class="space-y-2">
+        <!-- Mobile close -->
+        <div class="flex items-center justify-between lg:hidden mb-2">
+          <span class="font-serif text-sm font-bold text-white tracking-wider"
+            >Filtros</span
+          >
+          <button
+            id="close-filters-btn"
+            class="rounded-lg p-2 text-slate-400 hover:text-white hover:bg-slate-900 transition"
+            aria-label="Cerrar filtros"
+          >
+            ✕
+          </button>
+        </div>
+
+        <!-- Categories -->
+        <section class="vault-panel rounded-2xl p-4 space-y-2 shadow-xl">
+          <h3
+            class="font-serif text-xxs font-bold tracking-widest text-slate-500 uppercase border-b border-slate-800/80 pb-1.5"
+          >
+            Categorías
+          </h3>
+          <ul class="space-y-0.5">
             <li>
               <a
                 href="#"
-                class="js-filter block rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-violet-300"
+                class="js-filter block rounded-lg px-3 py-1.5 text-sm font-medium text-slate-400 hover:bg-slate-900/60 hover:text-white transition"
                 data-filter="all"
-                >Todas las Cartas</a
+                >Todas</a
               >
             </li>
             <li>
               <a
                 href="#"
-                class="js-filter block rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-violet-300"
+                class="js-filter block rounded-lg px-3 py-1.5 text-sm font-medium text-slate-400 hover:bg-slate-900/60 hover:text-white transition"
                 data-filter="creature"
                 >Criaturas</a
               >
@@ -123,7 +230,7 @@
             <li>
               <a
                 href="#"
-                class="js-filter block rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-violet-300"
+                class="js-filter block rounded-lg px-3 py-1.5 text-sm font-medium text-slate-400 hover:bg-slate-900/60 hover:text-white transition"
                 data-filter="instant"
                 >Instantáneos</a
               >
@@ -131,15 +238,15 @@
             <li>
               <a
                 href="#"
-                class="js-filter block rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-violet-300"
+                class="js-filter block rounded-lg px-3 py-1.5 text-sm font-medium text-slate-400 hover:bg-slate-900/60 hover:text-white transition"
                 data-filter="sorcery"
-                >Hechizos</a
+                >Conjuros</a
               >
             </li>
             <li>
               <a
                 href="#"
-                class="js-filter block rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-violet-300"
+                class="js-filter block rounded-lg px-3 py-1.5 text-sm font-medium text-slate-400 hover:bg-slate-900/60 hover:text-white transition"
                 data-filter="enchantment"
                 >Encantamientos</a
               >
@@ -147,7 +254,7 @@
             <li>
               <a
                 href="#"
-                class="js-filter block rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-violet-300"
+                class="js-filter block rounded-lg px-3 py-1.5 text-sm font-medium text-slate-400 hover:bg-slate-900/60 hover:text-white transition"
                 data-filter="artifact"
                 >Artefactos</a
               >
@@ -155,208 +262,220 @@
             <li>
               <a
                 href="#"
-                class="js-filter block rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-violet-300"
+                class="js-filter block rounded-lg px-3 py-1.5 text-sm font-medium text-slate-400 hover:bg-slate-900/60 hover:text-white transition"
                 data-filter="planeswalker"
                 >Planeswalkers</a
               >
             </li>
-          </ul>
-        </section>
-
-        <div class="my-5 h-px bg-slate-800"></div>
-
-        <section class="space-y-3">
-          <h3 class="text-lg font-semibold text-white">Filtro de Color</h3>
-          <ul class="space-y-2">
             <li>
               <a
                 href="#"
-                class="js-color-filter block rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-violet-300"
+                class="js-filter block rounded-lg px-3 py-1.5 text-sm font-medium text-slate-400 hover:bg-slate-900/60 hover:text-white transition"
+                data-filter="land"
+                >Tierras</a
+              >
+            </li>
+          </ul>
+        </section>
+
+        <!-- Color Filter -->
+        <section class="vault-panel rounded-2xl p-4 space-y-2 shadow-xl">
+          <h3
+            class="font-serif text-xxs font-bold tracking-widest text-slate-500 uppercase border-b border-slate-800/80 pb-1.5"
+          >
+            Colores
+          </h3>
+          <ul class="space-y-0.5">
+            <li>
+              <a
+                href="#"
+                class="js-color-filter block rounded-lg px-3 py-1.5 text-sm font-medium text-slate-400 hover:bg-slate-900/60 hover:text-white transition"
                 data-color="all"
-                >Todos los Colores</a
+                >Todos</a
               >
             </li>
             <li>
               <a
                 href="#"
-                class="js-color-filter block rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-violet-300"
+                class="js-color-filter flex items-center justify-between rounded-lg px-3 py-1.5 text-sm font-medium text-slate-400 hover:bg-slate-900/60 hover:text-white transition"
                 data-color="white"
-                >⚪ Blanco</a
+                ><span>Blanco</span> <span class="mtg-mana mana-w">W</span></a
               >
             </li>
             <li>
               <a
                 href="#"
-                class="js-color-filter block rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-violet-300"
+                class="js-color-filter flex items-center justify-between rounded-lg px-3 py-1.5 text-sm font-medium text-slate-400 hover:bg-slate-900/60 hover:text-white transition"
                 data-color="blue"
-                >🔵 Azul</a
+                ><span>Azul</span> <span class="mtg-mana mana-u">U</span></a
               >
             </li>
             <li>
               <a
                 href="#"
-                class="js-color-filter block rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-violet-300"
+                class="js-color-filter flex items-center justify-between rounded-lg px-3 py-1.5 text-sm font-medium text-slate-400 hover:bg-slate-900/60 hover:text-white transition"
                 data-color="black"
-                >⚫ Negro</a
+                ><span>Negro</span> <span class="mtg-mana mana-b">B</span></a
               >
             </li>
             <li>
               <a
                 href="#"
-                class="js-color-filter block rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-violet-300"
+                class="js-color-filter flex items-center justify-between rounded-lg px-3 py-1.5 text-sm font-medium text-slate-400 hover:bg-slate-900/60 hover:text-white transition"
                 data-color="red"
-                >🔴 Rojo</a
+                ><span>Rojo</span> <span class="mtg-mana mana-r">R</span></a
               >
             </li>
             <li>
               <a
                 href="#"
-                class="js-color-filter block rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-violet-300"
+                class="js-color-filter flex items-center justify-between rounded-lg px-3 py-1.5 text-sm font-medium text-slate-400 hover:bg-slate-900/60 hover:text-white transition"
                 data-color="green"
-                >🟢 Verde</a
+                ><span>Verde</span> <span class="mtg-mana mana-g">G</span></a
+              >
+            </li>
+            <li>
+              <a
+                href="#"
+                class="js-color-filter flex items-center justify-between rounded-lg px-3 py-1.5 text-sm font-medium text-slate-400 hover:bg-slate-900/60 hover:text-white transition"
+                data-color="colorless"
+                ><span>Incoloro</span>
+                <span class="mtg-mana mana-c">C</span></a
               >
             </li>
           </ul>
         </section>
 
-        <div class="my-5 h-px bg-slate-800"></div>
-
-        <section
-          class="space-y-3 rounded-2xl border border-slate-800 bg-slate-950/70 p-4"
+        <!-- Reset Filters -->
+        <button
+          type="button"
+          id="clear-filters-btn"
+          class="w-full inline-flex items-center justify-center rounded-xl border border-slate-800 hover:border-slate-700 hover:bg-slate-900/30 py-2.5 text-xs font-semibold text-slate-300 transition"
         >
-          <h3 class="text-lg font-semibold text-white">Carrito de Compras</h3>
-          <div id="cart-summary" class="space-y-2 text-sm text-slate-300">
-            <p>
-              <span class="font-semibold text-slate-100">Artículos:</span>
-              <span id="cart-count">0</span>
-            </p>
-            <p>
-              <span class="font-semibold text-slate-100">Total:</span>
-              <span id="cart-total">0 CLP</span>
-            </p>
-            <button
-              id="view-cart-btn"
-              class="inline-flex w-full items-center justify-center rounded-lg bg-violet-600 px-4 py-2 font-semibold text-white transition hover:bg-violet-500"
-            >
-              Ver Carrito
-            </button>
-          </div>
-        </section>
+          Limpiar filtros
+        </button>
       </aside>
 
-      <main class="flex-1">
-        <section
-          class="mb-6 rounded-3xl border border-slate-800/70 bg-slate-900/70 p-4 shadow-xl"
+      <!-- Card Database Grid -->
+      <main class="flex-1 min-w-0 space-y-3">
+        <div
+          class="flex items-center justify-between gap-3 px-1 flex-wrap"
         >
-          <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <input
-              type="text"
-              id="search-input"
-              class="w-full rounded-2xl border border-slate-700 bg-slate-950/80 px-4 py-3 text-sm text-white outline-none ring-0 placeholder:text-slate-400 focus:border-violet-500"
-              placeholder="Buscar cartas..."
-              aria-label="Buscar cartas"
-            />
-            <div class="flex flex-wrap gap-2">
-              <button
-                type="button"
-                id="search-btn"
-                class="inline-flex items-center justify-center rounded-2xl bg-violet-600 px-4 py-3 font-semibold text-white transition hover:bg-violet-500"
-              >
-                Buscar
-              </button>
-              <button
-                type="button"
-                id="clear-filters-btn"
-                class="inline-flex items-center justify-center rounded-2xl border border-slate-700 px-4 py-3 font-semibold text-slate-200 transition hover:border-slate-500 hover:text-white"
-              >
-                Limpiar filtros
-              </button>
-            </div>
-          </div>
-          <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
-            <p id="results-summary" class="text-sm text-slate-400">
-              Cargando cartas...
-            </p>
+          <p
+            id="results-summary"
+            class="text-sm font-semibold tracking-wide text-slate-400"
+          >
+            Cargando cartas...
+          </p>
+          <!-- Mobile exchange rate -->
+          <div
+            class="sm:hidden flex items-center gap-1.5 rounded-lg bg-slate-900/60 border border-slate-800 px-2.5 py-1"
+          >
+            <span class="text-xxs text-slate-500 font-bold">USD/CLP</span>
             <span
-              class="rounded-full border border-violet-500/30 bg-violet-500/10 px-3 py-1 text-sm text-violet-200"
-              >🌎 Dólar: <span id="exchange-rate">Cargando...</span></span
+              id="exchange-rate-mobile"
+              class="text-xxs font-bold text-emerald-400 font-mono"
+              >...</span
             >
           </div>
-        </section>
+        </div>
 
-        <div
-          id="cards-container"
-          class="rounded-3xl border border-slate-800/70 bg-slate-900/70 p-4 shadow-2xl"
-        >
+        <div id="cards-container">
           <div
             id="cards-grid"
-            class="grid gap-6 md:grid-cols-2 xl:grid-cols-3"
-          ></div>
+            class="grid gap-4 sm:gap-5 grid-cols-2 md:grid-cols-3 xl:grid-cols-4"
+          >
+            <!-- JS Populates this with either skeletons or cards -->
+          </div>
         </div>
       </main>
     </div>
 
+    <!-- Slide-out Shopping Cart Drawer -->
+    <div id="cart-overlay" class="drawer-overlay"></div>
     <div
-      id="cart-modal"
-      class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 p-4"
+      id="cart-drawer"
+      class="drawer-panel"
+      aria-label="Carrito de compras drawer"
     >
+      <!-- Drawer Header -->
       <div
-        class="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-3xl border border-slate-700 bg-slate-900 p-6 shadow-2xl"
+        class="flex items-center justify-between px-5 py-4 border-b border-slate-800/80 bg-slate-950/20"
       >
-        <div class="flex items-center justify-between gap-3">
-          <h2 class="text-2xl font-semibold text-white">Carrito de Compras</h2>
-          <button
-            id="close-cart-btn"
-            class="rounded-lg border border-slate-700 px-3 py-2 text-sm font-medium text-slate-300 transition hover:border-slate-500 hover:text-white"
-          >
-            ✕ Cerrar
-          </button>
-        </div>
-        <div id="cart-items" class="mt-6"></div>
-        <div
-          class="mt-6 flex flex-col gap-3 border-t border-slate-800 pt-4 md:flex-row md:items-center md:justify-between"
+        <h2
+          class="font-serif text-base font-bold text-white tracking-wider uppercase"
         >
-          <h3 class="text-lg font-semibold text-white">
-            Total: <span id="modal-cart-total">0 CLP</span>
-          </h3>
-          <div class="flex flex-wrap gap-3">
-            <button
-              id="checkout-btn"
-              class="inline-flex items-center justify-center rounded-lg bg-violet-600 px-4 py-2 font-semibold text-white transition hover:bg-violet-500"
-            >
-              Finalizar Compra
-            </button>
-            <button
-              id="clear-cart-btn"
-              class="inline-flex items-center justify-center rounded-lg border border-slate-700 px-4 py-2 font-semibold text-slate-200 transition hover:border-slate-500 hover:text-white"
-            >
-              Vaciar Carrito
-            </button>
-          </div>
+          Tu Carrito
+        </h2>
+        <button
+          id="close-cart-btn"
+          class="rounded-lg p-2 text-slate-400 hover:text-white hover:bg-slate-900 transition"
+          aria-label="Cerrar carrito"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- Drawer Body (Scrollable items) -->
+      <div id="cart-items" class="flex-1 overflow-y-auto p-5 space-y-3">
+        <!-- Javascript renders cart cards here -->
+      </div>
+
+      <!-- Drawer Footer -->
+      <div class="p-5 border-t border-slate-800/80 bg-slate-950/50 space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-sm text-slate-400 font-medium"
+            >Total de la orden:</span
+          >
+          <span
+            id="modal-cart-total"
+            class="text-lg font-black text-amber-400 font-mono tracking-wide"
+            >0 CLP</span
+          >
+        </div>
+        <div class="grid grid-cols-2 gap-2.5">
+          <button
+            id="checkout-btn"
+            class="btn-gold rounded-xl py-3 text-xs font-bold transition shadow-md"
+          >
+            Finalizar Compra
+          </button>
+          <button
+            id="clear-cart-btn"
+            class="rounded-xl border border-slate-800 hover:border-slate-700 hover:bg-slate-900/60 py-3 text-xs font-bold text-slate-400 hover:text-white transition"
+          >
+            Vaciar Carrito
+          </button>
         </div>
       </div>
     </div>
 
+    <!-- Card Detail Modal -->
     <div
       id="card-detail-modal"
-      class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 p-4"
+      class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/85 p-4 backdrop-blur-md transition-all"
     >
       <div
-        class="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl border border-slate-700 bg-slate-900 p-6 shadow-2xl"
+        class="vault-panel max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-3xl border border-slate-800 shadow-2xl relative"
       >
-        <div class="flex items-center justify-between gap-3">
-          <h2 class="text-2xl font-semibold text-white">Detalle de Carta</h2>
-          <button
-            id="close-card-detail-btn"
-            class="rounded-lg border border-slate-700 px-3 py-2 text-sm font-medium text-slate-300 transition hover:border-slate-500 hover:text-white"
-          >
-            ✕ Cerrar
-          </button>
+        <button
+          id="close-card-detail-btn"
+          class="absolute right-4 top-4 rounded-xl p-2.5 text-slate-400 hover:text-white hover:bg-slate-900/60 z-10 transition"
+          aria-label="Cerrar detalles"
+        >
+          ✕
+        </button>
+
+        <div id="card-detail-content" class="p-5 sm:p-8">
+          <!-- Loaded dynamically by app.js -->
         </div>
-        <div id="card-detail-content" class="mt-6"></div>
       </div>
     </div>
 
+    <!-- Toast Notifications Container -->
+    <div id="toast-container"></div>
+
+    <!-- Project JS Dependencies -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script src="app.js"></script>
   </body>
