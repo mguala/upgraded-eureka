@@ -64,17 +64,3 @@ The card inventory is defined in [`cards.csv`](./cards.csv). It is exported from
 | `Condition`      | Card condition (e.g. `near_mint`)    |
 
 To update the inventory, replace `cards.csv` with a new export from ManaBox and push to `main`.
-
-## Deployment
-
-The app is automatically deployed to **GitHub Pages** on every push to `main` via the [GitHub Actions workflow](./.github/workflows/deploy.yml).
-
-To set up GitHub Pages for your fork:
-
-1. Go to **Settings → Pages** in your repository.
-2. Under **Build and deployment → Source**, select **GitHub Actions**.
-3. Push to `main` and the workflow will deploy the site automatically.
-
-## License
-
-ISC
